@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>BookNest - Login</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    }
+    
+    html, body { 
+      height: 100%; 
+      overflow: hidden;
+    }
+    
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      position: relative;
+    }
+
+    /* Full-screen background */
+    .background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('background.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: 0;
+    }
+
+    /* Darker overlay for better contrast */
+    .background::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.5) 0%, rgba(40, 25, 15, 0.6) 100%);
+      z-index: 1;
+    }
+
+    /* Quote on left side */
+    .quote-section {
+      position: fixed;
+      bottom: 80px;
+      left: 60px;
+      z-index: 10;
+      max-width: 450px;
+    }
+
+    .quote-section .quote {
+      font-size: 42px;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 8px 24px rgba(0,0,0,0.8);
+      line-height: 1.2;
+    }
+
+    /* Login card - positioned on right side */
+    .login-container {
+      position: fixed;
+      top: 50%;
+      right: 120px;
+      transform: translateY(-50%);
+      width: 450px;
+      z-index: 50;
+    }
+
+    .login-card {
+      background: rgba(30, 30, 35, 0.75);
+      border-radius: 24px;
+      padding: 48px 40px;
+      backdrop-filter: blur(30px) saturate(150%);
+      -webkit-backdrop-filter: blur(30px) saturate(150%);
+      border: 1px solid rgba(255,255,255,0.15);
+      box-shadow: 0 24px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05) inset;
+    }
+
+    .login-header { 
+      margin-bottom: 36px; 
+    }
+    
+    .login-header h1 {
+      color: #fff;
+      font-size: 40px;
+      margin-bottom: 8px;
+      font-weight: 700;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    
+    .login-header p {
+      color: rgba(255,255,255,0.85);
+      font-size: 16px;
+    }
+
+    .form-group { 
+      margin-bottom: 24px; 
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: rgba(255,255,255,0.95);
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-wrapper .icon {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255,255,255,0.7);
+      font-size: 18px;
+      z-index: 2;
+    }
+
+    .input-wrapper input {
+      width: 100%;
+      padding: 16px 18px 16px 52px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(20, 20, 25, 0.6);
+      color: #fff;
+      font-size: 16px;
+      outline: none;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .input-wrapper input::placeholder {
+      color: rgba(255,255,255,0.5);
+    }
+    
+    .input-wrapper input:focus {
+      box-shadow: 0 0 0 3px rgba(169, 107, 71, 0.4);
+      border-color: rgba(169, 107, 71, 0.7);
+      background: rgba(30, 30, 35, 0.8);
+    }
+
+    /* OTP input styling */
+    .otp-input {
+      text-align: center;
+      letter-spacing: 10px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    /* Password field with eye icon */
+    .password-field {
+      position: relative;
+    }
+
+    .password-field .toggle-password {
+      position: absolute;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255,255,255,0.7);
+      cursor: pointer;
+      font-size: 18px;
+      z-index: 3;
+      transition: color 0.3s ease;
+    }
+
+    .password-field .toggle-password:hover {
+      color: rgba(255,255,255,0.95);
+    }
+
+    .forgot-row {
+      display: flex;
+      justify-content: flex-end;
+      margin: 24px 0 32px;
+      font-size: 14px;
+    }
+
+    .forgot-link {
+      color: rgba(255,255,255,0.95);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .forgot-link:hover {
+      color: #d4a574;
+    }
+
+    .login-btn, .signup-btn, .forgot-btn, .verify-btn {
+      width: 100%;
+      padding: 16px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(135deg, #a96b47 0%, #8b5e3c 100%);
+      color: #fff;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 16px rgba(139, 94, 60, 0.4);
+    }
+    
+    .login-btn:hover, .signup-btn:hover, .forgot-btn:hover, .verify-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(139, 94, 60, 0.5);
+      background: linear-gradient(135deg, #ba7a52 0%, #9a6a47 100%);
+    }
+
+    .login-btn:active, .signup-btn:active, .forgot-btn:active, .verify-btn:active {
+      transform: translateY(0);
+    }
+
+    .toggle-link {
+      margin-top: 24px;
+      text-align: center;
+      color: rgba(255,255,255,0.9);
+      font-size: 14px;
+    }
+    
+    .toggle-link a {
+      color: #d4a574;
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    
+    .toggle-link a:hover {
+      color: #f0c89a;
+      text-decoration: underline;
+    }
+
+    /* Hidden forms */
+    .signup-form, .forgot-password-form, .signup-otp-form, .signup-success-form {
+      display: none;
+    }
+
+    /* Error message */
+    .error-message {
+      color: #ff6b6b;
+      font-size: 14px;
+      margin-top: 8px;
+      display: none;
+    }
+
+    /* Success message */
+    .success-message {
+      color: #6bff8f;
+      font-size: 14px;
+      margin-top: 8px;
+      display: none;
+    }
+
+    /* Password strength indicator */
+    .password-strength {
+      margin-top: 8px;
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(255,255,255,0.2);
+      overflow: hidden;
+    }
+
+    .password-strength-bar {
+      height: 100%;
+      width: 0%;
+      transition: all 0.3s ease;
+    }
+
+    .strength-weak {
+      background: #ff6b6b;
+      width: 25%;
+    }
+
+    .strength-medium {
+      background: #ffb74d;
+      width: 50%;
+    }
+
+    .strength-strong {
+      background: #6bff8f;
+      width: 100%;
+    }
+
+    /* Resend OTP link */
+    .resend-otp {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 14px;
+    }
+
+    .resend-otp a {
+      color: #d4a574;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .resend-otp a:hover:not(.disabled) {
+      color: #f0c89a;
+      text-decoration: underline;
+    }
+
+    .resend-otp a.disabled {
+      color: rgba(255,255,255,0.4);
+      cursor: not-allowed;
+    }
+
+    /* Progress indicator */
+    .progress-indicator {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      position: relative;
+    }
+
+    .progress-indicator::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: rgba(255,255,255,0.2);
+      transform: translateY(-50%);
+      z-index: 1;
+    }
+
+    .progress-step {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.7);
+      font-size: 14px;
+      font-weight: bold;
+      position: relative;
+      z-index: 2;
+    }
+
+    .progress-step.active {
+      background: #a96b47;
+      color: #fff;
+    }
+
+    .progress-step.completed {
+      background: #4CAF50;
+      color: #fff;
+    }
+
+    .progress-label {
+      position: absolute;
+      top: 35px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: rgba(255,255,255,0.7);
+      white-space: nowrap;
+    }
+
+    /* Success screen */
+    .success-screen {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .success-icon {
+      font-size: 64px;
+      color: #4CAF50;
+      margin-bottom: 20px;
+    }
+
+    .success-message-large {
+      font-size: 24px;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+
+    .redirect-timer {
+      font-size: 16px;
+      color: rgba(255,255,255,0.8);
+      margin-top: 20px;
+    }
+
+    /* Cooldown message */
+    .cooldown-message {
+      color: #ffb74d;
+      font-size: 14px;
+      margin-top: 8px;
+      display: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .login-container {
+        right: 60px;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .login-container {
+        right: 50%;
+        transform: translate(50%, -50%);
+        width: 420px;
+      }
+
+      .quote-section {
+        left: 40px;
+        bottom: 60px;
+      }
+
+      .quote-section .quote {
+        font-size: 32px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .login-container {
+        width: calc(100% - 40px);
+        padding: 0 20px;
+      }
+
+      .login-card {
+        padding: 32px 24px;
+      }
+
+      .login-header h1 {
+        font-size: 32px;
+      }
+
+      .quote-section {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background -->
+  <div class="background"></div>
+
+  <!-- Quote on left -->
+  <div class="quote-section">
+    <div class="quote">
+      "Discover magic<br>in every login."
+    </div>
+  </div>
+
+  <!-- Login card on right -->
+  <div class="login-container">
+    <div class="login-card">
+      <!-- Login Form -->
+      <div class="login-form">
+        <div class="login-header">
+          <h1>Welcome Back!</h1>
+          <p>Login to your account</p>
+        </div>
+
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="loginEmail">Email</label>
+            <div class="input-wrapper">
+              <span class="icon"><i class="fas fa-envelope"></i></span>
+              <input id="loginEmail" type="email" placeholder="Enter your email" required>
+            </div>
+            <div class="error-message" id="loginEmailError"></div>
+          </div>
+
+          <div class="form-group password-field">
+            <label for="loginPassword">Password</label>
+            <div class="input-wrapper">
+              <span class="icon"><i class="fas fa-lock"></i></span>
+              <input id="loginPassword" type="password" placeholder="Password" required>
+              <span class="toggle-password" onclick="togglePassword('loginPassword', 'loginEyeIcon')">
+                <i class="fas fa-eye-slash" id="loginEyeIcon"></i>
+              </span>
+            </div>
+            <div class="error-message" id="loginPasswordError"></div>
+          </div>
+
+          <div class="forgot-row">
+            <a href="#" class="forgot-link" id="showForgotPassword">Forgot Password?</a>
+          </div>
+
+          <button class="login-btn" type="submit">Login</button>
+
+          <div class="toggle-link">
+            Don't have an account? <a href="#" id="showSignup">Sign up</a>
+          </div>
+        </form>
+      </div>
+
+      <!-- Sign Up Form -->
+      <div class="signup-form">
+        <div class="login-header">
+          <h1>Create Account</h1>
+          <p>Join the BookNest community</p>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress-indicator">
+          <div class="progress-step active" id="signupStep1">
+            1
+            <div class="progress-label">Details</div>
+          </div>
+          <div class="progress-step" id="signupStep2">
+            2
+            <div class="progress-label">OTP</div>
+          </div>
+          <div class="progress-step" id="signupStep3">
+            3
+            <div class="progress-label">Verified</div>
+          </div>
+        </div>
+
+        <!-- Step 1: User Details -->
+        <form id="signupDetailsForm" class="signup-step">
+          <div class="form-group">
+            <label for="signupUsername">Username</label>
+            <div class="input-wrapper">
+              <span class="icon"><i class="fas fa-user"></i></span>
+              <input id="signupUsername" type="text" placeholder="Choose a username" required>
+            </div>
+            <div class="error-message" id="signupUsernameError"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="signupEmail">Email</label>
+            <div class="input-wrapper">
+              <span class="icon"><i class="fas fa-envelope"></i></span>
+              <input id="signupEmail" type="email" placeholder="Enter your email" required>
+            </div>
+            <div class="error-message" id="signupEmailError"></div>
+          </div>
+
+          <div class="form-group password-field">
+            <label for="signupPassword">Password</label>
+            <div class="input-wrapper">
+              <span class="icon"><i class="fas fa-lock"></i></span>
+              <input id="signupPassword" type="password" placeholder="Create a password" required onkeyup="checkPasswordStrength()">
+              <span class="toggle-password" onclick="togglePassword('signupPassword', 'signupEyeIcon')">
+                <i class="fas fa-eye-slash" id="signupEyeIcon"></i>
+              </span>
+            </div>
+            <div class="password-strength">
+              <div class="password-strength-bar" id="passwordStrengthBar"></div>
+            </div>
+            <div class="error-message" id="signupPasswordError"></div>
+          </div>
+
+          <button class="signup-btn" type="submit">Send OTP</button>
+
+          <div class="toggle-link">
+            Already have an account? <a href="#" id="showLoginFromSignup">Login</a>
+          </div>
+        </form>
+
+        <!-- Step 2: OTP Verification -->
+        <form id="signupOtpForm" class="signup-step" style="display: none;">
+          <div class="form-group">
+            <label for="signupOtp">Enter OTP</label>
+            <div class="input-wrapper">
+              <span class="icon"><i class="fas fa-key"></i></span>
+              <input id="signupOtp" type="text" placeholder="Enter 6-digit OTP" class="otp-input" maxlength="6" required>
+            </div>
+            <div class="error-message" id="signupOtpError"></div>
+            <div class="cooldown-message" id="signupOtpCooldown"></div>
+          </div>
+
+          <div class="resend-otp">
+            Didn't receive the code? <a href="#" id="resendSignupOtp">Resend OTP</a>
+          </div>
+
+          <button class="verify-btn" type="submit">Verify OTP</button>
+
+          <div class="toggle-link">
+            <a href="#" id="backToSignupDetails">Back to Details</a>
+          </div>
+        </form>
+
+        <!-- Step 3: Success Screen -->
+        <div id="signupSuccessForm" class="signup-step" style="display: none;">
+          <div class="success-screen">
+            <div class="success-icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="success-message-large">
+              Account Verified Successfully!
+            </div>
+            <p>Your account has been created and verified. You will be redirected to the login page shortly.</p>
+            <div class="redirect-timer" id="redirectTimer">
+              Redirecting in 7 seconds...
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Forgot Password Form -->
+      <div class="forgot-password-form">
+        <div class="login-header">
+          <h1>Reset Password</h1>
+          <p>Follow the steps to reset your password</p>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress-indicator">
+          <div class="progress-step active" id="forgotStep1">
+            1
+            <div class="progress-label">Email</div>
+          </div>
+          <div class="progress-step" id="forgotStep2">
+            2
+            <div class="progress-label">OTP</div>
+          </div>
+          <div class="progress-step" id="forgotStep3">
+            3
+            <div class="progress-label">New Password</div>
+          </div>
+        </div>
+
+        <!-- Step 1: Email Entry -->
+        <form id="forgotEmailForm" class="forgot-step">
+          <div class="form-group">
+            <label for="forgotEmail">Enter your email</label>
+            <div class="input-wrapper">
+              <span class="icon"><i class="fas fa-envelope"></i></span>
+              <input id="forgotEmail" type="email" placeholder="Enter your email address" required>
+            </div>
+            <div class="error-message" id="forgotEmailError"></div>
+            <div class="success-message" id="forgotEmailSuccess"></div>
+          </div>
+
+          <button class="forgot-btn" type="submit">Send OTP</button>
+
+          <div class="toggle-link">
+            Remember your password? <a href="#" id="backToLoginFromForgot">Back to Login</a>
+          </div>
+        </form>
+
+        <!-- Step 2: OTP Verification -->
+        <form id="forgotOtpForm" class="forgot-step" style="display: none;">
+          <div class="form-group">
+            <label for="forgotOtp">Enter OTP</label>
+            <div class="input-wrapper">
+              <span class="icon"><i class="fas fa-key"></i></span>
+              <input id="forgotOtp" type="text" placeholder="Enter 6-digit OTP" class="otp-input" maxlength="6" required>
+            </div>
+            <div class="error-message" id="forgotOtpError"></div>
+            <div class="success-message" id="forgotOtpSuccess"></div>
+          </div>
+
+          <div class="resend-otp">
+            Didn't receive the code? <a href="#" id="resendOtp">Resend OTP</a>
+          </div>
+
+          <button class="forgot-btn" type="submit">Verify OTP</button>
+
+          <div class="toggle-link">
+            <a href="#" id="backToEmailStep">Back to Email</a>
+          </div>
+        </form>
+
+        <!-- Step 3: New Password -->
+        <form id="forgotNewPasswordForm" class="forgot-step" style="display: none;">
+          <div class="form-group password-field">
+            <label for="forgotNewPassword">New Password</label>
+            <div class="input-wrapper">
+              <span class="icon"><i class="fas fa-lock"></i></span>
+              <input id="forgotNewPassword" type="password" placeholder="Enter new password" required onkeyup="checkForgotPasswordStrength()">
+              <span class="toggle-password" onclick="togglePassword('forgotNewPassword', 'forgotNewEyeIcon')">
+                <i class="fas fa-eye-slash" id="forgotNewEyeIcon"></i>
+              </span>
+            </div>
+            <div class="password-strength">
+              <div class="password-strength-bar" id="forgotPasswordStrengthBar"></div>
+            </div>
+            <div class="error-message" id="forgotNewPasswordError"></div>
+          </div>
+
+          <div class="form-group password-field">
+            <label for="forgotConfirmPassword">Confirm New Password</label>
+            <div class="input-wrapper">
+              <span class="icon"><i class="fas fa-lock"></i></span>
+              <input id="forgotConfirmPassword" type="password" placeholder="Confirm new password" required>
+              <span class="toggle-password" onclick="togglePassword('forgotConfirmPassword', 'forgotConfirmEyeIcon')">
+                <i class="fas fa-eye-slash" id="forgotConfirmEyeIcon"></i>
+              </span>
+            </div>
+            <div class="error-message" id="forgotConfirmPasswordError"></div>
+          </div>
+
+          <button class="forgot-btn" type="submit">Reset Password</button>
+
+          <div class="toggle-link">
+            <a href="#" id="backToOtpStep">Back to OTP</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Global variables for OTP attempts and cooldown
+    let signupOtpAttempts = 0;
+    let signupCooldownActive = false;
+    let signupCooldownTime = 30; // 30 seconds cooldown
+    let signupData = {};
+    let redirectTimer;
+
+    // Password validation function
+    function validatePassword(password) {
+      const minLength = 8;
+      const hasUpperCase = /[A-Z]/.test(password);
+      const hasLowerCase = /[a-z]/.test(password);
+      const hasNumbers = /\d/.test(password);
+      const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+      
+      return password.length >= minLength && 
+             hasUpperCase && 
+             hasLowerCase && 
+             hasNumbers && 
+             hasSpecialChar;
+    }
+
+    // Username validation function
+    function validateUsername(username) {
+      const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
+      return usernameRegex.test(username);
+    }
+
+    // Password strength indicator
+    function checkPasswordStrength() {
+      const password = document.getElementById('signupPassword').value;
+      const strengthBar = document.getElementById('passwordStrengthBar');
+      
+      // Reset classes
+      strengthBar.className = 'password-strength-bar';
+      
+      if (password.length === 0) {
+        strengthBar.style.width = '0%';
+        return;
+      }
+      
+      let strength = 0;
+      
+      // Length check
+      if (password.length >= 8) strength += 25;
+      
+      // Character type checks
+      if (/[A-Z]/.test(password)) strength += 25;
+      if (/[a-z]/.test(password)) strength += 25;
+      if (/[0-9]/.test(password)) strength += 15;
+      if (/[^A-Za-z0-9]/.test(password)) strength += 10;
+      
+      // Cap at 100%
+      strength = Math.min(strength, 100);
+      strengthBar.style.width = strength + '%';
+      
+      // Apply color classes
+      if (strength < 50) {
+        strengthBar.classList.add('strength-weak');
+      } else if (strength < 80) {
+        strengthBar.classList.add('strength-medium');
+      } else {
+        strengthBar.classList.add('strength-strong');
+      }
+    }
+
+    function checkForgotPasswordStrength() {
+      const password = document.getElementById('forgotNewPassword').value;
+      const strengthBar = document.getElementById('forgotPasswordStrengthBar');
+      
+      // Reset classes
+      strengthBar.className = 'password-strength-bar';
+      
+      if (password.length === 0) {
+        strengthBar.style.width = '0%';
+        return;
+      }
+      
+      let strength = 0;
+      
+      // Length check
+      if (password.length >= 8) strength += 25;
+      
+      // Character type checks
+      if (/[A-Z]/.test(password)) strength += 25;
+      if (/[a-z]/.test(password)) strength += 25;
+      if (/[0-9]/.test(password)) strength += 15;
+      if (/[^A-Za-z0-9]/.test(password)) strength += 10;
+      
+      // Cap at 100%
+      strength = Math.min(strength, 100);
+      strengthBar.style.width = strength + '%';
+      
+      // Apply color classes
+      if (strength < 50) {
+        strengthBar.classList.add('strength-weak');
+      } else if (strength < 80) {
+        strengthBar.classList.add('strength-medium');
+      } else {
+        strengthBar.classList.add('strength-strong');
+      }
+    }
+
+    // Toggle password visibility
+    function togglePassword(passwordFieldId, eyeIconId) {
+      const passwordInput = document.getElementById(passwordFieldId);
+      const eyeIcon = document.getElementById(eyeIconId);
+      
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        eyeIcon.classList.remove('fa-eye-slash');
+        eyeIcon.classList.add('fa-eye');
+      } else {
+        passwordInput.type = 'password';
+        eyeIcon.classList.remove('fa-eye');
+        eyeIcon.classList.add('fa-eye-slash');
+      }
+    }
+
+    // Initialize all event listeners
+    function initializeEventListeners() {
+      // Toggle between login, signup, and forgot password forms
+      document.getElementById('showSignup').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector('.login-form').style.display = 'none';
+        document.querySelector('.signup-form').style.display = 'block';
+        document.querySelector('.forgot-password-form').style.display = 'none';
+        resetSignupFlow();
+      });
+
+      document.getElementById('showLogin').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector('.signup-form').style.display = 'none';
+        document.querySelector('.login-form').style.display = 'block';
+        document.querySelector('.forgot-password-form').style.display = 'none';
+      });
+
+      document.getElementById('showLoginFromSignup').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector('.signup-form').style.display = 'none';
+        document.querySelector('.login-form').style.display = 'block';
+        document.querySelector('.forgot-password-form').style.display = 'none';
+      });
+
+      // FIXED: Forgot Password event listener
+      document.getElementById('showForgotPassword').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector('.login-form').style.display = 'none';
+        document.querySelector('.signup-form').style.display = 'none';
+        document.querySelector('.forgot-password-form').style.display = 'block';
+        resetForgotPasswordFlow();
+      });
+
+      document.getElementById('backToLoginFromForgot').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector('.forgot-password-form').style.display = 'none';
+        document.querySelector('.login-form').style.display = 'block';
+      });
+
+      // Signup flow
+      document.getElementById('signupDetailsForm').addEventListener('submit', handleSignupDetailsSubmit);
+      document.getElementById('signupOtpForm').addEventListener('submit', handleSignupOtpSubmit);
+      document.getElementById('resendSignupOtp').addEventListener('click', handleResendSignupOtp);
+      document.getElementById('backToSignupDetails').addEventListener('click', handleBackToSignupDetails);
+
+      // Forgot password flow
+      document.getElementById('forgotEmailForm').addEventListener('submit', handleForgotEmailSubmit);
+      document.getElementById('forgotOtpForm').addEventListener('submit', handleForgotOtpSubmit);
+      document.getElementById('resendOtp').addEventListener('click', handleResendOtp);
+      document.getElementById('backToEmailStep').addEventListener('click', handleBackToEmailStep);
+      document.getElementById('backToOtpStep').addEventListener('click', handleBackToOtpStep);
+      document.getElementById('forgotNewPasswordForm').addEventListener('submit', handleForgotNewPasswordSubmit);
+
+      // Login form
+      document.getElementById('loginForm').addEventListener('submit', handleLoginSubmit);
+    }
+
+    // Signup flow management
+    function resetSignupFlow() {
+      // Reset all forms
+      document.getElementById('signupDetailsForm').reset();
+      document.getElementById('signupOtpForm').reset();
+      
+      // Hide all steps except first
+      document.querySelectorAll('.signup-step').forEach(step => {
+        step.style.display = 'none';
+      });
+      document.getElementById('signupDetailsForm').style.display = 'block';
+      
+      // Reset progress indicators
+      document.getElementById('signupStep1').classList.add('active');
+      document.getElementById('signupStep1').classList.remove('completed');
+      document.getElementById('signupStep2').classList.remove('active', 'completed');
+      document.getElementById('signupStep3').classList.remove('active', 'completed');
+      
+      // Clear error messages
+      document.querySelectorAll('.error-message, .success-message, .cooldown-message').forEach(msg => {
+        msg.style.display = 'none';
+      });
+      
+      // Reset password strength
+      document.getElementById('passwordStrengthBar').style.width = '0%';
+      document.getElementById('passwordStrengthBar').className = 'password-strength-bar';
+      
+      // Reset OTP attempts and cooldown
+      signupOtpAttempts = 0;
+      signupCooldownActive = false;
+      document.getElementById('resendSignupOtp').classList.remove('disabled');
+      
+      // Clear any existing timers
+      if (redirectTimer) {
+        clearInterval(redirectTimer);
+      }
+      
+      signupData = {};
+    }
+
+    function showSignupStep(stepNumber) {
+      // Hide all steps
+      document.querySelectorAll('.signup-step').forEach(step => {
+        step.style.display = 'none';
+      });
+      
+      // Show the requested step
+      if (stepNumber === 1) {
+        document.getElementById('signupDetailsForm').style.display = 'block';
+      } else if (stepNumber === 2) {
+        document.getElementById('signupOtpForm').style.display = 'block';
+      } else if (stepNumber === 3) {
+        document.getElementById('signupSuccessForm').style.display = 'block';
+        startRedirectTimer();
+      }
+      
+      // Update progress indicators
+      document.querySelectorAll('#signupStep1, #signupStep2, #signupStep3').forEach((step, index) => {
+        const stepElement = document.getElementById(`signupStep${index + 1}`);
+        if (index + 1 < stepNumber) {
+          stepElement.classList.remove('active');
+          stepElement.classList.add('completed');
+        } else if (index + 1 === stepNumber) {
+          stepElement.classList.add('active');
+          stepElement.classList.remove('completed');
+        } else {
+          stepElement.classList.remove('active', 'completed');
+        }
+      });
+    }
+
+    // Start redirect timer for success screen
+    function startRedirectTimer() {
+      let timeLeft = 7;
+      const timerElement = document.getElementById('redirectTimer');
+      
+      redirectTimer = setInterval(() => {
+        timerElement.textContent = `Redirecting in ${timeLeft} seconds...`;
+        timeLeft--;
+        
+        if (timeLeft < 0) {
+          clearInterval(redirectTimer);
+          resetSignupFlow();
+          document.querySelector('.signup-form').style.display = 'none';
+          document.querySelector('.login-form').style.display = 'block';
+        }
+      }, 1000);
+    }
+
+    // Step 1: User details submission
+    function handleSignupDetailsSubmit(e) {
+      e.preventDefault();
+      
+      const username = document.getElementById('signupUsername').value.trim();
+      const email = document.getElementById('signupEmail').value.trim();
+      const password = document.getElementById('signupPassword').value;
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      
+      // Clear previous messages
+      document.getElementById('signupUsernameError').style.display = 'none';
+      document.getElementById('signupEmailError').style.display = 'none';
+      document.getElementById('signupPasswordError').style.display = 'none';
+      
+      let isValid = true;
+      
+      // Username validation
+      if (!username) {
+        document.getElementById('signupUsernameError').textContent = 'Username is required';
+        document.getElementById('signupUsernameError').style.display = 'block';
+        isValid = false;
+      } else if (!validateUsername(username)) {
+        document.getElementById('signupUsernameError').textContent = 'Username must be 3-20 characters and contain only letters, numbers, and underscores';
+        document.getElementById('signupUsernameError').style.display = 'block';
+        isValid = false;
+      }
+      
+      // Email validation
+      if (!email) {
+        document.getElementById('signupEmailError').textContent = 'Email is required';
+        document.getElementById('signupEmailError').style.display = 'block';
+        isValid = false;
+      } else if (!emailRegex.test(email)) {
+        document.getElementById('signupEmailError').textContent = 'Please enter a valid email address';
+        document.getElementById('signupEmailError').style.display = 'block';
+        isValid = false;
+      }
+      
+      // Password validation
+      if (!password) {
+        document.getElementById('signupPasswordError').textContent = 'Password is required';
+        document.getElementById('signupPasswordError').style.display = 'block';
+        isValid = false;
+      } else if (!validatePassword(password)) {
+        document.getElementById('signupPasswordError').textContent = 'Password must be at least 8 characters with uppercase, lowercase, number, and special character';
+        document.getElementById('signupPasswordError').style.display = 'block';
+        isValid = false;
+      }
+      
+      if (isValid) {
+        // Store user data temporarily
+        signupData = { username, email, password };
+        
+        // In a real application, you would send this to your backend
+        // For demo purposes, we'll simulate sending an OTP
+        showSignupStep(2);
+      }
+    }
+
+    // Step 2: OTP verification for signup
+    function handleSignupOtpSubmit(e) {
+      e.preventDefault();
+      
+      // Check if cooldown is active
+      if (signupCooldownActive) {
+        document.getElementById('signupOtpError').textContent = 'Please wait for the cooldown period to end before trying again';
+        document.getElementById('signupOtpError').style.display = 'block';
+        return;
+      }
+      
+      const otp = document.getElementById('signupOtp').value.trim();
+      
+      // Clear previous messages
+      document.getElementById('signupOtpError').style.display = 'none';
+      document.getElementById('signupOtpCooldown').style.display = 'none';
+      
+      if (!otp) {
+        document.getElementById('signupOtpError').textContent = 'OTP is required';
+        document.getElementById('signupOtpError').style.display = 'block';
+        return;
+      }
+      
+      if (otp.length !== 6 || !/^\d+$/.test(otp)) {
+        document.getElementById('signupOtpError').textContent = 'Please enter a valid 6-digit OTP';
+        document.getElementById('signupOtpError').style.display = 'block';
+        signupOtpAttempts++;
+        checkOtpAttempts();
+        return;
+      }
+      
+      // In a real application, you would verify the OTP with your backend
+      // For demo purposes, we'll accept "123456" as the correct OTP
+      if (otp === '123456') {
+        // Successful verification
+        showSignupStep(3);
+      } else {
+        // Incorrect OTP
+        document.getElementById('signupOtpError').textContent = 'Incorrect OTP. Please try again';
+        document.getElementById('signupOtpError').style.display = 'block';
+        signupOtpAttempts++;
+        checkOtpAttempts();
+      }
+    }
+
+    // Check OTP attempts and apply cooldown if needed
+    function checkOtpAttempts() {
+      if (signupOtpAttempts >= 3) {
+        signupCooldownActive = true;
+        document.getElementById('signupOtpCooldown').textContent = `Too many failed attempts. Please wait ${signupCooldownTime} seconds before trying again.`;
+        document.getElementById('signupOtpCooldown').style.display = 'block';
+        document.getElementById('resendSignupOtp').classList.add('disabled');
+        
+        // Start cooldown timer
+        let cooldownCounter = signupCooldownTime;
+        const cooldownInterval = setInterval(() => {
+          cooldownCounter--;
+          document.getElementById('signupOtpCooldown').textContent = `Too many failed attempts. Please wait ${cooldownCounter} seconds before trying again.`;
+          
+          if (cooldownCounter <= 0) {
+            clearInterval(cooldownInterval);
+            signupCooldownActive = false;
+            signupOtpAttempts = 0;
+            document.getElementById('signupOtpCooldown').style.display = 'none';
+            document.getElementById('resendSignupOtp').classList.remove('disabled');
+          }
+        }, 1000);
+      }
+    }
+
+    // Resend OTP for signup
+    function handleResendSignupOtp(e) {
+      e.preventDefault();
+      
+      // Check if cooldown is active or link is disabled
+      if (signupCooldownActive || this.classList.contains('disabled')) {
+        return;
+      }
+      
+      // In a real application, you would request a new OTP from your backend
+      alert('New OTP sent to your email');
+      
+      // Clear the OTP input
+      document.getElementById('signupOtp').value = '';
+    }
+
+    // Navigation within signup flow
+    function handleBackToSignupDetails(e) {
+      e.preventDefault();
+      showSignupStep(1);
+    }
+
+    // Forgot password flow management
+    let forgotPasswordEmail = '';
+
+    function resetForgotPasswordFlow() {
+      // Reset all forms
+      document.getElementById('forgotEmailForm').reset();
+      document.getElementById('forgotOtpForm').reset();
+      document.getElementById('forgotNewPasswordForm').reset();
+      
+      // Hide all steps except first
+      document.querySelectorAll('.forgot-step').forEach(step => {
+        step.style.display = 'none';
+      });
+      document.getElementById('forgotEmailForm').style.display = 'block';
+      
+      // Reset progress indicators
+      document.getElementById('forgotStep1').classList.add('active');
+      document.getElementById('forgotStep2').classList.remove('active');
+      document.getElementById('forgotStep3').classList.remove('active');
+      
+      // Clear error messages
+      document.querySelectorAll('.error-message, .success-message').forEach(msg => {
+        msg.style.display = 'none';
+      });
+      
+      // Reset password strength
+      document.getElementById('forgotPasswordStrengthBar').style.width = '0%';
+      document.getElementById('forgotPasswordStrengthBar').className = 'password-strength-bar';
+      
+      forgotPasswordEmail = '';
+    }
+
+    function showForgotStep(stepNumber) {
+      // Hide all steps
+      document.querySelectorAll('.forgot-step').forEach(step => {
+        step.style.display = 'none';
+      });
+      
+      // Show the requested step
+      if (stepNumber === 1) {
+        document.getElementById('forgotEmailForm').style.display = 'block';
+      } else if (stepNumber === 2) {
+        document.getElementById('forgotOtpForm').style.display = 'block';
+      } else if (stepNumber === 3) {
+        document.getElementById('forgotNewPasswordForm').style.display = 'block';
+      }
+      
+      // Update progress indicators
+      document.querySelectorAll('#forgotStep1, #forgotStep2, #forgotStep3').forEach((step, index) => {
+        if (index < stepNumber) {
+          step.classList.add('active');
+        } else {
+          step.classList.remove('active');
+        }
+      });
+    }
+
+    // Step 1: Email submission for forgot password
+    function handleForgotEmailSubmit(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('forgotEmail').value.trim();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      
+      // Clear previous messages
+      document.getElementById('forgotEmailError').style.display = 'none';
+      document.getElementById('forgotEmailSuccess').style.display = 'none';
+      
+      if (!email) {
+        document.getElementById('forgotEmailError').textContent = 'Email is required';
+        document.getElementById('forgotEmailError').style.display = 'block';
+        return;
+      }
+      
+      if (!emailRegex.test(email)) {
+        document.getElementById('forgotEmailError').textContent = 'Please enter a valid email address';
+        document.getElementById('forgotEmailError').style.display = 'block';
+        return;
+      }
+      
+      // In a real application, you would send this to your backend
+      // For demo purposes, we'll simulate sending an OTP
+      forgotPasswordEmail = email;
+      document.getElementById('forgotEmailSuccess').textContent = 'OTP sent to your email address';
+      document.getElementById('forgotEmailSuccess').style.display = 'block';
+      
+      // Move to next step after a short delay
+      setTimeout(() => {
+        showForgotStep(2);
+      }, 1500);
+    }
+
+    // Step 2: OTP verification for forgot password
+    function handleForgotOtpSubmit(e) {
+      e.preventDefault();
+      
+      const otp = document.getElementById('forgotOtp').value.trim();
+      
+      // Clear previous messages
+      document.getElementById('forgotOtpError').style.display = 'none';
+      document.getElementById('forgotOtpSuccess').style.display = 'none';
+      
+      if (!otp) {
+        document.getElementById('forgotOtpError').textContent = 'OTP is required';
+        document.getElementById('forgotOtpError').style.display = 'block';
+        return;
+      }
+      
+      if (otp.length !== 6 || !/^\d+$/.test(otp)) {
+        document.getElementById('forgotOtpError').textContent = 'Please enter a valid 6-digit OTP';
+        document.getElementById('forgotOtpError').style.display = 'block';
+        return;
+      }
+      
+      // In a real application, you would verify the OTP with your backend
+      // For demo purposes, we'll accept any 6-digit OTP
+      document.getElementById('forgotOtpSuccess').textContent = 'OTP verified successfully';
+      document.getElementById('forgotOtpSuccess').style.display = 'block';
+      
+      // Move to next step after a short delay
+      setTimeout(() => {
+        showForgotStep(3);
+      }, 1500);
+    }
+
+    // Resend OTP functionality for forgot password
+    function handleResendOtp(e) {
+      e.preventDefault();
+      
+      // In a real application, you would request a new OTP from your backend
+      document.getElementById('forgotOtpSuccess').textContent = 'New OTP sent to your email';
+      document.getElementById('forgotOtpSuccess').style.display = 'block';
+      
+      // Clear the OTP input
+      document.getElementById('forgotOtp').value = '';
+    }
+
+    // Step 3: New password submission for forgot password
+    function handleForgotNewPasswordSubmit(e) {
+      e.preventDefault();
+      
+      const newPassword = document.getElementById('forgotNewPassword').value;
+      const confirmPassword = document.getElementById('forgotConfirmPassword').value;
+      
+      // Clear previous messages
+      document.getElementById('forgotNewPasswordError').style.display = 'none';
+      document.getElementById('forgotConfirmPasswordError').style.display = 'none';
+      
+      let isValid = true;
+      
+      if (!newPassword) {
+        document.getElementById('forgotNewPasswordError').textContent = 'New password is required';
+        document.getElementById('forgotNewPasswordError').style.display = 'block';
+        isValid = false;
+      } else if (!validatePassword(newPassword)) {
+        document.getElementById('forgotNewPasswordError').textContent = 'Password must be at least 8 characters with uppercase, lowercase, number, and special character';
+        document.getElementById('forgotNewPasswordError').style.display = 'block';
+        isValid = false;
+      }
+      
+      if (!confirmPassword) {
+        document.getElementById('forgotConfirmPasswordError').textContent = 'Please confirm your password';
+        document.getElementById('forgotConfirmPasswordError').style.display = 'block';
+        isValid = false;
+      } else if (newPassword !== confirmPassword) {
+        document.getElementById('forgotConfirmPasswordError').textContent = 'Passwords do not match';
+        document.getElementById('forgotConfirmPasswordError').style.display = 'block';
+        isValid = false;
+      }
+      
+      if (isValid) {
+        // In a real application, you would send the new password to your backend
+        alert('Password reset successfully! You can now login with your new password.');
+        
+        // Reset the flow and go back to login
+        resetForgotPasswordFlow();
+        document.querySelector('.forgot-password-form').style.display = 'none';
+        document.querySelector('.login-form').style.display = 'block';
+      }
+    }
+
+    // Navigation within forgot password flow
+    function handleBackToEmailStep(e) {
+      e.preventDefault();
+      showForgotStep(1);
+    }
+
+    function handleBackToOtpStep(e) {
+      e.preventDefault();
+      showForgotStep(2);
+    }
+
+    // Login form validation and submission
+    function handleLoginSubmit(e) {
+      e.preventDefault();
+      
+      // Clear previous errors
+      document.getElementById('loginEmailError').style.display = 'none';
+      document.getElementById('loginPasswordError').style.display = 'none';
+      
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      
+      let isValid = true;
+      
+      if (!email) {
+        document.getElementById('loginEmailError').textContent = 'Email is required';
+        document.getElementById('loginEmailError').style.display = 'block';
+        isValid = false;
+      } else if (!emailRegex.test(email)) {
+        document.getElementById('loginEmailError').textContent = 'Please enter a valid email address';
+        document.getElementById('loginEmailError').style.display = 'block';
+        isValid = false;
+      }
+      
+      if (!password) {
+        document.getElementById('loginPasswordError').textContent = 'Password is required';
+        document.getElementById('loginPasswordError').style.display = 'block';
+        isValid = false;
+      }
+      
+      if (isValid) {
+        // In a real application, you would send this to your backend
+        alert('Login submitted with email: ' + email);
+        // Reset form
+        document.getElementById('loginForm').reset();
+      }
+    }
+
+    // Initialize the application when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeEventListeners();
+    });
+  </script>
+</body>
+</html>
