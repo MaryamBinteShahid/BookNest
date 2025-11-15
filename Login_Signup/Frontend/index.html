@@ -471,12 +471,12 @@
 
         <form id="loginForm">
           <div class="form-group">
-            <label for="loginEmail">Email</label>
+            <label for="loginUsernameOrEmail">Username or Email</label>
             <div class="input-wrapper">
-              <span class="icon"><i class="fas fa-envelope"></i></span>
-              <input id="loginEmail" type="email" placeholder="Enter your email" required>
+              <span class="icon"><i class="fas fa-user"></i></span>
+              <input id="loginUsernameOrEmail" type="text" placeholder="Enter your username or email" required>
             </div>
-            <div class="error-message" id="loginEmailError"></div>
+            <div class="error-message" id="loginUsernameOrEmailError"></div>
           </div>
 
           <div class="form-group password-field">
@@ -741,6 +741,17 @@
       return usernameRegex.test(username);
     }
 
+    // Email validation function
+    function validateEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    }
+
+    // Check if input is username or email
+    function isUsernameOrEmail(input) {
+      return validateEmail(input) || validateUsername(input);
+    }
+
     // Password strength indicator
     function checkPasswordStrength() {
       const password = document.getElementById('signupPassword').value;
@@ -841,13 +852,6 @@
         document.querySelector('.signup-form').style.display = 'block';
         document.querySelector('.forgot-password-form').style.display = 'none';
         resetSignupFlow();
-      });
-
-      document.getElementById('showLogin').addEventListener('click', function(e) {
-        e.preventDefault();
-        document.querySelector('.signup-form').style.display = 'none';
-        document.querySelector('.login-form').style.display = 'block';
-        document.querySelector('.forgot-password-form').style.display = 'none';
       });
 
       document.getElementById('showLoginFromSignup').addEventListener('click', function(e) {
@@ -986,7 +990,6 @@
       const username = document.getElementById('signupUsername').value.trim();
       const email = document.getElementById('signupEmail').value.trim();
       const password = document.getElementById('signupPassword').value;
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       
       // Clear previous messages
       document.getElementById('signupUsernameError').style.display = 'none';
@@ -1011,7 +1014,7 @@
         document.getElementById('signupEmailError').textContent = 'Email is required';
         document.getElementById('signupEmailError').style.display = 'block';
         isValid = false;
-      } else if (!emailRegex.test(email)) {
+      } else if (!validateEmail(email)) {
         document.getElementById('signupEmailError').textContent = 'Please enter a valid email address';
         document.getElementById('signupEmailError').style.display = 'block';
         isValid = false;
@@ -1192,7 +1195,6 @@
       e.preventDefault();
       
       const email = document.getElementById('forgotEmail').value.trim();
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       
       // Clear previous messages
       document.getElementById('forgotEmailError').style.display = 'none';
@@ -1204,7 +1206,7 @@
         return;
       }
       
-      if (!emailRegex.test(email)) {
+      if (!validateEmail(email)) {
         document.getElementById('forgotEmailError').textContent = 'Please enter a valid email address';
         document.getElementById('forgotEmailError').style.display = 'block';
         return;
@@ -1327,22 +1329,21 @@
       e.preventDefault();
       
       // Clear previous errors
-      document.getElementById('loginEmailError').style.display = 'none';
+      document.getElementById('loginUsernameOrEmailError').style.display = 'none';
       document.getElementById('loginPasswordError').style.display = 'none';
       
-      const email = document.getElementById('loginEmail').value.trim();
+      const usernameOrEmail = document.getElementById('loginUsernameOrEmail').value.trim();
       const password = document.getElementById('loginPassword').value;
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       
       let isValid = true;
       
-      if (!email) {
-        document.getElementById('loginEmailError').textContent = 'Email is required';
-        document.getElementById('loginEmailError').style.display = 'block';
+      if (!usernameOrEmail) {
+        document.getElementById('loginUsernameOrEmailError').textContent = 'Username or email is required';
+        document.getElementById('loginUsernameOrEmailError').style.display = 'block';
         isValid = false;
-      } else if (!emailRegex.test(email)) {
-        document.getElementById('loginEmailError').textContent = 'Please enter a valid email address';
-        document.getElementById('loginEmailError').style.display = 'block';
+      } else if (!isUsernameOrEmail(usernameOrEmail)) {
+        document.getElementById('loginUsernameOrEmailError').textContent = 'Please enter a valid username or email address';
+        document.getElementById('loginUsernameOrEmailError').style.display = 'block';
         isValid = false;
       }
       
@@ -1354,7 +1355,7 @@
       
       if (isValid) {
         // In a real application, you would send this to your backend
-        alert('Login submitted with email: ' + email);
+        alert('Login submitted with: ' + usernameOrEmail);
         // Reset form
         document.getElementById('loginForm').reset();
       }
