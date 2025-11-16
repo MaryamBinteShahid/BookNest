@@ -1,0 +1,85 @@
+###ADMIN FEATURES
+
+### Suspend User
+POST http://localhost:3000/admin/suspend/user3
+Content-Type: application/json
+
+### Unsuspend User
+POST http://localhost:3000/admin/unsuspend/user3
+Content-Type: application/json
+
+### Delete User
+DELETE http://localhost:3000/admin/delete/user3
+Content-Type: application/json
+
+###View Users
+GET http://localhost:3000/admin/users
+Content-Type: application/json
+
+
+###search for books from openLibrary
+GET http://localhost:3000/books/search?q=harry+potter
+Content-Type: application/json
+
+### Add Book
+POST http://localhost:3000/books
+Content-Type: application/json
+
+{
+  "title": "its no tme",
+  "description": "This is not a test book",
+  "subjects": "Fiction, Adventure",
+  "cover_url": "https://covers.openlibrary.org/b/id/12345-L.jpg",
+  "first_publish_year": 2023,
+  "isbn": "9781234567890"
+}
+
+### Edit Book"
+PUT http://localhost:3000/books/2c5a8fb9-060c-4930-a5d4-c7a08c13d32a
+Content-Type: application/json
+
+{
+  "title": "Updated its not me Book",
+  "description": "Updated description",
+  "subjects": "Fiction, Mystery",
+  "cover_url": "https://covers.openlibrary.org/b/id/67890-L.jpg",
+  "first_publish_year": 2024,
+  "isbn": "9780987654321"
+}
+
+### Delete Book
+DELETE http://localhost:3000/books/2c5a8fb9-060c-4930-a5d4-c7a08c13d32a
+Content-Type: application/json
+
+###view books
+GET http://localhost:3000/books
+
+
+### Search Books by Name in local database
+GET http://localhost:3000/books/search_local?q=Test+Book
+Content-Type: application/json
+
+###veiw reviews
+GET http://localhost:3000/admin/reviews
+Content-Type: application/json
+
+###delete a reveiv
+DELETE http://localhost:3000/admin/reviews/1a2b3c4d-0003-0000-0000-000000000003
+Content-Type: application/json
+
+###View book_upload_requests
+GET http://localhost:3000/admin/upload-requests
+Content-Type: application/json
+
+###Approve book_upload_request
+POST http://localhost:3000/admin/upload-requests/approve/req4
+Content-Type: application/json
+
+
+###Reject book_upload_request
+POST http://localhost:3000/admin/upload-requests/reject/req4
+Content-Type: application/json
+
+{
+  "message": "Incorrect metadata"
+}
