@@ -3,356 +3,369 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BookNest - Profile</title>
+  <title>BookNest - Profile (Dark Admin Theme)</title>
+
+  <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    
+    :root {
+      --brand: #c5864a;      /* Admin Gold */
+      --bg: #111;
+      --card: #1a1a1a;
+      --border: #2a2a2a;
+      --text: #f1f1f1;
+      --muted: #888;
+      --danger: #dc3545;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+      color: var(--text);
       min-height: 100vh;
     }
 
+    /* NAVBAR */
     .navbar {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      padding: 20px 40px;
+      background: var(--card);
+      padding: 18px 40px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-bottom: 1px solid var(--border);
     }
 
     .navbar-brand {
-      font-size: 28px;
+      color: var(--brand);
+      font-size: 26px;
       font-weight: 700;
-      color: #667eea;
       display: flex;
-      align-items: center;
-      gap: 10px;
+      align-items:center;
+      gap:8px;
     }
-
-    .navbar-menu { display: flex; gap: 20px; align-items: center; }
 
     .nav-btn {
-      padding: 10px 20px;
-      border-radius: 8px;
-      border: none;
+      border: 1px solid #444;
       background: transparent;
-      color: #333;
-      font-weight: 600;
+      color: var(--text);
+      padding: 8px 16px;
+      border-radius: 6px;
       cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      transition: .3s;
+      margin-left: 10px;
     }
 
-    .nav-btn:hover { background: rgba(102, 126, 234, 0.1); color: #667eea; }
-
-    .nav-btn.home-btn {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
+    .nav-btn:hover {
+      color: var(--brand);
+      border-color: var(--brand);
     }
 
-    .nav-btn.home-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    .home-btn {
+      background: var(--brand);
+      color:#111;
+      border-color: var(--brand);
     }
 
-    .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+    .container {
+      max-width:900px;
+      margin:40px auto;
+      padding:0 20px;
+    }
 
+    /* PROFILE HEADER */
     .profile-header {
-      background: white;
-      border-radius: 20px;
-      padding: 40px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-      margin-bottom: 30px;
-      text-align: center;
+      background: var(--card);
+      padding:40px;
+      border-radius:18px;
+      border:1px solid var(--border);
+      text-align:center;
+      margin-bottom:25px;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.4);
     }
 
     .profile-avatar {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 48px;
-      color: white;
-      margin: 0 auto 20px;
+      width:110px;
+      height:110px;
+      background:var(--brand);
+      color:#111;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      border-radius:50%;
+      font-size:50px;
+      margin:0 auto 20px;
     }
 
-    .profile-header h1 { font-size: 32px; color: #333; margin-bottom: 5px; }
-    .profile-header p { color: #666; font-size: 16px; }
-
+    /* SECTION CARDS */
     .profile-section {
-      background: white;
-      border-radius: 20px;
-      padding: 30px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
+      background: var(--card);
+      border-radius:18px;
+      padding:25px 30px;
+      margin-bottom:25px;
+      border:1px solid var(--border);
+      box-shadow: 0px 2px 20px rgba(0,0,0,0.35);
     }
 
     .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      padding-bottom: 15px;
-      border-bottom: 2px solid #f0f0f0;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding-bottom:12px;
+      border-bottom:1px solid var(--border);
+      margin-bottom:15px;
     }
 
     .section-header h2 {
-      font-size: 24px;
-      color: #333;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      font-size:20px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      color: var(--text);
     }
-
-    .section-header .icon { color: #667eea; }
 
     .edit-btn {
-      padding: 8px 16px;
-      border-radius: 8px;
-      border: 2px solid #667eea;
-      background: transparent;
-      color: #667eea;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
+      border:1px solid var(--brand);
+      color:var(--brand);
+      background:transparent;
+      padding:6px 12px;
+      border-radius:6px;
+      cursor:pointer;
+      transition:.3s;
+      display:flex;
+      align-items:center;
+      gap:6px;
     }
 
-    .edit-btn:hover { background: #667eea; color: white; }
+    .edit-btn:hover {
+      background: var(--brand);
+      color:#111;
+    }
 
-    .form-group { margin-bottom: 20px; }
+    /* VIEW/EDIT MODE SYSTEM */
+    .view-mode, .edit-mode { display:none; }
+    .view-mode.active, .edit-mode.active { display:block; }
+
+    /* INFO ROWS */
+    .info-row {
+      display:flex;
+      justify-content:space-between;
+      padding:12px 0;
+      border-bottom:1px solid var(--border);
+      font-size:15px;
+    }
+
+    .info-label { color: var(--muted); }
+
+    /* INPUT FIELDS (Dark Mode) */
+    .form-group {
+      margin-bottom: 15px;
+    }
 
     .form-group label {
       display: block;
-      margin-bottom: 8px;
-      color: #333;
-      font-weight: 600;
+      margin-bottom: 5px;
+      color: var(--muted);
     }
 
     .form-group input {
-      width: 100%;
-      padding: 12px;
-      border: 2px solid #ddd;
-      border-radius: 8px;
-      font-size: 16px;
-      transition: border-color 0.3s;
+      width:100%;
+      padding:12px;
+      background:#111;
+      border:1px solid #444;
+      color:var(--text);
+      border-radius:8px;
+      font-size:15px;
     }
 
-    .form-group input:focus { outline: none; border-color: #667eea; }
-    .form-group input:disabled { background: #f5f5f5; cursor: not-allowed; }
-
-    .btn {
-      padding: 12px 24px;
-      border-radius: 8px;
-      border: none;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-size: 16px;
+    .form-group input:focus {
+      border-color: var(--brand);
+      outline:none;
     }
 
+    /* BUTTONS */
     .btn-primary {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
+      background: var(--brand);
+      padding:12px 22px;
+      border:none;
+      border-radius:8px;
+      color:#111;
+      font-weight:600;
+      cursor:pointer;
+      margin-right: 10px;
     }
 
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    .btn-secondary {
+      background:#444;
+      padding:12px 22px;
+      border:none;
+      border-radius:8px;
+      color:#ddd;
+      cursor:pointer;
+      margin-right: 10px;
     }
 
-    .btn-danger { background: #dc3545; color: white; }
-    .btn-danger:hover { background: #c82333; transform: translateY(-2px); }
+    .btn-primary:hover, .btn-secondary:hover { opacity:.85; }
 
-    .btn-secondary { background: #6c757d; color: white; }
-    .btn-secondary:hover { background: #5a6268; }
+    .btn-danger {
+      background: var(--danger);
+      padding:12px 22px;
+      border:none;
+      border-radius:8px;
+      color:white;
+      cursor:pointer;
+      font-weight:600;
+    }
 
-    .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+    /* DANGER ZONE */
+    .danger-zone {
+      border:1px solid var(--danger);
+      padding:20px;
+      background:#181818;
+      border-radius:12px;
+    }
 
+    /* MESSAGE STYLES */
     .message {
-      padding: 12px;
-      border-radius: 8px;
-      margin-bottom: 20px;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
       display: none;
     }
 
     .message.success {
-      background: #d4edda;
-      color: #155724;
+      background: #155724;
+      color: #d4edda;
       border: 1px solid #c3e6cb;
+      display: block;
     }
 
     .message.error {
-      background: #f8d7da;
-      color: #721c24;
+      background: #721c24;
+      color: #f8d7da;
       border: 1px solid #f5c6cb;
+      display: block;
     }
 
-    .message.show { display: block; }
-
-    .password-requirements {
-      font-size: 13px;
-      color: #666;
-      margin-top: 8px;
-      padding-left: 20px;
-    }
-
-    .password-requirements li { margin: 4px 0; }
-
-    .danger-zone {
-      border: 2px solid #dc3545;
-      border-radius: 12px;
-      padding: 20px;
-      background: #fff5f5;
-    }
-
-    .danger-zone h3 { color: #dc3545; margin-bottom: 10px; }
-    .danger-zone p { color: #666; margin-bottom: 15px; }
-
+    /* MODAL */
     .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.7);
+      position:fixed;
+      top:0; left:0;
+      width:100%; height:100%;
+      background:rgba(0,0,0,0.65);
+      display:none;
+      justify-content:center;
+      align-items:center;
       z-index: 1000;
-      justify-content: center;
-      align-items: center;
     }
 
-    .modal.show { display: flex; }
+    .modal.show { display:flex; }
 
     .modal-content {
-      background: white;
-      padding: 40px;
-      border-radius: 20px;
-      max-width: 500px;
-      width: 90%;
-      text-align: center;
+      background:white;
+      padding:30px;
+      border-radius:16px;
+      width:90%;
+      max-width:450px;
+      color:black;
+      text-align:center;
     }
 
-    .modal-icon { font-size: 64px; color: #dc3545; margin-bottom: 20px; }
-
-    .modal-content h2 { font-size: 28px; color: #333; margin-bottom: 15px; }
-
-    .modal-content p {
-      color: #666;
-      margin-bottom: 30px;
-      line-height: 1.6;
-    }
-
-    @media (max-width: 768px) {
-      .navbar { padding: 15px 20px; flex-direction: column; gap: 15px; }
-      .navbar-menu { width: 100%; justify-content: center; flex-wrap: wrap; }
-      .btn-group { flex-direction: column; }
-      .btn-group .btn { width: 100%; }
-    }
-
-    .view-mode, .edit-mode { display: none; }
-    .view-mode.active, .edit-mode.active { display: block; }
-
-    .info-row {
+    .modal-buttons {
+      margin-top: 20px;
       display: flex;
-      justify-content: space-between;
-      padding: 15px 0;
-      border-bottom: 1px solid #f0f0f0;
+      gap: 10px;
+      justify-content: center;
     }
-
-    .info-row:last-child { border-bottom: none; }
-    .info-label { font-weight: 600; color: #666; }
-    .info-value { color: #333; }
   </style>
 </head>
+
 <body>
+
+  <!-- NAVBAR -->
   <nav class="navbar">
-    <div class="navbar-brand">
-      <i class="fas fa-book"></i>
-      BookNest
-    </div>
+    <div class="navbar-brand"><i class="fas fa-book"></i> BookNest</div>
+
     <div class="navbar-menu">
-      <button class="nav-btn home-btn" onclick="goToHome()">
-        <i class="fas fa-home"></i>
-        Home
-      </button>
-      <button class="nav-btn" onclick="handleLogout()">
-        <i class="fas fa-sign-out-alt"></i>
-        Logout
-      </button>
+      <button class="nav-btn home-btn" onclick="goToHome()">Home</button>
+      <button class="nav-btn" onclick="handleLogout()">Logout</button>
     </div>
   </nav>
 
   <div class="container">
+
+    <!-- PROFILE HEADER -->
     <div class="profile-header">
-      <div class="profile-avatar">
-        <i class="fas fa-user"></i>
-      </div>
-      <h1 id="profileName">Loading...</h1>
-      <p id="profileEmail">Loading...</p>
+      <div class="profile-avatar"><i class="fas fa-user"></i></div>
+      <h2 id="profileName">Dev User</h2>
+      <p id="profileEmail" style="color:#ccc;">dev@example.com</p>
     </div>
 
+    <!-- PERSONAL INFO -->
     <div class="profile-section">
+
       <div class="section-header">
-        <h2><i class="fas fa-user-circle icon"></i> Personal Information</h2>
+        <h2><i class="fas fa-user"></i> Personal Information</h2>
         <button class="edit-btn" onclick="toggleEditMode('name')">
           <i class="fas fa-edit"></i> Edit
         </button>
       </div>
 
-      <div id="nameMessage" class="message"></div>
-
+      <!-- VIEW MODE -->
       <div id="nameViewMode" class="view-mode active">
         <div class="info-row">
           <span class="info-label">Name</span>
-          <span class="info-value" id="displayName">-</span>
+          <span id="displayName" class="info-value">Dev User</span>
         </div>
+
         <div class="info-row">
           <span class="info-label">Email</span>
-          <span class="info-value" id="displayEmail">-</span>
+          <span id="displayEmail" class="info-value">dev@example.com</span>
         </div>
+
         <div class="info-row">
           <span class="info-label">Role</span>
-          <span class="info-value" id="displayRole">-</span>
+          <span id="displayRole" class="info-value">Admin</span>
         </div>
+
         <div class="info-row">
           <span class="info-label">Member Since</span>
-          <span class="info-value" id="displayMemberSince">-</span>
+          <span id="displayMemberSince" class="info-value">November 16, 2025</span>
         </div>
       </div>
 
+      <!-- EDIT MODE -->
       <div id="nameEditMode" class="edit-mode">
         <form id="updateNameForm">
           <div class="form-group">
-            <label for="newName">New Name</label>
-            <input type="text" id="newName" placeholder="Enter new name" required>
+            <label>New Name</label>
+            <input id="newName" placeholder="Enter new name">
           </div>
-          <div class="btn-group">
-            <button type="submit" class="btn btn-primary">Save Changes</button>
-            <button type="button" class="btn btn-secondary" onclick="cancelEdit('name')">Cancel</button>
+
+          <div id="nameMessage" class="message"></div>
+
+          <div style="margin-top:15px;">
+            <button type="submit" class="btn-primary">Save Changes</button>
+            <button type="button" class="btn-secondary" onclick="cancelEdit('name')">Cancel</button>
           </div>
         </form>
       </div>
+
     </div>
 
+    <!-- SECURITY -->
     <div class="profile-section">
+
       <div class="section-header">
-        <h2><i class="fas fa-lock icon"></i> Security</h2>
+        <h2><i class="fas fa-lock"></i> Security</h2>
         <button class="edit-btn" onclick="toggleEditMode('password')">
           <i class="fas fa-key"></i> Change Password
         </button>
       </div>
 
-      <div id="passwordMessage" class="message"></div>
-
+      <!-- VIEW -->
       <div id="passwordViewMode" class="view-mode active">
         <div class="info-row">
           <span class="info-label">Password</span>
@@ -360,94 +373,103 @@
         </div>
         <div class="info-row">
           <span class="info-label">Last Updated</span>
-          <span class="info-value" id="passwordLastUpdated">-</span>
+          <span id="passwordLastUpdated" class="info-value">November 16, 2025</span>
         </div>
       </div>
 
+      <!-- EDIT -->
       <div id="passwordEditMode" class="edit-mode">
         <form id="updatePasswordForm">
-          <div class="form-group">
-            <button type="button" id="sendPasswordOtpBtn" onclick="sendPasswordChangeOTP()" class="otp-btn">
-              Send OTP to Email
-            </button>
-            <div id="passwordOtpSentMsg" style="display: none; color: #4CAF50; margin-top: 10px;">
-              ✅ OTP sent to your email
+          <button type="button" id="sendPasswordOtpBtn" class="btn-primary" style="margin-bottom:12px; width: 100%;" onclick="sendPasswordChangeOTP()">Send OTP to Email</button>
+          
+          <div id="passwordOtpSentMsg" style="display: none; color: var(--brand); margin-bottom: 15px;">
+            <i class="fas fa-check-circle"></i> OTP sent to your email!
+          </div>
+
+          <div id="passwordOtpSection" style="display: none;">
+            <div class="form-group">
+              <label>OTP</label>
+              <input id="passwordOtp" placeholder="Enter OTP">
+            </div>
+
+            <div class="form-group">
+              <label>Current Password</label>
+              <input type="password" id="currentPassword" placeholder="Enter current password">
+            </div>
+
+            <div class="form-group">
+              <label>New Password</label>
+              <input type="password" id="newPassword" placeholder="Enter new password">
+              <ul style="margin:8px 0 0 15px; font-size:13px; color:#bbb;">
+                <li>At least 8 characters</li>
+                <li>One uppercase letter</li>
+                <li>One lowercase letter</li>
+                <li>One number</li>
+                <li>One special character</li>
+              </ul>
+            </div>
+
+            <div class="form-group">
+              <label>Confirm New Password</label>
+              <input type="password" id="confirmPassword" placeholder="Confirm new password">
             </div>
           </div>
-          <div id="passwordOtpSection" style="display: none;" class="form-group">
-            <label for="passwordOtp">Enter OTP</label>
-            <input type="text" id="passwordOtp" placeholder="Enter 6-digit OTP" maxlength="6" class="otp-input">
-          </div>
-          <div class="form-group">
-            <label for="currentPassword">Current Password</label>
-            <input type="password" id="currentPassword" placeholder="Enter current password" required>
-          </div>
-          <div class="form-group">
-            <label for="newPassword">New Password</label>
-            <input type="password" id="newPassword" placeholder="Enter new password" required>
-            <ul class="password-requirements">
-              <li>At least 8 characters</li>
-              <li>One uppercase letter</li>
-              <li>One lowercase letter</li>
-              <li>One number</li>
-              <li>One special character</li>
-            </ul>
-          </div>
-          <div class="form-group">
-            <label for="confirmPassword">Confirm New Password</label>
-            <input type="password" id="confirmPassword" placeholder="Confirm new password" required>
-          </div>
-          <div class="btn-group">
-            <button type="submit" class="btn btn-primary">Update Password</button>
-            <button type="button" class="btn btn-secondary" onclick="cancelEdit('password')">Cancel</button>
+
+          <div id="passwordMessage" class="message"></div>
+
+          <div style="margin-top:15px;">
+            <button type="submit" class="btn-primary">Update Password</button>
+            <button type="button" class="btn-secondary" onclick="cancelEdit('password')">Cancel</button>
           </div>
         </form>
       </div>
     </div>
 
+    <!-- DANGER ZONE -->
     <div class="profile-section">
       <div class="section-header">
-        <h2><i class="fas fa-exclamation-triangle icon" style="color: #dc3545;"></i> Danger Zone</h2>
+        <h2>
+          <i class="fas fa-exclamation-triangle" style="color:var(--danger)"></i>
+          Danger Zone
+        </h2>
       </div>
 
       <div class="danger-zone">
-        <h3>Delete Account</h3>
-        <p>Once you delete your account, there is no going back. Please be certain.</p>
-        <button class="btn btn-danger" onclick="showDeleteModal()">
-          <i class="fas fa-trash"></i> Delete My Account
-        </button>
-      </div>
-    </div>
-  </div>
-
-<div id="deleteModal" class="modal">
-  <div class="modal-content">
-    <h3>Delete Account</h3>
-    <p style="color: #ff6b6b; font-weight: bold;">
-      ⚠️ WARNING: This action is permanent and cannot be undone!
-    </p>
-    <div id="deleteModalMessage" class="message"></div>
-    
-    <div class="form-group">
-      <button type="button" id="sendDeleteOtpBtn" onclick="sendAccountDeletionOTP()" class="otp-btn">
-        Send OTP to Confirm Deletion
-      </button>
-      <div id="deleteOtpSentMsg" style="display: none; color: #4CAF50; margin-top: 10px;">
-        ✅ OTP sent to your email
+        <h3 style="color:var(--danger)">Delete Account</h3>
+        <p style="color:#bbb;font-size:14px;">This cannot be undone. Please be certain.</p>
+        <button class="btn-danger" onclick="showDeleteModal()">Delete My Account</button>
       </div>
     </div>
 
-    <div id="deleteOtpSection" style="display: none;" class="form-group">
-      <label for="deleteOtp">Enter OTP to Confirm Deletion</label>
-      <input type="text" id="deleteOtp" placeholder="Enter 6-digit OTP" maxlength="6" class="otp-input">
-    </div>
+  </div>
 
-    <div class="modal-actions">
-      <button type="button" onclick="closeDeleteModal()" class="btn-secondary">Cancel</button>
-      <button type="button" onclick="confirmDelete()" class="btn-danger">Delete Account</button>
+  <!-- DELETE ACCOUNT MODAL -->
+  <div id="deleteModal" class="modal">
+    <div class="modal-content">
+      <h3 style="color: var(--danger); margin-bottom: 15px;">Delete Account</h3>
+      <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+      
+      <button type="button" id="sendDeleteOtpBtn" class="btn-primary" style="margin: 15px 0; width: 100%;" onclick="sendAccountDeletionOTP()">Send OTP to Confirm</button>
+      
+      <div id="deleteOtpSentMsg" style="display: none; color: #28a745; margin-bottom: 15px;">
+        <i class="fas fa-check-circle"></i> OTP sent to your email!
+      </div>
+
+      <div id="deleteOtpSection" style="display: none;">
+        <div class="form-group">
+          <label>Enter OTP</label>
+          <input id="deleteOtp" placeholder="Enter OTP received via email">
+        </div>
+      </div>
+
+      <div id="deleteModalMessage" class="message"></div>
+
+      <div class="modal-buttons">
+        <button type="button" class="btn-danger" onclick="confirmDelete()">Delete Account</button>
+        <button type="button" class="btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+      </div>
     </div>
   </div>
-</div>
 
   <script>
     const API_BASE_URL = 'http://localhost:3000/api/auth';
@@ -463,6 +485,10 @@
         return;
       }
       await loadProfile();
+      
+      // Add event listeners to navbar buttons
+      document.querySelector('.home-btn').addEventListener('click', goToHome);
+      document.querySelector('.nav-btn:not(.home-btn)').addEventListener('click', handleLogout);
     });
 
     async function loadProfile() {
@@ -488,23 +514,39 @@
     }
 
     function displayProfile(user) {
-      document.getElementById('profileName').textContent = user.name;
-      document.getElementById('profileEmail').textContent = user.email;
-      document.getElementById('displayName').textContent = user.name;
-      document.getElementById('displayEmail').textContent = user.email;
-      document.getElementById('displayRole').textContent = (user.role || 'user').charAt(0).toUpperCase() + (user.role || 'user').slice(1);
+      document.getElementById('profileName').textContent = user.name || 'User';
+      document.getElementById('profileEmail').textContent = user.email || 'No email';
+      document.getElementById('displayName').textContent = user.name || 'User';
+      document.getElementById('displayEmail').textContent = user.email || 'No email';
+      
+      const role = user.role || 'user';
+      document.getElementById('displayRole').textContent = role.charAt(0).toUpperCase() + role.slice(1);
 
       if (user.createdAt) {
         const date = new Date(user.createdAt);
-        document.getElementById('displayMemberSince').textContent = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        document.getElementById('displayMemberSince').textContent = date.toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        });
+      } else {
+        document.getElementById('displayMemberSince').textContent = 'Unknown';
       }
 
       if (user.updatedAt) {
         const date = new Date(user.updatedAt);
-        document.getElementById('passwordLastUpdated').textContent = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        document.getElementById('passwordLastUpdated').textContent = date.toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        });
+      } else {
+        document.getElementById('passwordLastUpdated').textContent = 'Unknown';
       }
 
-      document.getElementById('newName').value = user.name;
+      if (document.getElementById('newName')) {
+        document.getElementById('newName').value = user.name || '';
+      }
     }
 
     function toggleEditMode(section) {
@@ -517,6 +559,8 @@
         document.getElementById('passwordOtpSection').style.display = 'none';
         document.getElementById('sendPasswordOtpBtn').style.display = 'block';
         document.getElementById('passwordOtpSentMsg').style.display = 'none';
+        document.getElementById('passwordMessage').textContent = '';
+        document.getElementById('passwordMessage').className = 'message';
       }
     }
 
@@ -527,7 +571,9 @@
 
       if (section === 'name') {
         document.getElementById('updateNameForm').reset();
-        document.getElementById('newName').value = currentUser.name;
+        if (currentUser) {
+          document.getElementById('newName').value = currentUser.name || '';
+        }
       } else if (section === 'password') {
         document.getElementById('updatePasswordForm').reset();
         passwordChangeOtpSent = false;
@@ -570,7 +616,6 @@
       }
     });
 
-    // NEW: Send OTP for password change
     async function sendPasswordChangeOTP() {
       const token = localStorage.getItem('token');
       try {
@@ -598,7 +643,6 @@
       }
     }
 
-    // UPDATED: Password change with OTP verification
     document.getElementById('updatePasswordForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       
@@ -650,6 +694,7 @@
           document.getElementById('passwordOtpSection').style.display = 'none';
           document.getElementById('sendPasswordOtpBtn').style.display = 'block';
           document.getElementById('passwordOtpSentMsg').style.display = 'none';
+          await loadProfile(); // Refresh profile to get updated timestamp
           setTimeout(() => cancelEdit('password'), 2000);
         } else {
           showMessage('passwordMessage', result.message || 'Failed to update password', 'error');
@@ -671,19 +716,22 @@
     function showMessage(elementId, message, type) {
       const msgElement = document.getElementById(elementId);
       msgElement.textContent = message;
-      msgElement.className = `message ${type} show`;
+      msgElement.className = `message ${type}`;
     }
 
     function hideMessage(elementId) {
-      document.getElementById(elementId).className = 'message';
+      const msgElement = document.getElementById(elementId);
+      msgElement.textContent = '';
+      msgElement.className = 'message';
     }
 
-    // UPDATED: Delete account flow with OTP
     function showDeleteModal() {
       accountDeletionOtpSent = false;
       document.getElementById('deleteOtpSection').style.display = 'none';
       document.getElementById('sendDeleteOtpBtn').style.display = 'block';
       document.getElementById('deleteOtpSentMsg').style.display = 'none';
+      document.getElementById('deleteModalMessage').textContent = '';
+      document.getElementById('deleteModalMessage').className = 'message';
       document.getElementById('deleteModal').classList.add('show');
     }
 
@@ -691,7 +739,6 @@
       document.getElementById('deleteModal').classList.remove('show');
     }
 
-    // NEW: Send OTP for account deletion
     async function sendAccountDeletionOTP() {
       const token = localStorage.getItem('token');
       try {
@@ -710,30 +757,29 @@
           document.getElementById('sendDeleteOtpBtn').style.display = 'none';
           document.getElementById('deleteOtpSentMsg').style.display = 'block';
           document.getElementById('deleteModalMessage').textContent = 'OTP sent to your email!';
-          document.getElementById('deleteModalMessage').className = 'message success show';
+          document.getElementById('deleteModalMessage').className = 'message success';
         } else {
           document.getElementById('deleteModalMessage').textContent = result.message || 'Failed to send OTP';
-          document.getElementById('deleteModalMessage').className = 'message error show';
+          document.getElementById('deleteModalMessage').className = 'message error';
         }
       } catch (error) {
         console.error('Error sending account deletion OTP:', error);
         document.getElementById('deleteModalMessage').textContent = 'Failed to send OTP. Please try again.';
-        document.getElementById('deleteModalMessage').className = 'message error show';
+        document.getElementById('deleteModalMessage').className = 'message error';
       }
     }
 
-    // UPDATED: Confirm delete with OTP verification
     async function confirmDelete() {
       if (!accountDeletionOtpSent) {
         document.getElementById('deleteModalMessage').textContent = 'Please request OTP first';
-        document.getElementById('deleteModalMessage').className = 'message error show';
+        document.getElementById('deleteModalMessage').className = 'message error';
         return;
       }
 
       const otp = document.getElementById('deleteOtp').value.trim();
       if (!otp) {
         document.getElementById('deleteModalMessage').textContent = 'Please enter OTP';
-        document.getElementById('deleteModalMessage').className = 'message error show';
+        document.getElementById('deleteModalMessage').className = 'message error';
         return;
       }
 
@@ -755,12 +801,12 @@
           window.location.href = 'index.html';
         } else {
           document.getElementById('deleteModalMessage').textContent = result.message || 'Failed to delete account';
-          document.getElementById('deleteModalMessage').className = 'message error show';
+          document.getElementById('deleteModalMessage').className = 'message error';
         }
       } catch (error) {
         console.error('Error deleting account:', error);
         document.getElementById('deleteModalMessage').textContent = 'An error occurred. Please try again.';
-        document.getElementById('deleteModalMessage').className = 'message error show';
+        document.getElementById('deleteModalMessage').className = 'message error';
       }
     }
 
