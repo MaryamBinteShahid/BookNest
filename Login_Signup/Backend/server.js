@@ -8,14 +8,22 @@ const { initializeDatabase } = require('./database');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+// CORS configuration
+app.use(cors({
+  origin: true, // Allow all origins in development
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use(express.static(path.join(__dirname, '..', 'frontend')));
+
 app.use('/api/auth', authRoutes);
 
-app.get('/health', (req, res) => {
-    res.json({ status: 'OK', timestamp: new Date() });
+app.get(/^\/(?!api).*/, (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
 });
 
 app.use((err, req, res, next) => {

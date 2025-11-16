@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BookNest - Home</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+
+    .navbar {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .navbar-brand {
+      font-size: 28px;
+      font-weight: 700;
+      color: #667eea;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .navbar-menu {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .nav-btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: #333;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-btn:hover {
+      background: rgba(102, 126, 234, 0.1);
+      color: #667eea;
+    }
+
+    .nav-btn.profile-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .nav-btn.profile-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .nav-btn.logout-btn {
+      background: #dc3545;
+      color: white;
+    }
+
+    .nav-btn.logout-btn:hover {
+      background: #c82333;
+      transform: translateY(-2px);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 60px auto;
+      padding: 0 20px;
+    }
+
+    .welcome-card {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .welcome-card h1 {
+      font-size: 42px;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .welcome-card .user-name {
+      color: #667eea;
+      font-weight: 700;
+    }
+
+    .welcome-card p {
+      font-size: 18px;
+      color: #666;
+      margin-top: 10px;
+    }
+
+    .user-info {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .info-item .icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+    }
+
+    .info-item .label {
+      font-size: 14px;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .info-item .value {
+      font-size: 16px;
+      color: #333;
+      font-weight: 600;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 30px;
+    }
+
+    .feature-card {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 50px rgba(0,0,0,0.15);
+    }
+
+    .feature-card .icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    .feature-card h3 {
+      font-size: 22px;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .feature-card p {
+      color: #666;
+      line-height: 1.6;
+    }
+
+    .feature-card.coming-soon {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .coming-soon-badge {
+      display: inline-block;
+      background: #ffc107;
+      color: #333;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 15px 20px;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .navbar-menu {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .welcome-card h1 {
+        font-size: 32px;
+      }
+
+      .user-info {
+        gap: 20px;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <i class="fas fa-book"></i>
+      BookNest
+    </div>
+    <div class="navbar-menu">
+      <button class="nav-btn profile-btn" onclick="goToProfile()">
+        <i class="fas fa-user"></i>
+        Profile
+      </button>
+      <button class="nav-btn logout-btn" onclick="handleLogout()">
+        <i class="fas fa-sign-out-alt"></i>
+        Logout
+      </button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="welcome-card">
+      <h1>Welcome back, <span class="user-name" id="userName">User</span>! 👋</h1>
+      <p>You're logged in and ready to explore BookNest</p>
+
+      <div class="user-info">
+        <div class="info-item">
+          <div class="icon">
+            <i class="fas fa-envelope"></i>
+          </div>
+          <div class="label">Email</div>
+          <div class="value" id="userEmail">user@example.com</div>
+        </div>
+        <div class="info-item">
+          <div class="icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <div class="label">Role</div>
+          <div class="value" id="userRole">User</div>
+        </div>
+        <div class="info-item">
+          <div class="icon">
+            <i class="fas fa-calendar"></i>
+          </div>
+          <div class="label">Member Since</div>
+          <div class="value" id="memberSince">Just now</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card" onclick="goToProfile()">
+        <div class="icon">
+          <i class="fas fa-user-circle"></i>
+        </div>
+        <h3>My Profile</h3>
+        <p>View and manage your account details, update your name, change password, or delete your account.</p>
+      </div>
+
+      <div class="feature-card coming-soon">
+        <div class="icon">
+          <i class="fas fa-book-open"></i>
+        </div>
+        <h3>My Books</h3>
+        <p>Browse your collection of books, add new ones, and track your reading progress.</p>
+        <span class="coming-soon-badge">Coming Soon</span>
+      </div>
+
+      <div class="feature-card coming-soon">
+        <div class="icon">
+          <i class="fas fa-heart"></i>
+        </div>
+        <h3>Favorites</h3>
+        <p>Access your favorite books and create custom reading lists for different genres.</p>
+        <span class="coming-soon-badge">Coming Soon</span>
+      </div>
+
+      <div class="feature-card coming-soon">
+        <div class="icon">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <h3>Reading Stats</h3>
+        <p>Track your reading habits, view statistics, and set reading goals for the year.</p>
+        <span class="coming-soon-badge">Coming Soon</span>
+      </div>
+
+      <div class="feature-card coming-soon">
+        <div class="icon">
+          <i class="fas fa-users"></i>
+        </div>
+        <h3>Book Club</h3>
+        <p>Join book clubs, participate in discussions, and connect with fellow readers.</p>
+        <span class="coming-soon-badge">Coming Soon</span>
+      </div>
+
+      <div class="feature-card coming-soon">
+        <div class="icon">
+          <i class="fas fa-cog"></i>
+        </div>
+        <h3>Settings</h3>
+        <p>Customize your preferences, notification settings, and app appearance.</p>
+        <span class="coming-soon-badge">Coming Soon</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE_URL = 'http://localhost:3000/api/auth';
+
+    window.addEventListener('DOMContentLoaded', async function() {
+      const token = localStorage.getItem('token');
+      const userStr = localStorage.getItem('user');
+
+      if (!token) {
+        alert('Please login first');
+        window.location.href = 'index.html';
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/profile`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          localStorage.setItem('user', JSON.stringify(result.user));
+          displayUserInfo(result.user);
+        } else {
+          if (userStr) {
+            const user = JSON.parse(userStr);
+            displayUserInfo(user);
+          } else {
+            alert('Session expired. Please login again.');
+            localStorage.clear();
+            window.location.href = 'index.html';
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+        if (userStr) {
+          const user = JSON.parse(userStr);
+          displayUserInfo(user);
+        }
+      }
+    });
+
+    function displayUserInfo(user) {
+      document.getElementById('userName').textContent = user.name || 'User';
+      document.getElementById('userEmail').textContent = user.email || 'N/A';
+      document.getElementById('userRole').textContent = (user.role || 'user').charAt(0).toUpperCase() + (user.role || 'user').slice(1);
+
+      if (user.createdAt) {
+        const date = new Date(user.createdAt);
+        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+        document.getElementById('memberSince').textContent = date.toLocaleDateString('en-US', options);
+      }
+    }
+
+    function goToProfile() {
+      window.location.href = 'profile.html';
+    }
+
+    async function handleLogout() {
+      const token = localStorage.getItem('token');
+
+      if (confirm('Are you sure you want to logout?')) {
+        try {
+          await fetch(`${API_BASE_URL}/logout`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+        } catch (error) {
+          console.error('Logout error:', error);
+        }
+
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+
+        alert('Logged out successfully!');
+        window.location.href = 'index.html';
+      }
+    }
+  </script>
+</body>
+</html>

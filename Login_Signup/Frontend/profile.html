@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BookNest - Profile</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+
+    .navbar {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .navbar-brand {
+      font-size: 28px;
+      font-weight: 700;
+      color: #667eea;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .navbar-menu { display: flex; gap: 20px; align-items: center; }
+
+    .nav-btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: #333;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-btn:hover { background: rgba(102, 126, 234, 0.1); color: #667eea; }
+
+    .nav-btn.home-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .nav-btn.home-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+
+    .profile-header {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      color: white;
+      margin: 0 auto 20px;
+    }
+
+    .profile-header h1 { font-size: 32px; color: #333; margin-bottom: 5px; }
+    .profile-header p { color: #666; font-size: 16px; }
+
+    .profile-section {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .section-header h2 {
+      font-size: 24px;
+      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-header .icon { color: #667eea; }
+
+    .edit-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 2px solid #667eea;
+      background: transparent;
+      color: #667eea;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .edit-btn:hover { background: #667eea; color: white; }
+
+    .form-group { margin-bottom: 20px; }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 600;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+
+    .form-group input:focus { outline: none; border-color: #667eea; }
+    .form-group input:disabled { background: #f5f5f5; cursor: not-allowed; }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 16px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-danger { background: #dc3545; color: white; }
+    .btn-danger:hover { background: #c82333; transform: translateY(-2px); }
+
+    .btn-secondary { background: #6c757d; color: white; }
+    .btn-secondary:hover { background: #5a6268; }
+
+    .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+
+    .message {
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .message.show { display: block; }
+
+    .password-requirements {
+      font-size: 13px;
+      color: #666;
+      margin-top: 8px;
+      padding-left: 20px;
+    }
+
+    .password-requirements li { margin: 4px 0; }
+
+    .danger-zone {
+      border: 2px solid #dc3545;
+      border-radius: 12px;
+      padding: 20px;
+      background: #fff5f5;
+    }
+
+    .danger-zone h3 { color: #dc3545; margin-bottom: 10px; }
+    .danger-zone p { color: #666; margin-bottom: 15px; }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal.show { display: flex; }
+
+    .modal-content {
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+    }
+
+    .modal-icon { font-size: 64px; color: #dc3545; margin-bottom: 20px; }
+
+    .modal-content h2 { font-size: 28px; color: #333; margin-bottom: 15px; }
+
+    .modal-content p {
+      color: #666;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+      .navbar { padding: 15px 20px; flex-direction: column; gap: 15px; }
+      .navbar-menu { width: 100%; justify-content: center; flex-wrap: wrap; }
+      .btn-group { flex-direction: column; }
+      .btn-group .btn { width: 100%; }
+    }
+
+    .view-mode, .edit-mode { display: none; }
+    .view-mode.active, .edit-mode.active { display: block; }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .info-row:last-child { border-bottom: none; }
+    .info-label { font-weight: 600; color: #666; }
+    .info-value { color: #333; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <i class="fas fa-book"></i>
+      BookNest
+    </div>
+    <div class="navbar-menu">
+      <button class="nav-btn home-btn" onclick="goToHome()">
+        <i class="fas fa-home"></i>
+        Home
+      </button>
+      <button class="nav-btn" onclick="handleLogout()">
+        <i class="fas fa-sign-out-alt"></i>
+        Logout
+      </button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="profile-header">
+      <div class="profile-avatar">
+        <i class="fas fa-user"></i>
+      </div>
+      <h1 id="profileName">Loading...</h1>
+      <p id="profileEmail">Loading...</p>
+    </div>
+
+    <div class="profile-section">
+      <div class="section-header">
+        <h2><i class="fas fa-user-circle icon"></i> Personal Information</h2>
+        <button class="edit-btn" onclick="toggleEditMode('name')">
+          <i class="fas fa-edit"></i> Edit
+        </button>
+      </div>
+
+      <div id="nameMessage" class="message"></div>
+
+      <div id="nameViewMode" class="view-mode active">
+        <div class="info-row">
+          <span class="info-label">Name</span>
+          <span class="info-value" id="displayName">-</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Email</span>
+          <span class="info-value" id="displayEmail">-</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Role</span>
+          <span class="info-value" id="displayRole">-</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Member Since</span>
+          <span class="info-value" id="displayMemberSince">-</span>
+        </div>
+      </div>
+
+      <div id="nameEditMode" class="edit-mode">
+        <form id="updateNameForm">
+          <div class="form-group">
+            <label for="newName">New Name</label>
+            <input type="text" id="newName" placeholder="Enter new name" required>
+          </div>
+          <div class="btn-group">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="button" class="btn btn-secondary" onclick="cancelEdit('name')">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="profile-section">
+      <div class="section-header">
+        <h2><i class="fas fa-lock icon"></i> Security</h2>
+        <button class="edit-btn" onclick="toggleEditMode('password')">
+          <i class="fas fa-key"></i> Change Password
+        </button>
+      </div>
+
+      <div id="passwordMessage" class="message"></div>
+
+      <div id="passwordViewMode" class="view-mode active">
+        <div class="info-row">
+          <span class="info-label">Password</span>
+          <span class="info-value">••••••••</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Last Updated</span>
+          <span class="info-value" id="passwordLastUpdated">-</span>
+        </div>
+      </div>
+
+      <div id="passwordEditMode" class="edit-mode">
+        <form id="updatePasswordForm">
+          <div class="form-group">
+            <button type="button" id="sendPasswordOtpBtn" onclick="sendPasswordChangeOTP()" class="otp-btn">
+              Send OTP to Email
+            </button>
+            <div id="passwordOtpSentMsg" style="display: none; color: #4CAF50; margin-top: 10px;">
+              ✅ OTP sent to your email
+            </div>
+          </div>
+          <div id="passwordOtpSection" style="display: none;" class="form-group">
+            <label for="passwordOtp">Enter OTP</label>
+            <input type="text" id="passwordOtp" placeholder="Enter 6-digit OTP" maxlength="6" class="otp-input">
+          </div>
+          <div class="form-group">
+            <label for="currentPassword">Current Password</label>
+            <input type="password" id="currentPassword" placeholder="Enter current password" required>
+          </div>
+          <div class="form-group">
+            <label for="newPassword">New Password</label>
+            <input type="password" id="newPassword" placeholder="Enter new password" required>
+            <ul class="password-requirements">
+              <li>At least 8 characters</li>
+              <li>One uppercase letter</li>
+              <li>One lowercase letter</li>
+              <li>One number</li>
+              <li>One special character</li>
+            </ul>
+          </div>
+          <div class="form-group">
+            <label for="confirmPassword">Confirm New Password</label>
+            <input type="password" id="confirmPassword" placeholder="Confirm new password" required>
+          </div>
+          <div class="btn-group">
+            <button type="submit" class="btn btn-primary">Update Password</button>
+            <button type="button" class="btn btn-secondary" onclick="cancelEdit('password')">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="profile-section">
+      <div class="section-header">
+        <h2><i class="fas fa-exclamation-triangle icon" style="color: #dc3545;"></i> Danger Zone</h2>
+      </div>
+
+      <div class="danger-zone">
+        <h3>Delete Account</h3>
+        <p>Once you delete your account, there is no going back. Please be certain.</p>
+        <button class="btn btn-danger" onclick="showDeleteModal()">
+          <i class="fas fa-trash"></i> Delete My Account
+        </button>
+      </div>
+    </div>
+  </div>
+
+<div id="deleteModal" class="modal">
+  <div class="modal-content">
+    <h3>Delete Account</h3>
+    <p style="color: #ff6b6b; font-weight: bold;">
+      ⚠️ WARNING: This action is permanent and cannot be undone!
+    </p>
+    <div id="deleteModalMessage" class="message"></div>
+    
+    <div class="form-group">
+      <button type="button" id="sendDeleteOtpBtn" onclick="sendAccountDeletionOTP()" class="otp-btn">
+        Send OTP to Confirm Deletion
+      </button>
+      <div id="deleteOtpSentMsg" style="display: none; color: #4CAF50; margin-top: 10px;">
+        ✅ OTP sent to your email
+      </div>
+    </div>
+
+    <div id="deleteOtpSection" style="display: none;" class="form-group">
+      <label for="deleteOtp">Enter OTP to Confirm Deletion</label>
+      <input type="text" id="deleteOtp" placeholder="Enter 6-digit OTP" maxlength="6" class="otp-input">
+    </div>
+
+    <div class="modal-actions">
+      <button type="button" onclick="closeDeleteModal()" class="btn-secondary">Cancel</button>
+      <button type="button" onclick="confirmDelete()" class="btn-danger">Delete Account</button>
+    </div>
+  </div>
+</div>
+
+  <script>
+    const API_BASE_URL = 'http://localhost:3000/api/auth';
+    let currentUser = null;
+    let passwordChangeOtpSent = false;
+    let accountDeletionOtpSent = false;
+
+    window.addEventListener('DOMContentLoaded', async function() {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Please login first');
+        window.location.href = 'index.html';
+        return;
+      }
+      await loadProfile();
+    });
+
+    async function loadProfile() {
+      const token = localStorage.getItem('token');
+      try {
+        const response = await fetch(`${API_BASE_URL}/profile`, {
+          method: 'GET',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const result = await response.json();
+        if (response.ok && result.success) {
+          currentUser = result.user;
+          displayProfile(result.user);
+        } else {
+          throw new Error(result.message || 'Failed to load profile');
+        }
+      } catch (error) {
+        console.error('Error loading profile:', error);
+        alert('Failed to load profile. Please login again.');
+        localStorage.clear();
+        window.location.href = 'index.html';
+      }
+    }
+
+    function displayProfile(user) {
+      document.getElementById('profileName').textContent = user.name;
+      document.getElementById('profileEmail').textContent = user.email;
+      document.getElementById('displayName').textContent = user.name;
+      document.getElementById('displayEmail').textContent = user.email;
+      document.getElementById('displayRole').textContent = (user.role || 'user').charAt(0).toUpperCase() + (user.role || 'user').slice(1);
+
+      if (user.createdAt) {
+        const date = new Date(user.createdAt);
+        document.getElementById('displayMemberSince').textContent = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      }
+
+      if (user.updatedAt) {
+        const date = new Date(user.updatedAt);
+        document.getElementById('passwordLastUpdated').textContent = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      }
+
+      document.getElementById('newName').value = user.name;
+    }
+
+    function toggleEditMode(section) {
+      document.getElementById(`${section}ViewMode`).classList.remove('active');
+      document.getElementById(`${section}EditMode`).classList.add('active');
+      
+      // Reset OTP states when opening edit modes
+      if (section === 'password') {
+        passwordChangeOtpSent = false;
+        document.getElementById('passwordOtpSection').style.display = 'none';
+        document.getElementById('sendPasswordOtpBtn').style.display = 'block';
+        document.getElementById('passwordOtpSentMsg').style.display = 'none';
+      }
+    }
+
+    function cancelEdit(section) {
+      document.getElementById(`${section}ViewMode`).classList.add('active');
+      document.getElementById(`${section}EditMode`).classList.remove('active');
+      hideMessage(`${section}Message`);
+
+      if (section === 'name') {
+        document.getElementById('updateNameForm').reset();
+        document.getElementById('newName').value = currentUser.name;
+      } else if (section === 'password') {
+        document.getElementById('updatePasswordForm').reset();
+        passwordChangeOtpSent = false;
+        document.getElementById('passwordOtpSection').style.display = 'none';
+        document.getElementById('sendPasswordOtpBtn').style.display = 'block';
+        document.getElementById('passwordOtpSentMsg').style.display = 'none';
+      }
+    }
+
+    document.getElementById('updateNameForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const newName = document.getElementById('newName').value.trim();
+      if (!newName) {
+        showMessage('nameMessage', 'Name cannot be empty', 'error');
+        return;
+      }
+
+      const token = localStorage.getItem('token');
+      try {
+        const response = await fetch(`${API_BASE_URL}/profile/name`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ name: newName })
+        });
+
+        const result = await response.json();
+        if (response.ok && result.success) {
+          showMessage('nameMessage', 'Name updated successfully!', 'success');
+          await loadProfile();
+          setTimeout(() => cancelEdit('name'), 2000);
+        } else {
+          showMessage('nameMessage', result.message || 'Failed to update name', 'error');
+        }
+      } catch (error) {
+        console.error('Error updating name:', error);
+        showMessage('nameMessage', 'An error occurred. Please try again.', 'error');
+      }
+    });
+
+    // NEW: Send OTP for password change
+    async function sendPasswordChangeOTP() {
+      const token = localStorage.getItem('token');
+      try {
+        const response = await fetch(`${API_BASE_URL}/send-password-change-otp`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        const result = await response.json();
+        if (response.ok && result.success) {
+          passwordChangeOtpSent = true;
+          document.getElementById('passwordOtpSection').style.display = 'block';
+          document.getElementById('sendPasswordOtpBtn').style.display = 'none';
+          document.getElementById('passwordOtpSentMsg').style.display = 'block';
+          showMessage('passwordMessage', 'OTP sent to your email!', 'success');
+        } else {
+          showMessage('passwordMessage', result.message || 'Failed to send OTP', 'error');
+        }
+      } catch (error) {
+        console.error('Error sending password change OTP:', error);
+        showMessage('passwordMessage', 'Failed to send OTP. Please try again.', 'error');
+      }
+    }
+
+    // UPDATED: Password change with OTP verification
+    document.getElementById('updatePasswordForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      if (!passwordChangeOtpSent) {
+        showMessage('passwordMessage', 'Please request OTP first', 'error');
+        return;
+      }
+
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const otp = document.getElementById('passwordOtp').value.trim();
+
+      if (!otp) {
+        showMessage('passwordMessage', 'OTP is required', 'error');
+        return;
+      }
+
+      if (newPassword !== confirmPassword) {
+        showMessage('passwordMessage', 'Passwords do not match', 'error');
+        return;
+      }
+
+      if (!validatePassword(newPassword)) {
+        showMessage('passwordMessage', 'Password must meet all requirements', 'error');
+        return;
+      }
+
+      const token = localStorage.getItem('token');
+      try {
+        const response = await fetch(`${API_BASE_URL}/profile/password`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ 
+            currentPassword, 
+            newPassword, 
+            otp 
+          })
+        });
+
+        const result = await response.json();
+        if (response.ok && result.success) {
+          showMessage('passwordMessage', 'Password updated successfully!', 'success');
+          document.getElementById('updatePasswordForm').reset();
+          passwordChangeOtpSent = false;
+          document.getElementById('passwordOtpSection').style.display = 'none';
+          document.getElementById('sendPasswordOtpBtn').style.display = 'block';
+          document.getElementById('passwordOtpSentMsg').style.display = 'none';
+          setTimeout(() => cancelEdit('password'), 2000);
+        } else {
+          showMessage('passwordMessage', result.message || 'Failed to update password', 'error');
+        }
+      } catch (error) {
+        console.error('Error updating password:', error);
+        showMessage('passwordMessage', 'An error occurred. Please try again.', 'error');
+      }
+    });
+
+    function validatePassword(password) {
+      return password.length >= 8 &&
+             /[A-Z]/.test(password) &&
+             /[a-z]/.test(password) &&
+             /\d/.test(password) &&
+             /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+    }
+
+    function showMessage(elementId, message, type) {
+      const msgElement = document.getElementById(elementId);
+      msgElement.textContent = message;
+      msgElement.className = `message ${type} show`;
+    }
+
+    function hideMessage(elementId) {
+      document.getElementById(elementId).className = 'message';
+    }
+
+    // UPDATED: Delete account flow with OTP
+    function showDeleteModal() {
+      accountDeletionOtpSent = false;
+      document.getElementById('deleteOtpSection').style.display = 'none';
+      document.getElementById('sendDeleteOtpBtn').style.display = 'block';
+      document.getElementById('deleteOtpSentMsg').style.display = 'none';
+      document.getElementById('deleteModal').classList.add('show');
+    }
+
+    function closeDeleteModal() {
+      document.getElementById('deleteModal').classList.remove('show');
+    }
+
+    // NEW: Send OTP for account deletion
+    async function sendAccountDeletionOTP() {
+      const token = localStorage.getItem('token');
+      try {
+        const response = await fetch(`${API_BASE_URL}/send-account-deletion-otp`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        const result = await response.json();
+        if (response.ok && result.success) {
+          accountDeletionOtpSent = true;
+          document.getElementById('deleteOtpSection').style.display = 'block';
+          document.getElementById('sendDeleteOtpBtn').style.display = 'none';
+          document.getElementById('deleteOtpSentMsg').style.display = 'block';
+          document.getElementById('deleteModalMessage').textContent = 'OTP sent to your email!';
+          document.getElementById('deleteModalMessage').className = 'message success show';
+        } else {
+          document.getElementById('deleteModalMessage').textContent = result.message || 'Failed to send OTP';
+          document.getElementById('deleteModalMessage').className = 'message error show';
+        }
+      } catch (error) {
+        console.error('Error sending account deletion OTP:', error);
+        document.getElementById('deleteModalMessage').textContent = 'Failed to send OTP. Please try again.';
+        document.getElementById('deleteModalMessage').className = 'message error show';
+      }
+    }
+
+    // UPDATED: Confirm delete with OTP verification
+    async function confirmDelete() {
+      if (!accountDeletionOtpSent) {
+        document.getElementById('deleteModalMessage').textContent = 'Please request OTP first';
+        document.getElementById('deleteModalMessage').className = 'message error show';
+        return;
+      }
+
+      const otp = document.getElementById('deleteOtp').value.trim();
+      if (!otp) {
+        document.getElementById('deleteModalMessage').textContent = 'Please enter OTP';
+        document.getElementById('deleteModalMessage').className = 'message error show';
+        return;
+      }
+
+      const token = localStorage.getItem('token');
+      try {
+        const response = await fetch(`${API_BASE_URL}/profile`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ otp })
+        });
+
+        const result = await response.json();
+        if (response.ok && result.success) {
+          localStorage.clear();
+          alert('Your account has been deleted successfully.');
+          window.location.href = 'index.html';
+        } else {
+          document.getElementById('deleteModalMessage').textContent = result.message || 'Failed to delete account';
+          document.getElementById('deleteModalMessage').className = 'message error show';
+        }
+      } catch (error) {
+        console.error('Error deleting account:', error);
+        document.getElementById('deleteModalMessage').textContent = 'An error occurred. Please try again.';
+        document.getElementById('deleteModalMessage').className = 'message error show';
+      }
+    }
+
+    function goToHome() {
+      window.location.href = 'home.html';
+    }
+
+    async function handleLogout() {
+      if (confirm('Are you sure you want to logout?')) {
+        const token = localStorage.getItem('token');
+        try {
+          await fetch(`${API_BASE_URL}/logout`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+        } catch (error) {
+          console.error('Logout error:', error);
+        }
+        localStorage.clear();
+        alert('Logged out successfully!');
+        window.location.href = 'index.html';
+      }
+    }
+  </script>
+</body>
+</html>

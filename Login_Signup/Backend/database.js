@@ -1,49 +1,65 @@
-const oracledb = require('oracledb');
+const { createClient } = require('@supabase/supabase-js');
 
-oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
-oracledb.autoCommit = true;
+// Supabase configuration
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
 
-const dbConfig = {
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    connectString: process.env.DB_CONNECTION_STRING,
-    poolMin: 2,
-    poolMax: 10,
-    poolIncrement: 2
-};
+// Validate environment variables
+if (!supabaseUrl || !supabaseKey) {
+  console.error('❌ Missing Supabase configuration in environment variables');
+  console.error('Please check your SUPABASE_URL and SUPABASE_SERVICE_KEY in .env file');
+  process.exit(1);
+}
 
-let pool;
+// Create Supabase client
+const supabase = createClient(supabaseUrl, supabaseKey);
 
+// Test connection on startup
 async function initializeDatabase() {
-    try {
-        pool = await oracledb.createPool(dbConfig);
-        console.log('Oracle Database pool created successfully');
-    } catch (err) {
-        console.error('Error creating database pool:', err);
-        throw err;
+  try {
+    console.log('🔄 Testing Supabase connection...');
+    
+    // Test the connection by making a simple query
+    const { data, error } = await supabase
+      .from('users')
+      .select('count')
+      .limit(1);
+    
+    if (error) {
+      // If table doesn't exist, it's okay - we'll create it later
+      if (error.code === 'PGRST204') {
+        console.log('✅ Supabase connected successfully (tables will be created automatically)');
+      } else {
+        throw error;
+      }
+    } else {
+      console.log('✅ Supabase connected successfully');
     }
+    
+    return true;
+  } catch (error) {
+    console.error('❌ Error connecting to Supabase:', error.message);
+    console.error('Please check your Supabase credentials in .env file');
+    throw error;
+  }
 }
 
+// Supabase doesn't need connection pooling like Oracle
+// The client handles connections automatically
 async function getConnection() {
-    try {
-        return await pool.getConnection();
-    } catch (err) {
-        console.error('Error getting database connection:', err);
-        throw err;
-    }
+  // Supabase client is already initialized, just return it
+  return supabase;
 }
 
+// Supabase doesn't need manual connection closing
 async function closePool() {
-    try {
-        await pool.close(10);
-        console.log('Database pool closed');
-    } catch (err) {
-        console.error('Error closing database pool:', err);
-    }
+  console.log('✅ Supabase connection closed (managed automatically)');
+  // No need to close anything - Supabase handles connections automatically
 }
 
 module.exports = {
-    initializeDatabase,
-    getConnection,
-    closePool
+  initializeDatabase,
+  getConnection,
+  closePool,
+  supabase // Export supabase client directly for convenience
 };

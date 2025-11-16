@@ -37,7 +37,7 @@
     }
 
     /* Darker overlay for better contrast */
-    .background::after {
+    /* .background::after {
       content: "";
       position: absolute;
       top: 0;
@@ -46,7 +46,7 @@
       height: 100%;
       background: linear-gradient(135deg, rgba(0, 0, 0, 0.5) 0%, rgba(40, 25, 15, 0.6) 100%);
       z-index: 1;
-    }
+    } */
 
     /* Quote on left side */
     .quote-section {
@@ -712,658 +712,793 @@
     </div>
   </div>
 
-  <script>
-    // Global variables for OTP attempts and cooldown
-    let signupOtpAttempts = 0;
-    let signupCooldownActive = false;
-    let signupCooldownTime = 30; // 30 seconds cooldown
-    let signupData = {};
-    let redirectTimer;
 
-    // Password validation function
-    function validatePassword(password) {
-      const minLength = 8;
-      const hasUpperCase = /[A-Z]/.test(password);
-      const hasLowerCase = /[a-z]/.test(password);
-      const hasNumbers = /\d/.test(password);
-      const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
-      
-      return password.length >= minLength && 
-             hasUpperCase && 
-             hasLowerCase && 
-             hasNumbers && 
-             hasSpecialChar;
-    }
+<script>
+  // API Configuration
+  const API_BASE_URL = 'http://localhost:3000/api/auth';
+  
+  // Global variables
+  let signupOtpAttempts = 0;
+  let signupCooldownActive = false;
+  let signupCooldownTime = 30;
+  let signupData = {};
+  let forgotPasswordEmail = '';
+  let forgotPasswordOtp = '';
+  let redirectTimer;
 
-    // Username validation function
-    function validateUsername(username) {
-      const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
-      return usernameRegex.test(username);
-    }
+  // ==================== DEBUG & INITIALIZATION ====================
+  
+  console.log('🔧 Script loaded - testing form connections');
 
-    // Password strength indicator
-    function checkPasswordStrength() {
-      const password = document.getElementById('signupPassword').value;
-      const strengthBar = document.getElementById('passwordStrengthBar');
-      
-      // Reset classes
-      strengthBar.className = 'password-strength-bar';
-      
-      if (password.length === 0) {
-        strengthBar.style.width = '0%';
-        return;
+  // ==================== UTILITY FUNCTIONS ====================
+  
+  // API call helper function
+  async function apiCall(endpoint, method = 'GET', data = null, requiresAuth = false) {
+    const options = {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json'
       }
-      
-      let strength = 0;
-      
-      // Length check
-      if (password.length >= 8) strength += 25;
-      
-      // Character type checks
-      if (/[A-Z]/.test(password)) strength += 25;
-      if (/[a-z]/.test(password)) strength += 25;
-      if (/[0-9]/.test(password)) strength += 15;
-      if (/[^A-Za-z0-9]/.test(password)) strength += 10;
-      
-      // Cap at 100%
-      strength = Math.min(strength, 100);
-      strengthBar.style.width = strength + '%';
-      
-      // Apply color classes
-      if (strength < 50) {
-        strengthBar.classList.add('strength-weak');
-      } else if (strength < 80) {
-        strengthBar.classList.add('strength-medium');
-      } else {
-        strengthBar.classList.add('strength-strong');
+    };
+
+    if (requiresAuth) {
+      const token = localStorage.getItem('token');
+      if (token) {
+        options.headers['Authorization'] = `Bearer ${token}`;
       }
     }
 
-    function checkForgotPasswordStrength() {
-      const password = document.getElementById('forgotNewPassword').value;
-      const strengthBar = document.getElementById('forgotPasswordStrengthBar');
-      
-      // Reset classes
-      strengthBar.className = 'password-strength-bar';
-      
-      if (password.length === 0) {
-        strengthBar.style.width = '0%';
-        return;
-      }
-      
-      let strength = 0;
-      
-      // Length check
-      if (password.length >= 8) strength += 25;
-      
-      // Character type checks
-      if (/[A-Z]/.test(password)) strength += 25;
-      if (/[a-z]/.test(password)) strength += 25;
-      if (/[0-9]/.test(password)) strength += 15;
-      if (/[^A-Za-z0-9]/.test(password)) strength += 10;
-      
-      // Cap at 100%
-      strength = Math.min(strength, 100);
-      strengthBar.style.width = strength + '%';
-      
-      // Apply color classes
-      if (strength < 50) {
-        strengthBar.classList.add('strength-weak');
-      } else if (strength < 80) {
-        strengthBar.classList.add('strength-medium');
-      } else {
-        strengthBar.classList.add('strength-strong');
-      }
+    if (data && (method === 'POST' || method === 'PUT')) {
+      options.body = JSON.stringify(data);
     }
 
-    // Toggle password visibility
-    function togglePassword(passwordFieldId, eyeIconId) {
-      const passwordInput = document.getElementById(passwordFieldId);
-      const eyeIcon = document.getElementById(eyeIconId);
-      
-      if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        eyeIcon.classList.remove('fa-eye-slash');
-        eyeIcon.classList.add('fa-eye');
-      } else {
-        passwordInput.type = 'password';
-        eyeIcon.classList.remove('fa-eye');
-        eyeIcon.classList.add('fa-eye-slash');
-      }
+    try {
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
+      const result = await response.json();
+      return { success: response.ok, status: response.status, data: result };
+    } catch (error) {
+      console.error('API Error:', error);
+      return { success: false, error: error.message };
     }
+  }
 
-    // Initialize all event listeners
-    function initializeEventListeners() {
-      // Toggle between login, signup, and forgot password forms
-      document.getElementById('showSignup').addEventListener('click', function(e) {
-        e.preventDefault();
-        document.querySelector('.login-form').style.display = 'none';
-        document.querySelector('.signup-form').style.display = 'block';
-        document.querySelector('.forgot-password-form').style.display = 'none';
-        resetSignupFlow();
-      });
+  // Password validation function
+  function validatePassword(password) {
+    const minLength = 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumbers = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+    
+    return password.length >= minLength && 
+           hasUpperCase && 
+           hasLowerCase && 
+           hasNumbers && 
+           hasSpecialChar;
+  }
 
-      document.getElementById('showLogin').addEventListener('click', function(e) {
-        e.preventDefault();
-        document.querySelector('.signup-form').style.display = 'none';
-        document.querySelector('.login-form').style.display = 'block';
-        document.querySelector('.forgot-password-form').style.display = 'none';
-      });
+  // Username validation function
+  function validateUsername(username) {
+    const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
+    return usernameRegex.test(username);
+  }
 
-      document.getElementById('showLoginFromSignup').addEventListener('click', function(e) {
-        e.preventDefault();
-        document.querySelector('.signup-form').style.display = 'none';
-        document.querySelector('.login-form').style.display = 'block';
-        document.querySelector('.forgot-password-form').style.display = 'none';
-      });
-
-      // FIXED: Forgot Password event listener
-      document.getElementById('showForgotPassword').addEventListener('click', function(e) {
-        e.preventDefault();
-        document.querySelector('.login-form').style.display = 'none';
-        document.querySelector('.signup-form').style.display = 'none';
-        document.querySelector('.forgot-password-form').style.display = 'block';
-        resetForgotPasswordFlow();
-      });
-
-      document.getElementById('backToLoginFromForgot').addEventListener('click', function(e) {
-        e.preventDefault();
-        document.querySelector('.forgot-password-form').style.display = 'none';
-        document.querySelector('.login-form').style.display = 'block';
-      });
-
-      // Signup flow
-      document.getElementById('signupDetailsForm').addEventListener('submit', handleSignupDetailsSubmit);
-      document.getElementById('signupOtpForm').addEventListener('submit', handleSignupOtpSubmit);
-      document.getElementById('resendSignupOtp').addEventListener('click', handleResendSignupOtp);
-      document.getElementById('backToSignupDetails').addEventListener('click', handleBackToSignupDetails);
-
-      // Forgot password flow
-      document.getElementById('forgotEmailForm').addEventListener('submit', handleForgotEmailSubmit);
-      document.getElementById('forgotOtpForm').addEventListener('submit', handleForgotOtpSubmit);
-      document.getElementById('resendOtp').addEventListener('click', handleResendOtp);
-      document.getElementById('backToEmailStep').addEventListener('click', handleBackToEmailStep);
-      document.getElementById('backToOtpStep').addEventListener('click', handleBackToOtpStep);
-      document.getElementById('forgotNewPasswordForm').addEventListener('submit', handleForgotNewPasswordSubmit);
-
-      // Login form
-      document.getElementById('loginForm').addEventListener('submit', handleLoginSubmit);
+  // Password strength indicator
+  function checkPasswordStrength() {
+    const password = document.getElementById('signupPassword').value;
+    const strengthBar = document.getElementById('passwordStrengthBar');
+    
+    strengthBar.className = 'password-strength-bar';
+    
+    if (password.length === 0) {
+      strengthBar.style.width = '0%';
+      return;
     }
-
-    // Signup flow management
-    function resetSignupFlow() {
-      // Reset all forms
-      document.getElementById('signupDetailsForm').reset();
-      document.getElementById('signupOtpForm').reset();
-      
-      // Hide all steps except first
-      document.querySelectorAll('.signup-step').forEach(step => {
-        step.style.display = 'none';
-      });
-      document.getElementById('signupDetailsForm').style.display = 'block';
-      
-      // Reset progress indicators
-      document.getElementById('signupStep1').classList.add('active');
-      document.getElementById('signupStep1').classList.remove('completed');
-      document.getElementById('signupStep2').classList.remove('active', 'completed');
-      document.getElementById('signupStep3').classList.remove('active', 'completed');
-      
-      // Clear error messages
-      document.querySelectorAll('.error-message, .success-message, .cooldown-message').forEach(msg => {
-        msg.style.display = 'none';
-      });
-      
-      // Reset password strength
-      document.getElementById('passwordStrengthBar').style.width = '0%';
-      document.getElementById('passwordStrengthBar').className = 'password-strength-bar';
-      
-      // Reset OTP attempts and cooldown
-      signupOtpAttempts = 0;
-      signupCooldownActive = false;
-      document.getElementById('resendSignupOtp').classList.remove('disabled');
-      
-      // Clear any existing timers
-      if (redirectTimer) {
-        clearInterval(redirectTimer);
-      }
-      
-      signupData = {};
+    
+    let strength = 0;
+    if (password.length >= 8) strength += 25;
+    if (/[A-Z]/.test(password)) strength += 25;
+    if (/[a-z]/.test(password)) strength += 25;
+    if (/[0-9]/.test(password)) strength += 15;
+    if (/[^A-Za-z0-9]/.test(password)) strength += 10;
+    
+    strength = Math.min(strength, 100);
+    strengthBar.style.width = strength + '%';
+    
+    if (strength < 50) {
+      strengthBar.classList.add('strength-weak');
+    } else if (strength < 80) {
+      strengthBar.classList.add('strength-medium');
+    } else {
+      strengthBar.classList.add('strength-strong');
     }
+  }
 
-    function showSignupStep(stepNumber) {
-      // Hide all steps
-      document.querySelectorAll('.signup-step').forEach(step => {
-        step.style.display = 'none';
-      });
-      
-      // Show the requested step
-      if (stepNumber === 1) {
-        document.getElementById('signupDetailsForm').style.display = 'block';
-      } else if (stepNumber === 2) {
-        document.getElementById('signupOtpForm').style.display = 'block';
-      } else if (stepNumber === 3) {
-        document.getElementById('signupSuccessForm').style.display = 'block';
-        startRedirectTimer();
-      }
-      
-      // Update progress indicators
-      document.querySelectorAll('#signupStep1, #signupStep2, #signupStep3').forEach((step, index) => {
-        const stepElement = document.getElementById(`signupStep${index + 1}`);
-        if (index + 1 < stepNumber) {
-          stepElement.classList.remove('active');
-          stepElement.classList.add('completed');
-        } else if (index + 1 === stepNumber) {
-          stepElement.classList.add('active');
-          stepElement.classList.remove('completed');
-        } else {
-          stepElement.classList.remove('active', 'completed');
-        }
-      });
+  function checkForgotPasswordStrength() {
+    const password = document.getElementById('forgotNewPassword').value;
+    const strengthBar = document.getElementById('forgotPasswordStrengthBar');
+    
+    strengthBar.className = 'password-strength-bar';
+    
+    if (password.length === 0) {
+      strengthBar.style.width = '0%';
+      return;
     }
+    
+    let strength = 0;
+    if (password.length >= 8) strength += 25;
+    if (/[A-Z]/.test(password)) strength += 25;
+    if (/[a-z]/.test(password)) strength += 25;
+    if (/[0-9]/.test(password)) strength += 15;
+    if (/[^A-Za-z0-9]/.test(password)) strength += 10;
+    
+    strength = Math.min(strength, 100);
+    strengthBar.style.width = strength + '%';
+    
+    if (strength < 50) {
+      strengthBar.classList.add('strength-weak');
+    } else if (strength < 80) {
+      strengthBar.classList.add('strength-medium');
+    } else {
+      strengthBar.classList.add('strength-strong');
+    }
+  }
 
-    // Start redirect timer for success screen
-    function startRedirectTimer() {
-      let timeLeft = 7;
-      const timerElement = document.getElementById('redirectTimer');
+  // Toggle password visibility
+  function togglePassword(passwordFieldId, eyeIconId) {
+    const passwordInput = document.getElementById(passwordFieldId);
+    const eyeIcon = document.getElementById(eyeIconId);
+    
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+      eyeIcon.classList.remove('fa-eye-slash');
+      eyeIcon.classList.add('fa-eye');
+    } else {
+      passwordInput.type = 'password';
+      eyeIcon.classList.remove('fa-eye');
+      eyeIcon.classList.add('fa-eye-slash');
+    }
+  }
+
+  // ==================== LOGIN FUNCTIONALITY ====================
+  
+  async function handleLoginSubmit(e) {
+    e.preventDefault();
+    console.log('🔐 Login form submitted');
+    
+    document.getElementById('loginEmailError').style.display = 'none';
+    document.getElementById('loginPasswordError').style.display = 'none';
+    
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    let isValid = true;
+    
+    if (!email) {
+      document.getElementById('loginEmailError').textContent = 'Email is required';
+      document.getElementById('loginEmailError').style.display = 'block';
+      isValid = false;
+    } else if (!emailRegex.test(email)) {
+      document.getElementById('loginEmailError').textContent = 'Please enter a valid email address';
+      document.getElementById('loginEmailError').style.display = 'block';
+      isValid = false;
+    }
+    
+    if (!password) {
+      document.getElementById('loginPasswordError').textContent = 'Password is required';
+      document.getElementById('loginPasswordError').style.display = 'block';
+      isValid = false;
+    }
+    
+    if (isValid) {
+      // Call backend API
+      const result = await apiCall('/login', 'POST', { email, password });
       
-      redirectTimer = setInterval(() => {
-        timerElement.textContent = `Redirecting in ${timeLeft} seconds...`;
-        timeLeft--;
+      if (result.success && result.data.success) {
+        // Store token and user data
+        localStorage.setItem('token', result.data.token);
+        localStorage.setItem('user', JSON.stringify(result.data.user));
         
-        if (timeLeft < 0) {
-          clearInterval(redirectTimer);
-          resetSignupFlow();
-          document.querySelector('.signup-form').style.display = 'none';
-          document.querySelector('.login-form').style.display = 'block';
-        }
-      }, 1000);
+        // Redirect to home page
+        alert('Login successful! Redirecting to home page...');
+        window.location.href = 'home.html';
+      } else {
+        // Show error message
+        const errorMsg = result.data?.message || 'Login failed. Please try again.';
+        document.getElementById('loginPasswordError').textContent = errorMsg;
+        document.getElementById('loginPasswordError').style.display = 'block';
+      }
     }
+  }
 
-    // Step 1: User details submission
-    function handleSignupDetailsSubmit(e) {
-      e.preventDefault();
+  // ==================== SIGNUP FUNCTIONALITY ====================
+  
+  async function handleSignupDetailsSubmit(e) {
+    e.preventDefault();
+    console.log('🎯 Send OTP button clicked!');
+    
+    // Get the form element directly by ID
+    const form = document.getElementById('signupDetailsForm');
+    
+    const name = document.getElementById('signupUsername').value.trim();
+    const email = document.getElementById('signupEmail').value.trim();
+    const password = document.getElementById('signupPassword').value;
+    
+    console.log('Form data:', { name, email, password });
+    
+    // Clear previous errors
+    document.getElementById('signupUsernameError').style.display = 'none';
+    document.getElementById('signupEmailError').style.display = 'none';
+    document.getElementById('signupPasswordError').style.display = 'none';
+    
+    let isValid = true;
+    
+    // Name validation
+    if (!name) {
+      document.getElementById('signupUsernameError').textContent = 'Name is required';
+      document.getElementById('signupUsernameError').style.display = 'block';
+      isValid = false;
+    } else if (name.length < 2) {
+      document.getElementById('signupUsernameError').textContent = 'Name must be at least 2 characters long';
+      document.getElementById('signupUsernameError').style.display = 'block';
+      isValid = false;
+    }
+    
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email) {
+      document.getElementById('signupEmailError').textContent = 'Email is required';
+      document.getElementById('signupEmailError').style.display = 'block';
+      isValid = false;
+    } else if (!emailRegex.test(email)) {
+      document.getElementById('signupEmailError').textContent = 'Please enter a valid email address';
+      document.getElementById('signupEmailError').style.display = 'block';
+      isValid = false;
+    }
+    
+    // Password validation
+    if (!password) {
+      document.getElementById('signupPasswordError').textContent = 'Password is required';
+      document.getElementById('signupPasswordError').style.display = 'block';
+      isValid = false;
+    } else if (!validatePassword(password)) {
+      document.getElementById('signupPasswordError').textContent = 'Password must be at least 8 characters with uppercase, lowercase, number, and special character';
+      document.getElementById('signupPasswordError').style.display = 'block';
+      isValid = false;
+    }
+    
+    if (!isValid) return;
+    
+    try {
+      // Show loading state
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = 'Sending OTP...';
+      submitBtn.disabled = true;
       
-      const username = document.getElementById('signupUsername').value.trim();
-      const email = document.getElementById('signupEmail').value.trim();
-      const password = document.getElementById('signupPassword').value;
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      console.log('📡 Calling backend signup API...');
       
-      // Clear previous messages
-      document.getElementById('signupUsernameError').style.display = 'none';
-      document.getElementById('signupEmailError').style.display = 'none';
-      document.getElementById('signupPasswordError').style.display = 'none';
+      // Call backend signup endpoint
+      const result = await apiCall('/signup', 'POST', { name, email, password });
       
-      let isValid = true;
+      console.log('Backend response:', result);
       
-      // Username validation
-      if (!username) {
-        document.getElementById('signupUsernameError').textContent = 'Username is required';
-        document.getElementById('signupUsernameError').style.display = 'block';
-        isValid = false;
-      } else if (!validateUsername(username)) {
-        document.getElementById('signupUsernameError').textContent = 'Username must be 3-20 characters and contain only letters, numbers, and underscores';
-        document.getElementById('signupUsernameError').style.display = 'block';
-        isValid = false;
-      }
-      
-      // Email validation
-      if (!email) {
-        document.getElementById('signupEmailError').textContent = 'Email is required';
-        document.getElementById('signupEmailError').style.display = 'block';
-        isValid = false;
-      } else if (!emailRegex.test(email)) {
-        document.getElementById('signupEmailError').textContent = 'Please enter a valid email address';
-        document.getElementById('signupEmailError').style.display = 'block';
-        isValid = false;
-      }
-      
-      // Password validation
-      if (!password) {
-        document.getElementById('signupPasswordError').textContent = 'Password is required';
-        document.getElementById('signupPasswordError').style.display = 'block';
-        isValid = false;
-      } else if (!validatePassword(password)) {
-        document.getElementById('signupPasswordError').textContent = 'Password must be at least 8 characters with uppercase, lowercase, number, and special character';
-        document.getElementById('signupPasswordError').style.display = 'block';
-        isValid = false;
-      }
-      
-      if (isValid) {
-        // Store user data temporarily
-        signupData = { username, email, password };
+      if (result.success && result.data.success) {
+        // Store user data for OTP verification
+        signupData = { name, email, password };
         
-        // In a real application, you would send this to your backend
-        // For demo purposes, we'll simulate sending an OTP
+        console.log('✅ OTP sent successfully! Moving to OTP entry page...');
+        
+        // SUCCESS: Move to OTP entry page
         showSignupStep(2);
-      }
-    }
-
-    // Step 2: OTP verification for signup
-    function handleSignupOtpSubmit(e) {
-      e.preventDefault();
-      
-      // Check if cooldown is active
-      if (signupCooldownActive) {
-        document.getElementById('signupOtpError').textContent = 'Please wait for the cooldown period to end before trying again';
-        document.getElementById('signupOtpError').style.display = 'block';
-        return;
-      }
-      
-      const otp = document.getElementById('signupOtp').value.trim();
-      
-      // Clear previous messages
-      document.getElementById('signupOtpError').style.display = 'none';
-      document.getElementById('signupOtpCooldown').style.display = 'none';
-      
-      if (!otp) {
-        document.getElementById('signupOtpError').textContent = 'OTP is required';
-        document.getElementById('signupOtpError').style.display = 'block';
-        return;
-      }
-      
-      if (otp.length !== 6 || !/^\d+$/.test(otp)) {
-        document.getElementById('signupOtpError').textContent = 'Please enter a valid 6-digit OTP';
-        document.getElementById('signupOtpError').style.display = 'block';
-        signupOtpAttempts++;
-        checkOtpAttempts();
-        return;
-      }
-      
-      // In a real application, you would verify the OTP with your backend
-      // For demo purposes, we'll accept "123456" as the correct OTP
-      if (otp === '123456') {
-        // Successful verification
-        showSignupStep(3);
-      } else {
-        // Incorrect OTP
-        document.getElementById('signupOtpError').textContent = 'Incorrect OTP. Please try again';
-        document.getElementById('signupOtpError').style.display = 'block';
-        signupOtpAttempts++;
-        checkOtpAttempts();
-      }
-    }
-
-    // Check OTP attempts and apply cooldown if needed
-    function checkOtpAttempts() {
-      if (signupOtpAttempts >= 3) {
-        signupCooldownActive = true;
-        document.getElementById('signupOtpCooldown').textContent = `Too many failed attempts. Please wait ${signupCooldownTime} seconds before trying again.`;
-        document.getElementById('signupOtpCooldown').style.display = 'block';
-        document.getElementById('resendSignupOtp').classList.add('disabled');
         
-        // Start cooldown timer
-        let cooldownCounter = signupCooldownTime;
-        const cooldownInterval = setInterval(() => {
-          cooldownCounter--;
-          document.getElementById('signupOtpCooldown').textContent = `Too many failed attempts. Please wait ${cooldownCounter} seconds before trying again.`;
-          
-          if (cooldownCounter <= 0) {
-            clearInterval(cooldownInterval);
-            signupCooldownActive = false;
-            signupOtpAttempts = 0;
-            document.getElementById('signupOtpCooldown').style.display = 'none';
-            document.getElementById('resendSignupOtp').classList.remove('disabled');
-          }
-        }, 1000);
+      } else {
+        // Show backend error message
+        const errorMsg = result.data?.message || 'Failed to send OTP. Please try again.';
+        console.error('Backend error:', errorMsg);
+        
+        // Show error in the form
+        document.getElementById('signupEmailError').textContent = errorMsg;
+        document.getElementById('signupEmailError').style.display = 'block';
       }
+      
+    } catch (error) {
+      console.error('❌ Network error:', error);
+      alert('Network error: ' + error.message);
+    } finally {
+      // Restore button state
+      const submitBtn = form.querySelector('button[type="submit"]');
+      submitBtn.textContent = 'Send OTP';
+      submitBtn.disabled = false;
     }
+  }
 
-    // Resend OTP for signup
-    function handleResendSignupOtp(e) {
-      e.preventDefault();
-      
-      // Check if cooldown is active or link is disabled
-      if (signupCooldownActive || this.classList.contains('disabled')) {
-        return;
-      }
-      
-      // In a real application, you would request a new OTP from your backend
-      alert('New OTP sent to your email');
-      
-      // Clear the OTP input
+  async function handleSignupOtpSubmit(e) {
+    e.preventDefault();
+    console.log('🎯 Verify OTP button clicked!');
+    
+    if (signupCooldownActive) {
+      document.getElementById('signupOtpError').textContent = 'Please wait for the cooldown period to end before trying again';
+      document.getElementById('signupOtpError').style.display = 'block';
+      return;
+    }
+    
+    const otp = document.getElementById('signupOtp').value.trim();
+    
+    document.getElementById('signupOtpError').style.display = 'none';
+    document.getElementById('signupOtpCooldown').style.display = 'none';
+    
+    if (!otp) {
+      document.getElementById('signupOtpError').textContent = 'OTP is required';
+      document.getElementById('signupOtpError').style.display = 'block';
+      return;
+    }
+    
+    if (otp.length !== 6 || !/^\d+$/.test(otp)) {
+      document.getElementById('signupOtpError').textContent = 'Please enter a valid 6-digit OTP';
+      document.getElementById('signupOtpError').style.display = 'block';
+      signupOtpAttempts++;
+      checkOtpAttempts();
+      return;
+    }
+    
+    // Call backend API
+    const result = await apiCall('/verify-otp', 'POST', { 
+      email: signupData.email, 
+      otp: otp 
+    });
+    
+    if (result.success && result.data.success) {
+      // OTP verified successfully
+      console.log('✅ OTP verified! Moving to success page');
+      showSignupStep(3);
+    } else {
+      // Show error
+      const errorMsg = result.data?.message || 'Invalid OTP. Please try again.';
+      document.getElementById('signupOtpError').textContent = errorMsg;
+      document.getElementById('signupOtpError').style.display = 'block';
+      signupOtpAttempts++;
+      checkOtpAttempts();
+    }
+  }
+
+  async function handleResendSignupOtp(e) {
+    e.preventDefault();
+    console.log('🔄 Resend OTP clicked');
+    
+    if (signupCooldownActive || this.classList.contains('disabled')) {
+      return;
+    }
+    
+    // Resend OTP via backend
+    const result = await apiCall('/signup', 'POST', { 
+      name: signupData.name, 
+      email: signupData.email, 
+      password: signupData.password 
+    });
+    
+    if (result.success && result.data.success) {
+      alert('New OTP sent to your email!');
       document.getElementById('signupOtp').value = '';
+    } else {
+      alert('Failed to resend OTP. Please try again.');
     }
+  }
 
-    // Navigation within signup flow
-    function handleBackToSignupDetails(e) {
-      e.preventDefault();
-      showSignupStep(1);
+  // ==================== FORGOT PASSWORD FUNCTIONALITY ====================
+  
+  async function handleForgotEmailSubmit(e) {
+    e.preventDefault();
+    console.log('🔑 Forgot password email submitted');
+    
+    const email = document.getElementById('forgotEmail').value.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    document.getElementById('forgotEmailError').style.display = 'none';
+    document.getElementById('forgotEmailSuccess').style.display = 'none';
+    
+    if (!email) {
+      document.getElementById('forgotEmailError').textContent = 'Email is required';
+      document.getElementById('forgotEmailError').style.display = 'block';
+      return;
     }
-
-    // Forgot password flow management
-    let forgotPasswordEmail = '';
-
-    function resetForgotPasswordFlow() {
-      // Reset all forms
-      document.getElementById('forgotEmailForm').reset();
-      document.getElementById('forgotOtpForm').reset();
-      document.getElementById('forgotNewPasswordForm').reset();
-      
-      // Hide all steps except first
-      document.querySelectorAll('.forgot-step').forEach(step => {
-        step.style.display = 'none';
-      });
-      document.getElementById('forgotEmailForm').style.display = 'block';
-      
-      // Reset progress indicators
-      document.getElementById('forgotStep1').classList.add('active');
-      document.getElementById('forgotStep2').classList.remove('active');
-      document.getElementById('forgotStep3').classList.remove('active');
-      
-      // Clear error messages
-      document.querySelectorAll('.error-message, .success-message').forEach(msg => {
-        msg.style.display = 'none';
-      });
-      
-      // Reset password strength
-      document.getElementById('forgotPasswordStrengthBar').style.width = '0%';
-      document.getElementById('forgotPasswordStrengthBar').className = 'password-strength-bar';
-      
-      forgotPasswordEmail = '';
+    
+    if (!emailRegex.test(email)) {
+      document.getElementById('forgotEmailError').textContent = 'Please enter a valid email address';
+      document.getElementById('forgotEmailError').style.display = 'block';
+      return;
     }
-
-    function showForgotStep(stepNumber) {
-      // Hide all steps
-      document.querySelectorAll('.forgot-step').forEach(step => {
-        step.style.display = 'none';
-      });
-      
-      // Show the requested step
-      if (stepNumber === 1) {
-        document.getElementById('forgotEmailForm').style.display = 'block';
-      } else if (stepNumber === 2) {
-        document.getElementById('forgotOtpForm').style.display = 'block';
-      } else if (stepNumber === 3) {
-        document.getElementById('forgotNewPasswordForm').style.display = 'block';
-      }
-      
-      // Update progress indicators
-      document.querySelectorAll('#forgotStep1, #forgotStep2, #forgotStep3').forEach((step, index) => {
-        if (index < stepNumber) {
-          step.classList.add('active');
-        } else {
-          step.classList.remove('active');
-        }
-      });
-    }
-
-    // Step 1: Email submission for forgot password
-    function handleForgotEmailSubmit(e) {
-      e.preventDefault();
-      
-      const email = document.getElementById('forgotEmail').value.trim();
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      
-      // Clear previous messages
-      document.getElementById('forgotEmailError').style.display = 'none';
-      document.getElementById('forgotEmailSuccess').style.display = 'none';
-      
-      if (!email) {
-        document.getElementById('forgotEmailError').textContent = 'Email is required';
-        document.getElementById('forgotEmailError').style.display = 'block';
-        return;
-      }
-      
-      if (!emailRegex.test(email)) {
-        document.getElementById('forgotEmailError').textContent = 'Please enter a valid email address';
-        document.getElementById('forgotEmailError').style.display = 'block';
-        return;
-      }
-      
-      // In a real application, you would send this to your backend
-      // For demo purposes, we'll simulate sending an OTP
+    
+    // Call backend API
+    const result = await apiCall('/forgot-password', 'POST', { email });
+    
+    if (result.success && result.data.success) {
       forgotPasswordEmail = email;
       document.getElementById('forgotEmailSuccess').textContent = 'OTP sent to your email address';
       document.getElementById('forgotEmailSuccess').style.display = 'block';
       
-      // Move to next step after a short delay
       setTimeout(() => {
         showForgotStep(2);
       }, 1500);
+    } else {
+      const errorMsg = result.data?.message || 'Failed to send OTP. Please try again.';
+      document.getElementById('forgotEmailError').textContent = errorMsg;
+      document.getElementById('forgotEmailError').style.display = 'block';
     }
+  }
 
-    // Step 2: OTP verification for forgot password
-    function handleForgotOtpSubmit(e) {
-      e.preventDefault();
-      
-      const otp = document.getElementById('forgotOtp').value.trim();
-      
-      // Clear previous messages
-      document.getElementById('forgotOtpError').style.display = 'none';
-      document.getElementById('forgotOtpSuccess').style.display = 'none';
-      
-      if (!otp) {
-        document.getElementById('forgotOtpError').textContent = 'OTP is required';
-        document.getElementById('forgotOtpError').style.display = 'block';
-        return;
-      }
-      
-      if (otp.length !== 6 || !/^\d+$/.test(otp)) {
-        document.getElementById('forgotOtpError').textContent = 'Please enter a valid 6-digit OTP';
-        document.getElementById('forgotOtpError').style.display = 'block';
-        return;
-      }
-      
-      // In a real application, you would verify the OTP with your backend
-      // For demo purposes, we'll accept any 6-digit OTP
-      document.getElementById('forgotOtpSuccess').textContent = 'OTP verified successfully';
-      document.getElementById('forgotOtpSuccess').style.display = 'block';
-      
-      // Move to next step after a short delay
-      setTimeout(() => {
-        showForgotStep(3);
-      }, 1500);
+  async function handleForgotOtpSubmit(e) {
+    e.preventDefault();
+    console.log('🔑 Forgot password OTP submitted');
+    
+    const otp = document.getElementById('forgotOtp').value.trim();
+    
+    document.getElementById('forgotOtpError').style.display = 'none';
+    document.getElementById('forgotOtpSuccess').style.display = 'none';
+    
+    if (!otp) {
+      document.getElementById('forgotOtpError').textContent = 'OTP is required';
+      document.getElementById('forgotOtpError').style.display = 'block';
+      return;
     }
+    
+    if (otp.length !== 6 || !/^\d+$/.test(otp)) {
+      document.getElementById('forgotOtpError').textContent = 'Please enter a valid 6-digit OTP';
+      document.getElementById('forgotOtpError').style.display = 'block';
+      return;
+    }
+    
+    // Store OTP for password reset
+    forgotPasswordOtp = otp;
+    
+    document.getElementById('forgotOtpSuccess').textContent = 'OTP verified successfully';
+    document.getElementById('forgotOtpSuccess').style.display = 'block';
+    
+    setTimeout(() => {
+      showForgotStep(3);
+    }, 1500);
+  }
 
-    // Resend OTP functionality for forgot password
-    function handleResendOtp(e) {
-      e.preventDefault();
-      
-      // In a real application, you would request a new OTP from your backend
+  async function handleResendOtp(e) {
+    e.preventDefault();
+    console.log('🔄 Resend forgot password OTP');
+    
+    const result = await apiCall('/forgot-password', 'POST', { email: forgotPasswordEmail });
+    
+    if (result.success && result.data.success) {
       document.getElementById('forgotOtpSuccess').textContent = 'New OTP sent to your email';
       document.getElementById('forgotOtpSuccess').style.display = 'block';
-      
-      // Clear the OTP input
       document.getElementById('forgotOtp').value = '';
+    } else {
+      alert('Failed to resend OTP. Please try again.');
     }
+  }
 
-    // Step 3: New password submission for forgot password
-    function handleForgotNewPasswordSubmit(e) {
-      e.preventDefault();
+  async function handleForgotNewPasswordSubmit(e) {
+    e.preventDefault();
+    console.log('🔑 New password submitted');
+    
+    const newPassword = document.getElementById('forgotNewPassword').value;
+    const confirmPassword = document.getElementById('forgotConfirmPassword').value;
+    
+    document.getElementById('forgotNewPasswordError').style.display = 'none';
+    document.getElementById('forgotConfirmPasswordError').style.display = 'none';
+    
+    let isValid = true;
+    
+    if (!newPassword) {
+      document.getElementById('forgotNewPasswordError').textContent = 'New password is required';
+      document.getElementById('forgotNewPasswordError').style.display = 'block';
+      isValid = false;
+    } else if (!validatePassword(newPassword)) {
+      document.getElementById('forgotNewPasswordError').textContent = 'Password must be at least 8 characters with uppercase, lowercase, number, and special character';
+      document.getElementById('forgotNewPasswordError').style.display = 'block';
+      isValid = false;
+    }
+    
+    if (!confirmPassword) {
+      document.getElementById('forgotConfirmPasswordError').textContent = 'Please confirm your password';
+      document.getElementById('forgotConfirmPasswordError').style.display = 'block';
+      isValid = false;
+    } else if (newPassword !== confirmPassword) {
+      document.getElementById('forgotConfirmPasswordError').textContent = 'Passwords do not match';
+      document.getElementById('forgotConfirmPasswordError').style.display = 'block';
+      isValid = false;
+    }
+    
+    if (isValid) {
+      // Call backend API
+      const result = await apiCall('/reset-password', 'POST', { 
+        email: forgotPasswordEmail,
+        otp: forgotPasswordOtp,
+        newPassword: newPassword
+      });
       
-      const newPassword = document.getElementById('forgotNewPassword').value;
-      const confirmPassword = document.getElementById('forgotConfirmPassword').value;
-      
-      // Clear previous messages
-      document.getElementById('forgotNewPasswordError').style.display = 'none';
-      document.getElementById('forgotConfirmPasswordError').style.display = 'none';
-      
-      let isValid = true;
-      
-      if (!newPassword) {
-        document.getElementById('forgotNewPasswordError').textContent = 'New password is required';
-        document.getElementById('forgotNewPasswordError').style.display = 'block';
-        isValid = false;
-      } else if (!validatePassword(newPassword)) {
-        document.getElementById('forgotNewPasswordError').textContent = 'Password must be at least 8 characters with uppercase, lowercase, number, and special character';
-        document.getElementById('forgotNewPasswordError').style.display = 'block';
-        isValid = false;
-      }
-      
-      if (!confirmPassword) {
-        document.getElementById('forgotConfirmPasswordError').textContent = 'Please confirm your password';
-        document.getElementById('forgotConfirmPasswordError').style.display = 'block';
-        isValid = false;
-      } else if (newPassword !== confirmPassword) {
-        document.getElementById('forgotConfirmPasswordError').textContent = 'Passwords do not match';
-        document.getElementById('forgotConfirmPasswordError').style.display = 'block';
-        isValid = false;
-      }
-      
-      if (isValid) {
-        // In a real application, you would send the new password to your backend
+      if (result.success && result.data.success) {
         alert('Password reset successfully! You can now login with your new password.');
-        
-        // Reset the flow and go back to login
         resetForgotPasswordFlow();
         document.querySelector('.forgot-password-form').style.display = 'none';
         document.querySelector('.login-form').style.display = 'block';
+      } else {
+        const errorMsg = result.data?.message || 'Failed to reset password. Please try again.';
+        document.getElementById('forgotNewPasswordError').textContent = errorMsg;
+        document.getElementById('forgotNewPasswordError').style.display = 'block';
+      }
+    }
+  }
+
+  // ==================== FLOW MANAGEMENT ====================
+  
+  function initializeEventListeners() {
+    console.log('🔧 Initializing event listeners...');
+    
+    // Safe event listener function
+    function safeAddListener(id, event, handler) {
+      const element = document.getElementById(id);
+      if (element) {
+        element.addEventListener(event, handler);
+        console.log(`✅ Added ${event} listener to #${id}`);
+        return true;
+      } else {
+        console.log(`❌ Element #${id} not found - skipping`);
+        return false;
       }
     }
 
-    // Navigation within forgot password flow
-    function handleBackToEmailStep(e) {
+    // ========== FORM NAVIGATION ==========
+    
+    // Switch to Signup form
+    safeAddListener('showSignup', 'click', function(e) {
       e.preventDefault();
-      showForgotStep(1);
-    }
-
-    function handleBackToOtpStep(e) {
-      e.preventDefault();
-      showForgotStep(2);
-    }
-
-    // Login form validation and submission
-    function handleLoginSubmit(e) {
-      e.preventDefault();
-      
-      // Clear previous errors
-      document.getElementById('loginEmailError').style.display = 'none';
-      document.getElementById('loginPasswordError').style.display = 'none';
-      
-      const email = document.getElementById('loginEmail').value.trim();
-      const password = document.getElementById('loginPassword').value;
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      
-      let isValid = true;
-      
-      if (!email) {
-        document.getElementById('loginEmailError').textContent = 'Email is required';
-        document.getElementById('loginEmailError').style.display = 'block';
-        isValid = false;
-      } else if (!emailRegex.test(email)) {
-        document.getElementById('loginEmailError').textContent = 'Please enter a valid email address';
-        document.getElementById('loginEmailError').style.display = 'block';
-        isValid = false;
-      }
-      
-      if (!password) {
-        document.getElementById('loginPasswordError').textContent = 'Password is required';
-        document.getElementById('loginPasswordError').style.display = 'block';
-        isValid = false;
-      }
-      
-      if (isValid) {
-        // In a real application, you would send this to your backend
-        alert('Login submitted with email: ' + email);
-        // Reset form
-        document.getElementById('loginForm').reset();
-      }
-    }
-
-    // Initialize the application when DOM is loaded
-    document.addEventListener('DOMContentLoaded', function() {
-      initializeEventListeners();
+      console.log('🔄 Switching to signup form');
+      document.querySelector('.login-form').style.display = 'none';
+      document.querySelector('.signup-form').style.display = 'block';
+      document.querySelector('.forgot-password-form').style.display = 'none';
+      resetSignupFlow();
     });
-  </script>
+
+    // Switch to Login from other pages
+    safeAddListener('showLoginFromSignup', 'click', function(e) {
+      e.preventDefault();
+      console.log('🔄 Switching to login form from signup');
+      document.querySelector('.signup-form').style.display = 'none';
+      document.querySelector('.login-form').style.display = 'block';
+      document.querySelector('.forgot-password-form').style.display = 'none';
+    });
+
+    safeAddListener('showForgotPassword', 'click', function(e) {
+      e.preventDefault();
+      console.log('🔄 Switching to forgot password form');
+      document.querySelector('.login-form').style.display = 'none';
+      document.querySelector('.signup-form').style.display = 'none';
+      document.querySelector('.forgot-password-form').style.display = 'block';
+      resetForgotPasswordFlow();
+    });
+
+    safeAddListener('backToLoginFromForgot', 'click', function(e) {
+      e.preventDefault();
+      console.log('🔄 Switching back to login from forgot password');
+      document.querySelector('.forgot-password-form').style.display = 'none';
+      document.querySelector('.login-form').style.display = 'block';
+    });
+
+    // ========== FORM SUBMISSIONS ==========
+    
+    // CRITICAL: Make sure these are connected
+    const signupConnected = safeAddListener('signupDetailsForm', 'submit', handleSignupDetailsSubmit);
+    const otpConnected = safeAddListener('signupOtpForm', 'submit', handleSignupOtpSubmit);
+    const loginConnected = safeAddListener('loginForm', 'submit', handleLoginSubmit);
+    
+    console.log('📊 Form connection summary:');
+    console.log('  - Signup form:', signupConnected ? '✅ CONNECTED' : '❌ MISSING');
+    console.log('  - OTP form:', otpConnected ? '✅ CONNECTED' : '❌ MISSING'); 
+    console.log('  - Login form:', loginConnected ? '✅ CONNECTED' : '❌ MISSING');
+
+    // Optional buttons
+    safeAddListener('resendSignupOtp', 'click', handleResendSignupOtp);
+    safeAddListener('backToSignupDetails', 'click', handleBackToSignupDetails);
+    
+    safeAddListener('forgotEmailForm', 'submit', handleForgotEmailSubmit);
+    safeAddListener('forgotOtpForm', 'submit', handleForgotOtpSubmit);
+    safeAddListener('resendOtp', 'click', handleResendOtp);
+    safeAddListener('backToEmailStep', 'click', handleBackToEmailStep);
+    safeAddListener('backToOtpStep', 'click', handleBackToOtpStep);
+    safeAddListener('forgotNewPasswordForm', 'submit', handleForgotNewPasswordSubmit);
+
+    console.log('✅ Event listener initialization completed');
+  }
+
+  function resetSignupFlow() {
+    console.log('🔄 Resetting signup flow');
+    document.getElementById('signupDetailsForm').reset();
+    document.getElementById('signupOtpForm').reset();
+    
+    document.querySelectorAll('.signup-step').forEach(step => step.style.display = 'none');
+    document.getElementById('signupDetailsForm').style.display = 'block';
+    
+    document.getElementById('signupStep1').classList.add('active');
+    document.getElementById('signupStep1').classList.remove('completed');
+    document.getElementById('signupStep2').classList.remove('active', 'completed');
+    document.getElementById('signupStep3').classList.remove('active', 'completed');
+    
+    document.querySelectorAll('.error-message, .success-message, .cooldown-message').forEach(msg => {
+      msg.style.display = 'none';
+    });
+    
+    document.getElementById('passwordStrengthBar').style.width = '0%';
+    document.getElementById('passwordStrengthBar').className = 'password-strength-bar';
+    
+    signupOtpAttempts = 0;
+    signupCooldownActive = false;
+    const resendBtn = document.getElementById('resendSignupOtp');
+    if (resendBtn) resendBtn.classList.remove('disabled');
+    
+    if (redirectTimer) clearInterval(redirectTimer);
+    signupData = {};
+  }
+
+  function showSignupStep(stepNumber) {
+    console.log(`🔄 Moving to signup step: ${stepNumber}`);
+    
+    document.querySelectorAll('.signup-step').forEach(step => step.style.display = 'none');
+    
+    if (stepNumber === 1) {
+      document.getElementById('signupDetailsForm').style.display = 'block';
+    } else if (stepNumber === 2) {
+      document.getElementById('signupOtpForm').style.display = 'block';
+    } else if (stepNumber === 3) {
+      document.getElementById('signupSuccessForm').style.display = 'block';
+      startRedirectTimer();
+    }
+    
+    document.querySelectorAll('#signupStep1, #signupStep2, #signupStep3').forEach((step, index) => {
+      const stepElement = document.getElementById(`signupStep${index + 1}`);
+      if (index + 1 < stepNumber) {
+        stepElement.classList.remove('active');
+        stepElement.classList.add('completed');
+      } else if (index + 1 === stepNumber) {
+        stepElement.classList.add('active');
+        stepElement.classList.remove('completed');
+      } else {
+        stepElement.classList.remove('active', 'completed');
+      }
+    });
+  }
+
+  function startRedirectTimer() {
+    let timeLeft = 7;
+    const timerElement = document.getElementById('redirectTimer');
+    
+    redirectTimer = setInterval(() => {
+      timerElement.textContent = `Redirecting in ${timeLeft} seconds...`;
+      timeLeft--;
+      
+      if (timeLeft < 0) {
+        clearInterval(redirectTimer);
+        resetSignupFlow();
+        document.querySelector('.signup-form').style.display = 'none';
+        document.querySelector('.login-form').style.display = 'block';
+      }
+    }, 1000);
+  }
+
+  function checkOtpAttempts() {
+    if (signupOtpAttempts >= 3) {
+      signupCooldownActive = true;
+      document.getElementById('signupOtpCooldown').textContent = `Too many failed attempts. Please wait ${signupCooldownTime} seconds before trying again.`;
+      document.getElementById('signupOtpCooldown').style.display = 'block';
+      document.getElementById('resendSignupOtp').classList.add('disabled');
+      
+      let cooldownCounter = signupCooldownTime;
+      const cooldownInterval = setInterval(() => {
+        cooldownCounter--;
+        document.getElementById('signupOtpCooldown').textContent = `Too many failed attempts. Please wait ${cooldownCounter} seconds before trying again.`;
+        
+        if (cooldownCounter <= 0) {
+          clearInterval(cooldownInterval);
+          signupCooldownActive = false;
+          signupOtpAttempts = 0;
+          document.getElementById('signupOtpCooldown').style.display = 'none';
+          document.getElementById('resendSignupOtp').classList.remove('disabled');
+        }
+      }, 1000);
+    }
+  }
+
+  function handleBackToSignupDetails(e) {
+    e.preventDefault();
+    console.log('🔄 Back to signup details');
+    showSignupStep(1);
+  }
+
+  function resetForgotPasswordFlow() {
+    console.log('🔄 Resetting forgot password flow');
+    document.getElementById('forgotEmailForm').reset();
+    document.getElementById('forgotOtpForm').reset();
+    document.getElementById('forgotNewPasswordForm').reset();
+    
+    document.querySelectorAll('.forgot-step').forEach(step => step.style.display = 'none');
+    document.getElementById('forgotEmailForm').style.display = 'block';
+    
+    document.getElementById('forgotStep1').classList.add('active');
+    document.getElementById('forgotStep2').classList.remove('active');
+    document.getElementById('forgotStep3').classList.remove('active');
+    
+    document.querySelectorAll('.error-message, .success-message').forEach(msg => {
+      msg.style.display = 'none';
+    });
+    
+    document.getElementById('forgotPasswordStrengthBar').style.width = '0%';
+    document.getElementById('forgotPasswordStrengthBar').className = 'password-strength-bar';
+    
+    forgotPasswordEmail = '';
+    forgotPasswordOtp = '';
+  }
+
+  function showForgotStep(stepNumber) {
+    console.log(`🔄 Moving to forgot password step: ${stepNumber}`);
+    
+    document.querySelectorAll('.forgot-step').forEach(step => step.style.display = 'none');
+    
+    if (stepNumber === 1) {
+      document.getElementById('forgotEmailForm').style.display = 'block';
+    } else if (stepNumber === 2) {
+      document.getElementById('forgotOtpForm').style.display = 'block';
+    } else if (stepNumber === 3) {
+      document.getElementById('forgotNewPasswordForm').style.display = 'block';
+    }
+    
+    document.querySelectorAll('#forgotStep1, #forgotStep2, #forgotStep3').forEach((step, index) => {
+      if (index < stepNumber) {
+        step.classList.add('active');
+      } else {
+        step.classList.remove('active');
+      }
+    });
+  }
+
+  function handleBackToEmailStep(e) {
+    e.preventDefault();
+    console.log('🔄 Back to email step');
+    showForgotStep(1);
+  }
+
+  function handleBackToOtpStep(e) {
+    e.preventDefault();
+    console.log('🔄 Back to OTP step');
+    showForgotStep(2);
+  }
+
+  // ==================== INITIALIZATION ====================
+
+  // Initialize on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 DOM fully loaded');
+    
+    // Test form connections immediately
+    const signupForm = document.getElementById('signupDetailsForm');
+    const loginForm = document.getElementById('loginForm');
+    
+    console.log('📝 Signup form found:', !!signupForm);
+    console.log('📝 Login form found:', !!loginForm);
+    
+    if (signupForm) {
+      signupForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        console.log('🎯 SIGNUP FORM SUBMITTED! This should happen when clicking Send OTP');
+      });
+    }
+    
+    // Initialize all event listeners
+    initializeEventListeners();
+    
+    // Check if user is already logged in
+    const token = localStorage.getItem('token');
+    if (token) {
+      console.log('🔐 User is already logged in');
+    }
+  });
+</script>
 </body>
 </html>
