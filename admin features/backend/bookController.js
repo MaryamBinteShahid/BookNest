@@ -1,211 +1,175 @@
-const axios = require('axios');
-
-const { getConnection } = require('./database');
+const axios = require('axios')
+const { supabase } = require('./database');
 const { v4: uuidv4 } = require('uuid');
-const oracledb = require('oracledb');
-
-oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;  
-oracledb.autoCommit = true;
 
 
-// View all books
+// ---------------------------
+// Books (admin-managed)
+// ---------------------------
+
+/**
+ * View all books (from your books table)
+ */
 async function viewBooks(req, res) {
-    let connection;
-
-    try {
-        connection = await getConnection();
-
-        const result = await connection.execute(
-            `SELECT book_id, title, description, subjects, cover_url, first_publish_year, isbn
-             FROM books
-             ORDER BY created_at DESC`,
-            [],
-            { 
-                outFormat: oracledb.OUT_FORMAT_OBJECT,
-                fetchInfo: {
-                    "DESCRIPTION": { type: oracledb.STRING },
-                    "SUBJECTS": { type: oracledb.STRING }
-                }
-            }
-        );
-
-        // Map to clean objects
-        const books = result.rows.map(row => ({
-            book_id: row.BOOK_ID,
-            title: row.TITLE,
-            description: row.DESCRIPTION,
-            subjects: row.SUBJECTS,
-            cover_url: row.COVER_URL,
-            first_publish_year: row.FIRST_PUBLISH_YEAR,
-            isbn: row.ISBN
-        }));
-
-        res.json({
-            message: 'Books retrieved successfully',
-            books: books
-        });
-
-    } catch (err) {
-        console.error('Error retrieving books:', err);
-        res.status(500).json({ message: 'Error retrieving books' });
-    } finally {
-        if (connection) {
-            try {
-                await connection.close();
-            } catch (err) {
-                console.error('Error closing connection:', err);
-            }
-        }
-    }
-}
-
-
-// Search books by name (from your database)
-async function searchBooksByName(req, res) {
-    const query = req.query.q;
-    if (!query) {
-        return res.status(400).json({ error: 'Query parameter "q" is required' });
-    }
-
-    let conn;
-
-    try {
-        conn = await getConnection();
-        const result = await conn.execute(
-            `SELECT book_id, title, description, subjects, cover_url, first_publish_year, isbn 
-             FROM books 
-             WHERE LOWER(title) LIKE LOWER(:query)`,
-            { query: `%${query}%` },
-            { 
-                outFormat: oracledb.OUT_FORMAT_OBJECT,
-                fetchInfo: {
-                    "DESCRIPTION": { type: oracledb.STRING },
-                    "SUBJECTS": { type: oracledb.STRING }
-                }
-            }
-        );
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({ message: 'No books found' });
-        }
-
-        // Map to clean objects
-        const books = result.rows.map(row => ({
-            book_id: row.BOOK_ID,
-            title: row.TITLE,
-            description: row.DESCRIPTION,
-            subjects: row.SUBJECTS,
-            cover_url: row.COVER_URL,
-            first_publish_year: row.FIRST_PUBLISH_YEAR,
-            isbn: row.ISBN
-        }));
-
-        res.json({ books });
-    } catch (err) {
-        console.error('Error searching books:', err);
-        res.status(500).json({ error: 'Failed to search books' });
-    } finally {
-        if (conn) {
-            try {
-                await conn.close();
-            } catch (err) {
-                console.error('Error closing connection:', err);
-            }
-        }
-    }
-}
-
-// Add Book
-async function addBook(req, res) {
-    const { title, description, subjects, cover_url, first_publish_year, isbn } = req.body;
-    if (!title) return res.status(400).json({ error: 'Title is required' });
-
-    const bookId = uuidv4();
-    const conn = await getConnection();
-
-    try {
-        await conn.execute(
-            `INSERT INTO books (book_id, title, description, subjects, cover_url, first_publish_year, isbn) 
-             VALUES (:bookId, :title, :description, :subjects, :cover_url, :first_publish_year, :isbn)`,
-            { bookId, title, description, subjects, cover_url, first_publish_year, isbn },
-            { autoCommit: true }
-        );
-        res.json({ message: 'Book added successfully', book_id: bookId });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to add book' });
-    } finally {
-        conn.close();
-    }
-}
-
-// Edit Book
-async function editBook(req, res) {
-  const bookId = req.params.bookId;
-  const updates = req.body;
-
-  const conn = await getConnection();
-
   try {
-    let updateQuery = 'UPDATE books SET ';
-    const updateFields = [];
-    const bindVars = { bookId };
+    const { data: books, error } = await supabase
+      .from('books')
+      .select('book_id, title, author, description, subjects, cover_url, first_publish_year, isbn, created_at, updated_at')
+      .order('created_at', { ascending: false });
 
-    for (const key in updates) {
-      updateFields.push(`${key} = :${key}`);
-      bindVars[key] = updates[key];
+    if (error) {
+      console.error('Supabase error (viewBooks):', error);
+      return res.status(500).json({ message: 'Error retrieving books' });
     }
 
-    if (updateFields.length === 0) {
-      return res.status(400).json({ error: 'No fields provided to update' });
-    }
-
-    updateQuery += updateFields.join(', ') + ' WHERE book_id = :bookId';
-
-    const result = await conn.execute(updateQuery, bindVars, { autoCommit: true });
-
-    if (result.rowsAffected === 0) {
-      return res.status(404).json({ error: 'Book not found' });
-    }
-
-    res.json({ message: 'Book updated successfully' });
+    res.json({ message: 'Books retrieved successfully', books });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to update book' });
-  } finally {
-    conn.close();
+    console.error('viewBooks error:', err);
+    res.status(500).json({ message: 'Error retrieving books' });
   }
 }
 
-
-async function deleteBook(req, res) {
-  const bookId = req.params.bookId;
-  const conn = await getConnection();
+/**
+ * Search books by name (database)
+ * GET /books/search?q=...
+ */
+async function searchBooksByName(req, res) {
+  const q = req.query.q;
+  if (!q) return res.status(400).json({ message: 'Query parameter "q" is required' });
 
   try {
-    // Capture the result of the execute call
-    const result = await conn.execute(
-      'DELETE FROM books WHERE book_id = :bookId',
-      { bookId },
-      { autoCommit: true }
-    );
+    // Use ilike for case-insensitive search in Postgres
+    const { data: books, error } = await supabase
+      .from('books')
+      .select('book_id, title, author,description, subjects, cover_url, first_publish_year, isbn')
+      .ilike('title', `%${q}%`)
+      .order('created_at', { ascending: false });
 
-    if (result.rowsAffected === 0) {
+    if (error) {
+      console.error('Supabase error (searchBooksByName):', error);
+      return res.status(500).json({ message: 'Error searching books' });
+    }
+
+    if (!books || books.length === 0) {
+      return res.status(404).json({ message: 'No books found' });
+    }
+
+    res.json({ message: 'Books retrieved successfully', books });
+  } catch (err) {
+    console.error('searchBooksByName error:', err);
+    res.status(500).json({ message: 'Error searching books' });
+  }
+}
+
+/**
+ * Add book
+ */
+async function addBook(req, res) {
+  try {
+    const { title,author, description, subjects, cover_url, first_publish_year, isbn } = req.body;
+    if (!title) return res.status(400).json({ error: 'Title is required' });
+
+    const book_id = uuidv4();
+    const { data, error } = await supabase
+      .from('books')
+      .insert([{
+        book_id,
+        title,
+        author,
+        description: description || null,
+        subjects: Array.isArray(subjects) ? subjects : (subjects ? subjects : null),
+        cover_url: cover_url || null,
+        first_publish_year: first_publish_year || null,
+        isbn: isbn || null,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      }])
+      .select();
+
+    if (error) {
+      console.error('Supabase error (addBook):', error);
+      return res.status(500).json({ error: 'Failed to add book' });
+    }
+
+    res.json({ message: 'Book added successfully', book: data[0] });
+  } catch (err) {
+    console.error('addBook error:', err);
+    res.status(500).json({ error: 'Failed to add book' });
+  }
+}
+
+/**
+ * Edit book (partial updates allowed)
+ */
+async function editBook(req, res) {
+  const bookId = req.params.bookId;
+  const updates = req.body || {};
+
+  // Don't allow changing book_id
+  delete updates.book_id;
+
+  if (Object.keys(updates).length === 0) {
+    return res.status(400).json({ error: 'No fields provided to update' });
+  }
+
+  // Normalize subjects if provided as array/string
+  if (updates.subjects && !Array.isArray(updates.subjects)) {
+    updates.subjects = updates.subjects;
+  }
+
+  updates.updated_at = new Date().toISOString();
+
+  try {
+    const { data, error } = await supabase
+      .from('books')
+      .update(updates)
+      .eq('book_id', bookId)
+      .select();
+
+    if (error) {
+      console.error('Supabase error (editBook):', error);
+      return res.status(500).json({ error: 'Failed to update book' });
+    }
+
+    if (!data || data.length === 0) {
+      return res.status(404).json({ error: 'Book not found' });
+    }
+
+    res.json({ message: 'Book updated successfully', book: data[0] });
+  } catch (err) {
+    console.error('editBook error:', err);
+    res.status(500).json({ error: 'Failed to update book' });
+  }
+}
+
+/**
+ * Delete book
+ */
+async function deleteBook(req, res) {
+  const bookId = req.params.bookId;
+
+  try {
+    const { data, error } = await supabase
+      .from('books')
+      .delete()
+      .eq('book_id', bookId)
+      .select();
+
+    if (error) {
+      console.error('Supabase error (deleteBook):', error);
+      return res.status(500).json({ error: 'Failed to delete book' });
+    }
+
+    if (!data || data.length === 0) {
       return res.status(404).json({ error: 'Book not found' });
     }
 
     res.json({ message: 'Book deleted successfully' });
   } catch (err) {
-    console.error(err);
+    console.error('deleteBook error:', err);
     res.status(500).json({ error: 'Failed to delete book' });
-  } finally {
-    await conn.close();
   }
 }
-
-
-
-
 // Controller to search books and return full details (without author info)
 async function searchBooks(req, res) {
     const query = req.query.q;
@@ -224,6 +188,7 @@ async function searchBooks(req, res) {
 
             books.push({
                 title: workResp.data.title,
+                author: workResp.data.title,
                 description: workResp.data.description
                     ? (typeof workResp.data.description === 'string' 
                         ? workResp.data.description 
