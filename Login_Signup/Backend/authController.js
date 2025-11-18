@@ -65,6 +65,29 @@ async function signup(req, res) {
 
         if (userInsertError) {
             console.error('User insert error:', userInsertError);
+            
+            // Handle unique constraint violation for username
+            if (userInsertError.code === '23505') {
+                // PostgreSQL unique violation code
+                const errorMessage = userInsertError.message || '';
+                
+                // Check if it's a username constraint violation
+                if (errorMessage.includes('name') || errorMessage.includes('username') || 
+                    errorMessage.includes('users_name_key') || errorMessage.includes('unique_username')) {
+                    return res.status(409).json({
+                        success: false,
+                        message: 'Username already taken'
+                    });
+                }
+                
+                // If we can't determine the specific constraint, return generic message
+                return res.status(409).json({
+                    success: false,
+                    message: 'Username or email already exists'
+                });
+            }
+            
+            // For other database errors, throw to be caught by the general error handler
             throw userInsertError;
         }
 
@@ -457,17 +480,79 @@ async function updateName(req, res) {
             });
         }
 
+        const trimmedName = name.trim();
+
+        // Check if the new name is the same as current name
+        const { data: currentUser, error: currentUserError } = await supabase
+            .from('users')
+            .select('name')
+            .eq('user_id', userId)
+            .single();
+
+        if (currentUserError || !currentUser) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        if (currentUser.name === trimmedName) {
+            return res.status(400).json({
+                success: false,
+                message: 'New name cannot be the same as current name'
+            });
+        }
+
+        // Check if username already exists (excluding current user)
+        const { data: existingUser, error: checkError } = await supabase
+            .from('users')
+            .select('user_id')
+            .eq('name', trimmedName)
+            .neq('user_id', userId) // Exclude current user
+            .single();
+
+        if (existingUser) {
+            return res.status(409).json({
+                success: false,
+                message: 'Username already taken'
+            });
+        }
+
         // Update name - Supabase version
         const { data, error } = await supabase
             .from('users')
             .update({ 
-                name: name.trim(),
+                name: trimmedName,
                 updated_at: new Date().toISOString()
             })
             .eq('user_id', userId)
             .select();
 
-        if (error || !data || data.length === 0) {
+        if (error) {
+            console.error('Update name error:', error);
+            
+            // Handle unique constraint violation for username
+            if (error.code === '23505') {
+                // PostgreSQL unique violation code
+                const errorMessage = error.message || '';
+                
+                // Check if it's a username constraint violation
+                if (errorMessage.includes('name') || errorMessage.includes('username') || 
+                    errorMessage.includes('users_name_key') || errorMessage.includes('unique_username')) {
+                    return res.status(409).json({
+                        success: false,
+                        message: 'Username already taken'
+                    });
+                }
+            }
+            
+            return res.status(500).json({
+                success: false,
+                message: 'Database error while updating name'
+            });
+        }
+
+        if (!data || data.length === 0) {
             return res.status(404).json({
                 success: false,
                 message: 'User not found'
@@ -477,7 +562,7 @@ async function updateName(req, res) {
         res.status(200).json({
             success: true,
             message: 'Name updated successfully',
-            name: name.trim()
+            name: trimmedName
         });
 
     } catch (error) {

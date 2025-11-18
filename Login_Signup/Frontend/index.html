@@ -862,7 +862,7 @@
 
   // ==================== LOGIN FUNCTIONALITY ====================
   
-  async function handleLoginSubmit(e) {
+ async function handleLoginSubmit(e) {
     e.preventDefault();
     console.log('🔐 Login form submitted');
     
@@ -876,41 +876,50 @@
     let isValid = true;
     
     if (!email) {
-      document.getElementById('loginEmailError').textContent = 'Email is required';
-      document.getElementById('loginEmailError').style.display = 'block';
-      isValid = false;
+        document.getElementById('loginEmailError').textContent = 'Email is required';
+        document.getElementById('loginEmailError').style.display = 'block';
+        isValid = false;
     } else if (!emailRegex.test(email)) {
-      document.getElementById('loginEmailError').textContent = 'Please enter a valid email address';
-      document.getElementById('loginEmailError').style.display = 'block';
-      isValid = false;
+        document.getElementById('loginEmailError').textContent = 'Please enter a valid email address';
+        document.getElementById('loginEmailError').style.display = 'block';
+        isValid = false;
     }
     
     if (!password) {
-      document.getElementById('loginPasswordError').textContent = 'Password is required';
-      document.getElementById('loginPasswordError').style.display = 'block';
-      isValid = false;
+        document.getElementById('loginPasswordError').textContent = 'Password is required';
+        document.getElementById('loginPasswordError').style.display = 'block';
+        isValid = false;
     }
     
     if (isValid) {
-      // Call backend API
-      const result = await apiCall('/login', 'POST', { email, password });
-      
-      if (result.success && result.data.success) {
-        // Store token and user data
-        localStorage.setItem('token', result.data.token);
-        localStorage.setItem('user', JSON.stringify(result.data.user));
+        // Call backend API
+        const result = await apiCall('/login', 'POST', { email, password });
         
-        // Redirect to home page
-        alert('Login successful! Redirecting to home page...');
-        window.location.href = 'home.html';
-      } else {
-        // Show error message
-        const errorMsg = result.data?.message || 'Login failed. Please try again.';
-        document.getElementById('loginPasswordError').textContent = errorMsg;
-        document.getElementById('loginPasswordError').style.display = 'block';
-      }
+        if (result.success && result.data.success) {
+            // Store token and user data
+            localStorage.setItem('token', result.data.token);
+            localStorage.setItem('user', JSON.stringify(result.data.user));
+            
+            // Redirect based on user role
+            const userRole = result.data.user.role;
+            
+            if (userRole === 'admin') {
+                console.log('👑 Admin user detected, redirecting to admin panel');
+                alert('Login successful! Redirecting to admin panel...');
+                window.location.href = '../../admin features/backend/BookNest_admin.html'; // Adjust path as needed
+            } else {
+                console.log('👤 Regular user detected, redirecting to home');
+                alert('Login successful! Redirecting to home page...');
+                window.location.href = 'home.html';
+            }
+        } else {
+            // Show error message
+            const errorMsg = result.data?.message || 'Login failed. Please try again.';
+            document.getElementById('loginPasswordError').textContent = errorMsg;
+            document.getElementById('loginPasswordError').style.display = 'block';
+        }
     }
-  }
+}
 
   // ==================== SIGNUP FUNCTIONALITY ====================
   
