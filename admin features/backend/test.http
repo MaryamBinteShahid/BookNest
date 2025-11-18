@@ -1,15 +1,15 @@
 ###ADMIN FEATURES
 
 ### Suspend User
-POST http://localhost:3000/admin/suspend/275e6890-e616-4512-abaa-1ee9de0359a7
+POST http://localhost:3000/admin/suspend/a0ef02c5-09b6-4497-a0f3-89ff0157a39e
 Content-Type: application/json
 
 ### Unsuspend User
-POST http://localhost:3000/admin/unsuspend/275e6890-e616-4512-abaa-1ee9de0359a7
+POST http://localhost:3000/admin/unsuspend/a0ef02c5-09b6-4497-a0f3-89ff0157a39e
 Content-Type: application/json
 
 ### Delete User
-DELETE http://localhost:3000/admin/delete/275e6890-e616-4512-abaa-1ee9de0359a7
+DELETE http://localhost:3000/admin/delete/a0ef02c5-09b6-4497-a0f3-89ff0157a39e
 Content-Type: application/json
 
 ###View Users

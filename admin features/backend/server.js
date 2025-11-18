@@ -4,7 +4,8 @@ const app = express();
 const adminRoutes = require('./adminRoutes');
 const { initializeDatabase } = require('./database');
 const bookRoutes = require('./bookRoutes');
-
+const cors = require('cors');
+app.use(cors());
 
 
 
