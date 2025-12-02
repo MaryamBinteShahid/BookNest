@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --brand: #c5864a;      /* Admin Gold */
+      --brand: #c5864a;
       --bg: #111;
       --card: #1a1a1a;
       --border: #2a2a2a;
@@ -37,6 +37,117 @@
       align-items: center;
       border-bottom: 1px solid var(--border);
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      gap: 30px;
+      position: relative;
+    }
+
+    /* Menu Button */
+    .menu-btn {
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 24px;
+      cursor: pointer;
+      padding: 10px;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 6px;
+    }
+
+    .menu-btn:hover {
+      background: var(--bg);
+      color: var(--brand);
+    }
+
+    /* Dropdown Menu */
+    .dropdown-menu {
+      position: absolute;
+      top: 70px;
+      left: 40px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      min-width: 200px;
+      display: none;
+      z-index: 1000;
+    }
+
+    .dropdown-menu.show {
+      display: block;
+    }
+
+    .dropdown-item {
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+
+    .dropdown-item:last-child {
+      border-bottom: none;
+    }
+
+    .dropdown-item:hover {
+      background: var(--bg);
+      color: var(--brand);
+    }
+
+    .dropdown-item i {
+      width: 20px;
+    }
+
+    /* Submenu */
+    .submenu {
+      position: absolute;
+      left: 100%;
+      top: 0;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      min-width: 180px;
+      display: none;
+    }
+
+    .dropdown-item:hover .submenu {
+      display: block;
+    }
+
+    .submenu-item {
+      padding: 10px 15px;
+      cursor: pointer;
+      transition: background 0.2s;
+      color: var(--text);
+      text-decoration: none;
+      display: block;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .submenu-item:last-child {
+      border-bottom: none;
+    }
+
+    .submenu-item:hover {
+      background: var(--bg);
+      color: var(--brand);
+    }
+
+    .coming-soon {
+      font-size: 11px;
+      color: var(--muted);
+      margin-left: auto;
+      font-style: italic;
     }
 
     .navbar-brand {
@@ -46,6 +157,141 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      white-space: nowrap;
+    }
+
+    .search-container {
+      flex: 1;
+      max-width: 600px;
+      position: relative;
+    }
+
+    .search-wrapper {
+      position: relative;
+      display: flex;
+      gap: 10px;
+    }
+
+    .search-input-wrapper {
+      flex: 1;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 45px 12px 20px;
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 15px;
+      transition: all 0.3s;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px rgba(197, 134, 74, 0.1);
+    }
+
+    .search-input::placeholder {
+      color: var(--muted);
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .search-type-select {
+      padding: 12px 15px;
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+      min-width: 120px;
+    }
+
+    .search-type-select:focus {
+      outline: none;
+      border-color: var(--brand);
+    }
+
+    .search-type-select option {
+      background: var(--card);
+      color: var(--text);
+    }
+
+    .autocomplete-results {
+      position: absolute;
+      top: calc(100% + 5px);
+      left: 0;
+      right: 0;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      max-height: 400px;
+      overflow-y: auto;
+      z-index: 1000;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      display: none;
+    }
+
+    .autocomplete-results.show {
+      display: block;
+    }
+
+    .autocomplete-item {
+      padding: 12px 15px;
+      cursor: pointer;
+      transition: background 0.2s;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .autocomplete-item:last-child {
+      border-bottom: none;
+    }
+
+    .autocomplete-item:hover {
+      background: var(--bg);
+    }
+
+    .autocomplete-item img {
+      width: 40px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+
+    .autocomplete-item-info {
+      flex: 1;
+    }
+
+    .autocomplete-item-title {
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+
+    .autocomplete-item-author {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .loading-spinner {
+      text-align: center;
+      padding: 20px;
+      color: var(--muted);
     }
 
     .navbar-menu {
@@ -63,6 +309,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      white-space: nowrap;
     }
 
     .nav-btn.profile-btn {
@@ -84,14 +331,223 @@
       opacity: 0.85;
       transform: translateY(-2px);
     }
+
+    /* Carousel Section */
+    .carousel-container {
+      max-width: 1400px;
+      margin: 40px auto;
+      padding: 0 40px 60px 40px;
+    }
+
+    .carousel-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 50px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .carousel-slide {
+      display: none;
+      animation: fadeIn 0.5s;
+    }
+
+    .carousel-slide.active {
+      display: grid;
+      grid-template-columns: 400px 1fr;
+      gap: 50px;
+      align-items: center;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .carousel-image {
+      width: 100%;
+      height: 550px;
+      object-fit: cover;
+      border-radius: 12px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+    }
+
+    .carousel-content {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .carousel-title {
+      font-size: 42px;
+      font-weight: 700;
+      color: var(--brand);
+      margin: 0;
+      line-height: 1.2;
+    }
+
+    .carousel-author {
+      font-size: 20px;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .carousel-description {
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--text);
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .carousel-btn {
+      background: var(--brand);
+      color: #111;
+      border: none;
+      padding: 15px 35px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      width: fit-content;
+    }
+
+    .carousel-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(197, 134, 74, 0.3);
+    }
+
+    .carousel-dots {
+      position: absolute;
+      bottom: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 12px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--border);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .dot.active {
+      background: var(--brand);
+      width: 32px;
+      border-radius: 6px;
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .carousel-slide.active {
+        grid-template-columns: 300px 1fr;
+        gap: 30px;
+      }
+
+      .carousel-image {
+        height: 450px;
+      }
+
+      .carousel-title {
+        font-size: 32px;
+      }
+    }
+
+    @media (max-width: 968px) {
+      .carousel-slide.active {
+        grid-template-columns: 1fr;
+      }
+
+      .carousel-image {
+        height: 400px;
+        max-width: 300px;
+        margin: 0 auto;
+      }
+
+      .carousel-box {
+        padding: 30px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+
+      .search-container {
+        order: 3;
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .search-wrapper {
+        flex-direction: column;
+      }
+
+      .search-type-select {
+        width: 100%;
+      }
+
+      .carousel-container {
+        padding: 20px;
+      }
+
+      .carousel-title {
+        font-size: 28px;
+      }
+
+      .dropdown-menu {
+        left: 20px;
+      }
+    }
   </style>
 </head>
 <body>
   <nav class="navbar">
+    <button class="menu-btn" onclick="toggleMenu()">
+      <i class="fas fa-bars"></i>
+    </button>
+
     <div class="navbar-brand">
       <i class="fas fa-book"></i>
       BookNest
     </div>
+
+    <div class="search-container">
+      <div class="search-wrapper">
+        <div class="search-input-wrapper">
+          <input 
+            type="text" 
+            class="search-input" 
+            id="searchInput"
+            placeholder="Search for books..."
+            autocomplete="off"
+          >
+          <i class="fas fa-search search-icon"></i>
+          <div class="autocomplete-results" id="autocompleteResults"></div>
+        </div>
+        
+        <select class="search-type-select" id="searchType">
+          <option value="all">All Fields</option>
+          <option value="title">Title</option>
+          <option value="author">Author</option>
+          <option value="publisher">Publisher</option>
+          <option value="genre">Genre</option>
+        </select>
+      </div>
+    </div>
+
     <div class="navbar-menu">
       <button class="nav-btn profile-btn" onclick="goToProfile()">
         <i class="fas fa-user"></i>
@@ -102,9 +558,312 @@
         Logout
       </button>
     </div>
+
+    <!-- Dropdown Menu -->
+    <div class="dropdown-menu" id="dropdownMenu">
+      <a href="about.html" class="dropdown-item">
+        <i class="fas fa-info-circle"></i>
+        About
+      </a>
+      <div class="dropdown-item">
+        <i class="fas fa-list"></i>
+        Genre
+        <i class="fas fa-chevron-right" style="margin-left: auto; font-size: 12px;"></i>
+        <div class="submenu">
+          <a href="#" class="submenu-item" onclick="goToGenre('Fiction')">Fiction</a>
+          <a href="#" class="submenu-item" onclick="goToGenre('Mystery')">Mystery</a>
+          <a href="#" class="submenu-item" onclick="goToGenre('Romance')">Romance</a>
+          <a href="#" class="submenu-item" onclick="goToGenre('Science Fiction')">Science Fiction</a>
+          <a href="#" class="submenu-item" onclick="goToGenre('Fantasy')">Fantasy</a>
+          <a href="#" class="submenu-item" onclick="goToGenre('Thriller')">Thriller</a>
+          <a href="#" class="submenu-item" onclick="goToGenre('Biography')">Biography</a>
+          <a href="#" class="submenu-item" onclick="goToGenre('History')">History</a>
+        </div>
+      </div>
+      <div class="dropdown-item" onclick="showComingSoon('Trending Books')">
+        <i class="fas fa-fire"></i>
+        Trending Books
+        <span class="coming-soon">Coming Soon</span>
+      </div>
+      <div class="dropdown-item" onclick="showComingSoon('Favourites List')">
+        <i class="fas fa-heart"></i>
+        Favourites List
+        <span class="coming-soon">Coming Soon</span>
+      </div>
+    </div>
   </nav>
 
+  <!-- Featured Books Carousel -->
+  <div class="carousel-container">
+    <div class="carousel-box">
+      <!-- Slide 1 -->
+      <div class="carousel-slide active" data-book-id="zyTCAlFPjgYC" data-source="google">
+        <img src="https://covers.openlibrary.org/b/isbn/9780743273565-L.jpg" alt="The Great Gatsby" class="carousel-image">
+        <div class="carousel-content">
+          <h2 class="carousel-title">The Great Gatsby</h2>
+          <p class="carousel-author">by F. Scott Fitzgerald</p>
+          <p class="carousel-description">
+            A timeless classic of American literature, The Great Gatsby tells the story of the mysterious millionaire Jay Gatsby and his obsession with the beautiful Daisy Buchanan. Set in the summer of 1922, this masterpiece captures the essence of the Jazz Age, exploring themes of decadence, idealism, social upheaval, and excess.
+          </p>
+          <button class="carousel-btn" onclick="viewCurrentBook()">
+            View Details
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Slide 2 -->
+      <div class="carousel-slide" data-book-id="PGR2AwAAQBAJ" data-source="google">
+        <img src="https://covers.openlibrary.org/b/isbn/9780061120084-L.jpg" alt="To Kill a Mockingbird" class="carousel-image">
+        <div class="carousel-content">
+          <h2 class="carousel-title">To Kill a Mockingbird</h2>
+          <p class="carousel-author">by Harper Lee</p>
+          <p class="carousel-description">
+            A gripping, heart-wrenching, and wholly remarkable tale of coming-of-age in a South poisoned by virulent prejudice. Through the eyes of Scout Finch, we witness her father Atticus's courageous defense of a black man wrongly accused of rape. This powerful story addresses issues of race, class, and justice.
+          </p>
+          <button class="carousel-btn" onclick="viewCurrentBook()">
+            View Details
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Slide 3 -->
+      <div class="carousel-slide" data-book-id="kotPYEqx7kMC" data-source="google">
+        <img src="https://covers.openlibrary.org/b/isbn/9780451524935-L.jpg" alt="1984" class="carousel-image">
+        <div class="carousel-content">
+          <h2 class="carousel-title">1984</h2>
+          <p class="carousel-author">by George Orwell</p>
+          <p class="carousel-description">
+            Written in 1948, this chilling dystopian novel paints a terrifying picture of a totalitarian society where Big Brother watches everything. Winston Smith struggles with oppression in Oceania, where independent thought is outlawed. A prophetic and thought-provoking masterpiece about surveillance, truth, and freedom.
+          </p>
+          <button class="carousel-btn" onclick="viewCurrentBook()">
+            View Details
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Slide 4 -->
+      <div class="carousel-slide" data-book-id="wrOQLV6xB-wC" data-source="google">
+        <img src="https://covers.openlibrary.org/b/isbn/9780316769174-L.jpg" alt="The Catcher in the Rye" class="carousel-image">
+        <div class="carousel-content">
+          <h2 class="carousel-title">The Catcher in the Rye</h2>
+          <p class="carousel-author">by J.D. Salinger</p>
+          <p class="carousel-description">
+            The hero-narrator of The Catcher in the Rye is an ancient child of sixteen, a native New Yorker named Holden Caulfield. Through circumstances that tend to preclude adult, secondhand description, he leaves his prep school in Pennsylvania and goes underground in New York City for three days.
+          </p>
+          <button class="carousel-btn" onclick="viewCurrentBook()">
+            View Details
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Slide 5 -->
+      <div class="carousel-slide" data-book-id="yxv_vQAACAAJ" data-source="google">
+        <img src="https://covers.openlibrary.org/b/isbn/9780140177398-L.jpg" alt="Pride and Prejudice" class="carousel-image">
+        <div class="carousel-content">
+          <h2 class="carousel-title">Pride and Prejudice</h2>
+          <p class="carousel-author">by Jane Austen</p>
+          <p class="carousel-description">
+            Since its immediate success in 1813, Pride and Prejudice has remained one of the most popular novels in the English language. The story of the Bennet family and particularly of Elizabeth's tumultuous relationship with Mr. Darcy is a brilliant exploration of manners, morality, education, and marriage in early 19th-century England.
+          </p>
+          <button class="carousel-btn" onclick="viewCurrentBook()">
+            View Details
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Carousel Dots -->
+      <div class="carousel-dots">
+        <span class="dot active" onclick="goToSlide(0)"></span>
+        <span class="dot" onclick="goToSlide(1)"></span>
+        <span class="dot" onclick="goToSlide(2)"></span>
+        <span class="dot" onclick="goToSlide(3)"></span>
+        <span class="dot" onclick="goToSlide(4)"></span>
+      </div>
+    </div>
+  </div>
+
   <script>
+    const API_BASE_URL = 'http://localhost:3000/api';
+    
+    let searchTimeout;
+    const searchInput = document.getElementById('searchInput');
+    const searchType = document.getElementById('searchType');
+    const autocompleteResults = document.getElementById('autocompleteResults');
+
+    // Carousel functionality
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dots = document.querySelectorAll('.dot');
+    let autoSlideInterval;
+
+    function showSlide(index) {
+      slides.forEach(slide => slide.classList.remove('active'));
+      dots.forEach(dot => dot.classList.remove('active'));
+      
+      slides[index].classList.add('active');
+      dots[index].classList.add('active');
+      currentSlide = index;
+    }
+
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % slides.length;
+      showSlide(currentSlide);
+    }
+
+    function goToSlide(index) {
+      clearInterval(autoSlideInterval);
+      showSlide(index);
+      startAutoSlide();
+    }
+
+    function startAutoSlide() {
+      autoSlideInterval = setInterval(nextSlide, 5000);
+    }
+
+    function viewCurrentBook() {
+      const activeSlide = document.querySelector('.carousel-slide.active');
+      const bookId = activeSlide.dataset.bookId;
+      const source = activeSlide.dataset.source;
+      window.location.href = `book-details.html?id=${bookId}&source=${source}`;
+    }
+
+    // Start auto-sliding
+    startAutoSlide();
+
+    // Menu functionality
+    function toggleMenu() {
+      const menu = document.getElementById('dropdownMenu');
+      menu.classList.toggle('show');
+    }
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(e) {
+      const menu = document.getElementById('dropdownMenu');
+      const menuBtn = document.querySelector('.menu-btn');
+      
+      if (!menu.contains(e.target) && !menuBtn.contains(e.target)) {
+        menu.classList.remove('show');
+      }
+
+      if (!e.target.closest('.search-container')) {
+        hideAutocomplete();
+      }
+    });
+
+    function goToGenre(genre) {
+      window.location.href = `genre-books.html?genre=${encodeURIComponent(genre)}`;
+    }
+
+    function showComingSoon(feature) {
+      alert(`${feature} feature is coming soon! Stay tuned for updates.`);
+    }
+
+    // Search functionality
+    searchInput.addEventListener('input', function(e) {
+      clearTimeout(searchTimeout);
+      const query = e.target.value.trim();
+
+      if (query.length < 2) {
+        hideAutocomplete();
+        return;
+      }
+
+      searchTimeout = setTimeout(() => {
+        performSearch(query, true);
+      }, 300);
+    });
+
+    searchInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const query = searchInput.value.trim();
+        if (query) {
+          goToSearchResults(query);
+        }
+      }
+    });
+
+    async function performSearch(query, isAutocomplete = false) {
+      if (!query) return;
+
+      const type = searchType.value;
+
+      try {
+        if (isAutocomplete) {
+          showLoading();
+        }
+
+        const response = await fetch(
+          `${API_BASE_URL}/search?query=${encodeURIComponent(query)}&type=${type}&limit=5`
+        );
+
+        if (!response.ok) {
+          throw new Error('Search failed');
+        }
+
+        const data = await response.json();
+
+        if (isAutocomplete) {
+          displayAutocomplete(data.data);
+        }
+
+      } catch (error) {
+        console.error('Search error:', error);
+        if (isAutocomplete) {
+          autocompleteResults.innerHTML = '<div class="loading-spinner">Error loading results</div>';
+        }
+      }
+    }
+
+    function displayAutocomplete(results) {
+      if (!results || results.length === 0) {
+        autocompleteResults.innerHTML = '<div class="loading-spinner">No results found</div>';
+        autocompleteResults.classList.add('show');
+        return;
+      }
+
+      autocompleteResults.innerHTML = results.map(book => `
+        <div class="autocomplete-item" onclick="goToBookDetails('${book.id}', '${book.source}')">
+          <img src="${book.thumbnail}" alt="${escapeHtml(book.title)}" onerror="this.src='/placeholder-book.png'">
+          <div class="autocomplete-item-info">
+            <div class="autocomplete-item-title">${escapeHtml(book.title)}</div>
+            <div class="autocomplete-item-author">${escapeHtml(book.author)}</div>
+          </div>
+        </div>
+      `).join('');
+
+      autocompleteResults.classList.add('show');
+    }
+
+    function showLoading() {
+      autocompleteResults.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Searching...</div>';
+      autocompleteResults.classList.add('show');
+    }
+
+    function hideAutocomplete() {
+      autocompleteResults.classList.remove('show');
+    }
+
+    function goToSearchResults(query) {
+      const type = searchType.value;
+      window.location.href = `search-results.html?query=${encodeURIComponent(query)}&type=${type}`;
+    }
+
+    function goToBookDetails(bookId, source) {
+      window.location.href = `book-details.html?id=${bookId}&source=${source}`;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
     function goToProfile() {
       window.location.href = 'profile.html';
     }

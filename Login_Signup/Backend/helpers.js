@@ -27,8 +27,26 @@ function validatePassword(password) {
     return { valid: true };
 }
 
+function validateMobile(mobile) {
+    
+    const cleanMobile = mobile.replace(/\D/g, '');
+    
+    // Check if it's a valid length (typically 10-15 digits)
+    if (cleanMobile.length < 10 || cleanMobile.length > 15) {
+        return { valid: false, message: 'Mobile number must be between 10-15 digits' };
+    }
+    
+    // Check if it contains only digits
+    if (!/^\d+$/.test(cleanMobile)) {
+        return { valid: false, message: 'Mobile number must contain only digits' };
+    }
+    
+    return { valid: true };
+}
+
 module.exports = {
     generateOTP,
     generateUUID,
-    validatePassword
+    validatePassword,
+    validateMobile
 };

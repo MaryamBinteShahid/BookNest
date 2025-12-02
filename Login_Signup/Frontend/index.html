@@ -78,20 +78,37 @@
     .login-card {
       background: rgba(30, 30, 35, 0.75);
       border-radius: 24px;
-      padding: 48px 40px;
+      padding: 40px 35px;
       backdrop-filter: blur(30px) saturate(150%);
       -webkit-backdrop-filter: blur(30px) saturate(150%);
       border: 1px solid rgba(255,255,255,0.15);
       box-shadow: 0 24px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05) inset;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    /* Custom scrollbar for login card */
+    .login-card::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .login-card::-webkit-scrollbar-track {
+      background: rgba(255,255,255,0.1);
+      border-radius: 3px;
+    }
+
+    .login-card::-webkit-scrollbar-thumb {
+      background: rgba(169, 107, 71, 0.7);
+      border-radius: 3px;
     }
 
     .login-header { 
-      margin-bottom: 36px; 
+      margin-bottom: 30px; 
     }
     
     .login-header h1 {
       color: #fff;
-      font-size: 40px;
+      font-size: 36px;
       margin-bottom: 8px;
       font-weight: 700;
       text-shadow: 0 2px 8px rgba(0,0,0,0.3);
@@ -99,17 +116,17 @@
     
     .login-header p {
       color: rgba(255,255,255,0.85);
-      font-size: 16px;
+      font-size: 15px;
     }
 
     .form-group { 
-      margin-bottom: 24px; 
+      margin-bottom: 20px; 
       position: relative;
     }
 
     .form-group label {
       display: block;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       color: rgba(255,255,255,0.95);
       font-weight: 500;
       font-size: 14px;
@@ -121,22 +138,22 @@
 
     .input-wrapper .icon {
       position: absolute;
-      left: 18px;
+      left: 16px;
       top: 50%;
       transform: translateY(-50%);
       color: rgba(255,255,255,0.7);
-      font-size: 18px;
+      font-size: 16px;
       z-index: 2;
     }
 
     .input-wrapper input {
       width: 100%;
-      padding: 16px 18px 16px 52px;
+      padding: 14px 16px 14px 48px;
       border-radius: 12px;
       border: 1px solid rgba(255,255,255,0.15);
       background: rgba(20, 20, 25, 0.6);
       color: #fff;
-      font-size: 16px;
+      font-size: 14px;
       outline: none;
       transition: all 0.3s ease;
       backdrop-filter: blur(10px);
@@ -157,7 +174,7 @@
     .otp-input {
       text-align: center;
       letter-spacing: 10px;
-      font-size: 24px;
+      font-size: 22px;
       font-weight: bold;
     }
 
@@ -168,12 +185,12 @@
 
     .password-field .toggle-password {
       position: absolute;
-      right: 18px;
+      right: 16px;
       top: 50%;
       transform: translateY(-50%);
       color: rgba(255,255,255,0.7);
       cursor: pointer;
-      font-size: 18px;
+      font-size: 16px;
       z-index: 3;
       transition: color 0.3s ease;
     }
@@ -182,32 +199,86 @@
       color: rgba(255,255,255,0.95);
     }
 
+    /* Mobile number input with country code */
+    .mobile-input-wrapper {
+      display: flex;
+      gap: 10px;
+    }
+
+    .country-code {
+      width: 100px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .country-code select {
+      width: 100%;
+      padding: 12px 8px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(20, 20, 25, 0.6);
+      color: #fff;
+      font-size: 13px;
+      outline: none;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      appearance: none;
+      cursor: pointer;
+    }
+
+    .country-code select:focus {
+      box-shadow: 0 0 0 3px rgba(169, 107, 71, 0.4);
+      border-color: rgba(169, 107, 71, 0.7);
+      background: rgba(30, 30, 35, 0.8);
+    }
+
+    .country-code::after {
+      content: "\f107";
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255,255,255,0.7);
+      pointer-events: none;
+    }
+
+    .mobile-number {
+      flex: 1;
+    }
+
+    .mobile-number input {
+      padding-left: 48px;
+    }
+
     .forgot-row {
       display: flex;
-      justify-content: flex-end;
-      margin: 24px 0 32px;
+      justify-content: space-between;
+      margin: 20px 0 25px;
       font-size: 14px;
     }
 
-    .forgot-link {
+    .forgot-link, .verify-email-link {
       color: rgba(255,255,255,0.95);
       text-decoration: none;
       transition: color 0.3s ease;
     }
 
-    .forgot-link:hover {
+    .forgot-link:hover, .verify-email-link:hover {
       color: #d4a574;
     }
 
     .login-btn, .signup-btn, .forgot-btn, .verify-btn {
       width: 100%;
-      padding: 16px;
+      padding: 14px;
       border-radius: 12px;
       border: none;
       background: linear-gradient(135deg, #a96b47 0%, #8b5e3c 100%);
       color: #fff;
       font-weight: 700;
-      font-size: 16px;
+      font-size: 15px;
       cursor: pointer;
       transition: all 0.3s ease;
       box-shadow: 0 8px 16px rgba(139, 94, 60, 0.4);
@@ -224,7 +295,7 @@
     }
 
     .toggle-link {
-      margin-top: 24px;
+      margin-top: 20px;
       text-align: center;
       color: rgba(255,255,255,0.9);
       font-size: 14px;
@@ -243,30 +314,38 @@
     }
 
     /* Hidden forms */
-    .signup-form, .forgot-password-form, .signup-otp-form, .signup-success-form {
+    .signup-form, .forgot-password-form, .signup-otp-form, .signup-success-form, .verify-email-form {
       display: none;
     }
 
     /* Error message */
     .error-message {
       color: #ff6b6b;
-      font-size: 14px;
-      margin-top: 8px;
+      font-size: 13px;
+      margin-top: 6px;
       display: none;
     }
 
     /* Success message */
     .success-message {
       color: #6bff8f;
-      font-size: 14px;
-      margin-top: 8px;
+      font-size: 13px;
+      margin-top: 6px;
+      display: none;
+    }
+
+    /* Info message */
+    .info-message {
+      color: #6bd2ff;
+      font-size: 13px;
+      margin-top: 6px;
       display: none;
     }
 
     /* Password strength indicator */
     .password-strength {
-      margin-top: 8px;
-      height: 6px;
+      margin-top: 6px;
+      height: 5px;
       border-radius: 3px;
       background: rgba(255,255,255,0.2);
       overflow: hidden;
@@ -296,8 +375,8 @@
     /* Resend OTP link */
     .resend-otp {
       text-align: center;
-      margin-top: 16px;
-      font-size: 14px;
+      margin-top: 14px;
+      font-size: 13px;
     }
 
     .resend-otp a {
@@ -320,7 +399,7 @@
     .progress-indicator {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 32px;
+      margin-bottom: 25px;
       position: relative;
     }
 
@@ -337,15 +416,15 @@
     }
 
     .progress-step {
-      width: 30px;
-      height: 30px;
+      width: 26px;
+      height: 26px;
       border-radius: 50%;
       background: rgba(255,255,255,0.2);
       display: flex;
       align-items: center;
       justify-content: center;
       color: rgba(255,255,255,0.7);
-      font-size: 14px;
+      font-size: 11px;
       font-weight: bold;
       position: relative;
       z-index: 2;
@@ -363,10 +442,10 @@
 
     .progress-label {
       position: absolute;
-      top: 35px;
+      top: 32px;
       left: 50%;
       transform: translateX(-50%);
-      font-size: 12px;
+      font-size: 11px;
       color: rgba(255,255,255,0.7);
       white-space: nowrap;
     }
@@ -374,32 +453,32 @@
     /* Success screen */
     .success-screen {
       text-align: center;
-      padding: 20px 0;
+      padding: 15px 0;
     }
 
     .success-icon {
-      font-size: 64px;
+      font-size: 48px;
       color: #4CAF50;
-      margin-bottom: 20px;
+      margin-bottom: 14px;
     }
 
     .success-message-large {
-      font-size: 24px;
+      font-size: 20px;
       color: #fff;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .redirect-timer {
-      font-size: 16px;
+      font-size: 13px;
       color: rgba(255,255,255,0.8);
-      margin-top: 20px;
+      margin-top: 12px;
     }
 
     /* Cooldown message */
     .cooldown-message {
       color: #ffb74d;
-      font-size: 14px;
-      margin-top: 8px;
+      font-size: 13px;
+      margin-top: 6px;
       display: none;
     }
 
@@ -434,7 +513,7 @@
       }
 
       .login-card {
-        padding: 32px 24px;
+        padding: 28px 20px;
       }
 
       .login-header h1 {
@@ -443,6 +522,20 @@
 
       .quote-section {
         display: none;
+      }
+      
+      .mobile-input-wrapper {
+        flex-direction: column;
+      }
+      
+      .country-code {
+        width: 100%;
+      }
+      
+      .forgot-row {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
       }
     }
   </style>
@@ -493,6 +586,7 @@
 
           <div class="forgot-row">
             <a href="#" class="forgot-link" id="showForgotPassword">Forgot Password?</a>
+            <a href="#" class="verify-email-link" id="showVerifyEmail">Verify Email</a>
           </div>
 
           <button class="login-btn" type="submit">Login</button>
@@ -544,6 +638,25 @@
               <input id="signupEmail" type="email" placeholder="Enter your email" required>
             </div>
             <div class="error-message" id="signupEmailError"></div>
+          </div>
+
+          <!-- Mobile Number Field -->
+          <div class="form-group">
+            <label for="signupMobile">Mobile Number</label>
+            <div class="mobile-input-wrapper">
+              <div class="country-code">
+                <select id="countryCode">
+                  <!-- Country codes will be populated by JavaScript -->
+                </select>
+              </div>
+              <div class="mobile-number">
+                <div class="input-wrapper">
+                  <span class="icon"><i class="fas fa-phone"></i></span>
+                  <input id="signupMobile" type="tel" placeholder="Enter your mobile number" required>
+                </div>
+              </div>
+            </div>
+            <div class="error-message" id="signupMobileError"></div>
           </div>
 
           <div class="form-group password-field">
@@ -709,9 +822,102 @@
           </div>
         </form>
       </div>
+
+      <!-- NEW: Verify Email Form -->
+      <div class="verify-email-form">
+        <div class="login-header">
+          <h1>Verify Email</h1>
+          <p>Verify your email address to complete registration</p>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress-indicator">
+          <div class="progress-step active" id="verifyEmailStep1">
+            1
+            <div class="progress-label">Credentials</div>
+          </div>
+          <div class="progress-step" id="verifyEmailStep2">
+            2
+            <div class="progress-label">OTP</div>
+          </div>
+          <div class="progress-step" id="verifyEmailStep3">
+            3
+            <div class="progress-label">Result</div>
+          </div>
+        </div>
+
+        <!-- Step 1: Email and Password Entry -->
+        <form id="verifyEmailRequestForm" class="verify-email-step">
+          <div class="form-group">
+            <label for="verifyEmail">Email</label>
+            <div class="input-wrapper">
+              <span class="icon"><i class="fas fa-envelope"></i></span>
+              <input id="verifyEmail" type="email" placeholder="Enter your registered email" required>
+            </div>
+            <div class="error-message" id="verifyEmailError"></div>
+          </div>
+
+          <div class="form-group password-field">
+            <label for="verifyPassword">Password</label>
+            <div class="input-wrapper">
+              <span class="icon"><i class="fas fa-lock"></i></span>
+              <input id="verifyPassword" type="password" placeholder="Enter your password" required>
+              <span class="toggle-password" onclick="togglePassword('verifyPassword', 'verifyEyeIcon')">
+                <i class="fas fa-eye-slash" id="verifyEyeIcon"></i>
+              </span>
+            </div>
+            <div class="error-message" id="verifyPasswordError"></div>
+          </div>
+
+          <button class="verify-btn" type="submit">Verify Account</button>
+
+          <div class="toggle-link">
+            <a href="#" id="backToLoginFromVerify">Back to Login</a>
+          </div>
+        </form>
+
+        <!-- Step 2: OTP Verification -->
+        <form id="verifyEmailOtpForm" class="verify-email-step" style="display: none;">
+          <div class="form-group">
+            <label for="verifyEmailOtp">Enter OTP</label>
+            <div class="input-wrapper">
+              <span class="icon"><i class="fas fa-key"></i></span>
+              <input id="verifyEmailOtp" type="text" placeholder="Enter 6-digit OTP" class="otp-input" maxlength="6" required>
+            </div>
+            <div class="error-message" id="verifyEmailOtpError"></div>
+            <div class="success-message" id="verifyEmailOtpSuccess"></div>
+            <div class="info-message" id="verifyEmailOtpInfo"></div>
+          </div>
+
+          <div class="resend-otp">
+            Didn't receive the code? <a href="#" id="resendVerifyEmailOtp">Resend OTP</a>
+          </div>
+
+          <button class="verify-btn" type="submit">Verify OTP</button>
+
+          <div class="toggle-link">
+            <a href="#" id="backToVerifyEmailRequest">Back to Email</a>
+          </div>
+        </form>
+
+        <!-- Step 3: Result Screen -->
+        <div id="verifyEmailResultForm" class="verify-email-step" style="display: none;">
+          <div class="success-screen">
+            <div class="success-icon" id="verifyEmailResultIcon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="success-message-large" id="verifyEmailResultMessage">
+              Email Verified Successfully!
+            </div>
+            <p id="verifyEmailResultDescription">Your email has been verified successfully. You can now login to your account.</p>
+            <div class="redirect-timer" id="verifyEmailRedirectTimer">
+              Redirecting to login in 7 seconds...
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-
 
 <script>
   // API Configuration
@@ -725,6 +931,273 @@
   let forgotPasswordEmail = '';
   let forgotPasswordOtp = '';
   let redirectTimer;
+  
+  // New variable for email verification
+  let verifyEmailData = {};
+
+  // ==================== COUNTRY CODES ====================
+  
+  // Comprehensive list of country codes including Pakistan
+  const countryCodes = [
+    { code: '+93', name: 'Afghanistan (AF)' },
+    { code: '+355', name: 'Albania (AL)' },
+    { code: '+213', name: 'Algeria (DZ)' },
+    { code: '+376', name: 'Andorra (AD)' },
+    { code: '+244', name: 'Angola (AO)' },
+    { code: '+1-268', name: 'Antigua and Barbuda (AG)' },
+    { code: '+54', name: 'Argentina (AR)' },
+    { code: '+374', name: 'Armenia (AM)' },
+    { code: '+297', name: 'Aruba (AW)' },
+    { code: '+61', name: 'Australia (AU)' },
+    { code: '+43', name: 'Austria (AT)' },
+    { code: '+994', name: 'Azerbaijan (AZ)' },
+    { code: '+1-242', name: 'Bahamas (BS)' },
+    { code: '+973', name: 'Bahrain (BH)' },
+    { code: '+880', name: 'Bangladesh (BD)' },
+    { code: '+1-246', name: 'Barbados (BB)' },
+    { code: '+375', name: 'Belarus (BY)' },
+    { code: '+32', name: 'Belgium (BE)' },
+    { code: '+501', name: 'Belize (BZ)' },
+    { code: '+229', name: 'Benin (BJ)' },
+    { code: '+1-441', name: 'Bermuda (BM)' },
+    { code: '+975', name: 'Bhutan (BT)' },
+    { code: '+591', name: 'Bolivia (BO)' },
+    { code: '+387', name: 'Bosnia and Herzegovina (BA)' },
+    { code: '+267', name: 'Botswana (BW)' },
+    { code: '+55', name: 'Brazil (BR)' },
+    { code: '+246', name: 'British Indian Ocean Territory (IO)' },
+    { code: '+1-284', name: 'British Virgin Islands (VG)' },
+    { code: '+673', name: 'Brunei (BN)' },
+    { code: '+359', name: 'Bulgaria (BG)' },
+    { code: '+226', name: 'Burkina Faso (BF)' },
+    { code: '+257', name: 'Burundi (BI)' },
+    { code: '+855', name: 'Cambodia (KH)' },
+    { code: '+237', name: 'Cameroon (CM)' },
+    { code: '+1', name: 'Canada (CA)' },
+    { code: '+238', name: 'Cape Verde (CV)' },
+    { code: '+1-345', name: 'Cayman Islands (KY)' },
+    { code: '+236', name: 'Central African Republic (CF)' },
+    { code: '+235', name: 'Chad (TD)' },
+    { code: '+56', name: 'Chile (CL)' },
+    { code: '+86', name: 'China (CN)' },
+    { code: '+61', name: 'Christmas Island (CX)' },
+    { code: '+61', name: 'Cocos Islands (CC)' },
+    { code: '+57', name: 'Colombia (CO)' },
+    { code: '+269', name: 'Comoros (KM)' },
+    { code: '+682', name: 'Cook Islands (CK)' },
+    { code: '+506', name: 'Costa Rica (CR)' },
+    { code: '+385', name: 'Croatia (HR)' },
+    { code: '+53', name: 'Cuba (CU)' },
+    { code: '+599', name: 'Curacao (CW)' },
+    { code: '+357', name: 'Cyprus (CY)' },
+    { code: '+420', name: 'Czech Republic (CZ)' },
+    { code: '+243', name: 'Democratic Republic of the Congo (CD)' },
+    { code: '+45', name: 'Denmark (DK)' },
+    { code: '+253', name: 'Djibouti (DJ)' },
+    { code: '+1-767', name: 'Dominica (DM)' },
+    { code: '+1-809', name: 'Dominican Republic (DO)' },
+    { code: '+670', name: 'East Timor (TL)' },
+    { code: '+593', name: 'Ecuador (EC)' },
+    { code: '+20', name: 'Egypt (EG)' },
+    { code: '+503', name: 'El Salvador (SV)' },
+    { code: '+240', name: 'Equatorial Guinea (GQ)' },
+    { code: '+291', name: 'Eritrea (ER)' },
+    { code: '+372', name: 'Estonia (EE)' },
+    { code: '+251', name: 'Ethiopia (ET)' },
+    { code: '+500', name: 'Falkland Islands (FK)' },
+    { code: '+298', name: 'Faroe Islands (FO)' },
+    { code: '+679', name: 'Fiji (FJ)' },
+    { code: '+358', name: 'Finland (FI)' },
+    { code: '+33', name: 'France (FR)' },
+    { code: '+689', name: 'French Polynesia (PF)' },
+    { code: '+241', name: 'Gabon (GA)' },
+    { code: '+220', name: 'Gambia (GM)' },
+    { code: '+995', name: 'Georgia (GE)' },
+    { code: '+49', name: 'Germany (DE)' },
+    { code: '+233', name: 'Ghana (GH)' },
+    { code: '+350', name: 'Gibraltar (GI)' },
+    { code: '+30', name: 'Greece (GR)' },
+    { code: '+299', name: 'Greenland (GL)' },
+    { code: '+1-473', name: 'Grenada (GD)' },
+    { code: '+1-671', name: 'Guam (GU)' },
+    { code: '+502', name: 'Guatemala (GT)' },
+    { code: '+44-1481', name: 'Guernsey (GG)' },
+    { code: '+224', name: 'Guinea (GN)' },
+    { code: '+245', name: 'Guinea-Bissau (GW)' },
+    { code: '+592', name: 'Guyana (GY)' },
+    { code: '+509', name: 'Haiti (HT)' },
+    { code: '+504', name: 'Honduras (HN)' },
+    { code: '+852', name: 'Hong Kong (HK)' },
+    { code: '+36', name: 'Hungary (HU)' },
+    { code: '+354', name: 'Iceland (IS)' },
+    { code: '+91', name: 'India (IN)' },
+    { code: '+62', name: 'Indonesia (ID)' },
+    { code: '+98', name: 'Iran (IR)' },
+    { code: '+964', name: 'Iraq (IQ)' },
+    { code: '+353', name: 'Ireland (IE)' },
+    { code: '+44-1624', name: 'Isle of Man (IM)' },
+    { code: '+39', name: 'Italy (IT)' },
+    { code: '+225', name: 'Ivory Coast (CI)' },
+    { code: '+1-876', name: 'Jamaica (JM)' },
+    { code: '+81', name: 'Japan (JP)' },
+    { code: '+44-1534', name: 'Jersey (JE)' },
+    { code: '+962', name: 'Jordan (JO)' },
+    { code: '+7', name: 'Kazakhstan (KZ)' },
+    { code: '+254', name: 'Kenya (KE)' },
+    { code: '+686', name: 'Kiribati (KI)' },
+    { code: '+383', name: 'Kosovo (XK)' },
+    { code: '+965', name: 'Kuwait (KW)' },
+    { code: '+996', name: 'Kyrgyzstan (KG)' },
+    { code: '+856', name: 'Laos (LA)' },
+    { code: '+371', name: 'Latvia (LV)' },
+    { code: '+961', name: 'Lebanon (LB)' },
+    { code: '+266', name: 'Lesotho (LS)' },
+    { code: '+231', name: 'Liberia (LR)' },
+    { code: '+218', name: 'Libya (LY)' },
+    { code: '+423', name: 'Liechtenstein (LI)' },
+    { code: '+370', name: 'Lithuania (LT)' },
+    { code: '+352', name: 'Luxembourg (LU)' },
+    { code: '+853', name: 'Macau (MO)' },
+    { code: '+389', name: 'Macedonia (MK)' },
+    { code: '+261', name: 'Madagascar (MG)' },
+    { code: '+265', name: 'Malawi (MW)' },
+    { code: '+60', name: 'Malaysia (MY)' },
+    { code: '+960', name: 'Maldives (MV)' },
+    { code: '+223', name: 'Mali (ML)' },
+    { code: '+356', name: 'Malta (MT)' },
+    { code: '+692', name: 'Marshall Islands (MH)' },
+    { code: '+222', name: 'Mauritania (MR)' },
+    { code: '+230', name: 'Mauritius (MU)' },
+    { code: '+262', name: 'Mayotte (YT)' },
+    { code: '+52', name: 'Mexico (MX)' },
+    { code: '+691', name: 'Micronesia (FM)' },
+    { code: '+373', name: 'Moldova (MD)' },
+    { code: '+377', name: 'Monaco (MC)' },
+    { code: '+976', name: 'Mongolia (MN)' },
+    { code: '+382', name: 'Montenegro (ME)' },
+    { code: '+1-664', name: 'Montserrat (MS)' },
+    { code: '+212', name: 'Morocco (MA)' },
+    { code: '+258', name: 'Mozambique (MZ)' },
+    { code: '+95', name: 'Myanmar (MM)' },
+    { code: '+264', name: 'Namibia (NA)' },
+    { code: '+674', name: 'Nauru (NR)' },
+    { code: '+977', name: 'Nepal (NP)' },
+    { code: '+31', name: 'Netherlands (NL)' },
+    { code: '+599', name: 'Netherlands Antilles (AN)' },
+    { code: '+687', name: 'New Caledonia (NC)' },
+    { code: '+64', name: 'New Zealand (NZ)' },
+    { code: '+505', name: 'Nicaragua (NI)' },
+    { code: '+227', name: 'Niger (NE)' },
+    { code: '+234', name: 'Nigeria (NG)' },
+    { code: '+683', name: 'Niue (NU)' },
+    { code: '+850', name: 'North Korea (KP)' },
+    { code: '+1-670', name: 'Northern Mariana Islands (MP)' },
+    { code: '+47', name: 'Norway (NO)' },
+    { code: '+968', name: 'Oman (OM)' },
+    { code: '+92', name: 'Pakistan (PK)' },
+    { code: '+680', name: 'Palau (PW)' },
+    { code: '+970', name: 'Palestine (PS)' },
+    { code: '+507', name: 'Panama (PA)' },
+    { code: '+675', name: 'Papua New Guinea (PG)' },
+    { code: '+595', name: 'Paraguay (PY)' },
+    { code: '+51', name: 'Peru (PE)' },
+    { code: '+63', name: 'Philippines (PH)' },
+    { code: '+64', name: 'Pitcairn (PN)' },
+    { code: '+48', name: 'Poland (PL)' },
+    { code: '+351', name: 'Portugal (PT)' },
+    { code: '+1-787', name: 'Puerto Rico (PR)' },
+    { code: '+974', name: 'Qatar (QA)' },
+    { code: '+242', name: 'Republic of the Congo (CG)' },
+    { code: '+262', name: 'Reunion (RE)' },
+    { code: '+40', name: 'Romania (RO)' },
+    { code: '+7', name: 'Russia (RU)' },
+    { code: '+250', name: 'Rwanda (RW)' },
+    { code: '+590', name: 'Saint Barthelemy (BL)' },
+    { code: '+290', name: 'Saint Helena (SH)' },
+    { code: '+1-869', name: 'Saint Kitts and Nevis (KN)' },
+    { code: '+1-758', name: 'Saint Lucia (LC)' },
+    { code: '+590', name: 'Saint Martin (MF)' },
+    { code: '+508', name: 'Saint Pierre and Miquelon (PM)' },
+    { code: '+1-784', name: 'Saint Vincent and the Grenadines (VC)' },
+    { code: '+685', name: 'Samoa (WS)' },
+    { code: '+378', name: 'San Marino (SM)' },
+    { code: '+239', name: 'Sao Tome and Principe (ST)' },
+    { code: '+966', name: 'Saudi Arabia (SA)' },
+    { code: '+221', name: 'Senegal (SN)' },
+    { code: '+381', name: 'Serbia (RS)' },
+    { code: '+248', name: 'Seychelles (SC)' },
+    { code: '+232', name: 'Sierra Leone (SL)' },
+    { code: '+65', name: 'Singapore (SG)' },
+    { code: '+1-721', name: 'Sint Maarten (SX)' },
+    { code: '+421', name: 'Slovakia (SK)' },
+    { code: '+386', name: 'Slovenia (SI)' },
+    { code: '+677', name: 'Solomon Islands (SB)' },
+    { code: '+252', name: 'Somalia (SO)' },
+    { code: '+27', name: 'South Africa (ZA)' },
+    { code: '+82', name: 'South Korea (KR)' },
+    { code: '+211', name: 'South Sudan (SS)' },
+    { code: '+34', name: 'Spain (ES)' },
+    { code: '+94', name: 'Sri Lanka (LK)' },
+    { code: '+249', name: 'Sudan (SD)' },
+    { code: '+597', name: 'Suriname (SR)' },
+    { code: '+47', name: 'Svalbard and Jan Mayen (SJ)' },
+    { code: '+268', name: 'Swaziland (SZ)' },
+    { code: '+46', name: 'Sweden (SE)' },
+    { code: '+41', name: 'Switzerland (CH)' },
+    { code: '+963', name: 'Syria (SY)' },
+    { code: '+886', name: 'Taiwan (TW)' },
+    { code: '+992', name: 'Tajikistan (TJ)' },
+    { code: '+255', name: 'Tanzania (TZ)' },
+    { code: '+66', name: 'Thailand (TH)' },
+    { code: '+228', name: 'Togo (TG)' },
+    { code: '+690', name: 'Tokelau (TK)' },
+    { code: '+676', name: 'Tonga (TO)' },
+    { code: '+1-868', name: 'Trinidad and Tobago (TT)' },
+    { code: '+216', name: 'Tunisia (TN)' },
+    { code: '+90', name: 'Turkey (TR)' },
+    { code: '+993', name: 'Turkmenistan (TM)' },
+    { code: '+1-649', name: 'Turks and Caicos Islands (TC)' },
+    { code: '+688', name: 'Tuvalu (TV)' },
+    { code: '+1-340', name: 'U.S. Virgin Islands (VI)' },
+    { code: '+256', name: 'Uganda (UG)' },
+    { code: '+380', name: 'Ukraine (UA)' },
+    { code: '+971', name: 'United Arab Emirates (AE)' },
+    { code: '+44', name: 'United Kingdom (GB)' },
+    { code: '+1', name: 'United States (US)' },
+    { code: '+598', name: 'Uruguay (UY)' },
+    { code: '+998', name: 'Uzbekistan (UZ)' },
+    { code: '+678', name: 'Vanuatu (VU)' },
+    { code: '+379', name: 'Vatican (VA)' },
+    { code: '+58', name: 'Venezuela (VE)' },
+    { code: '+84', name: 'Vietnam (VN)' },
+    { code: '+681', name: 'Wallis and Futuna (WF)' },
+    { code: '+212', name: 'Western Sahara (EH)' },
+    { code: '+967', name: 'Yemen (YE)' },
+    { code: '+260', name: 'Zambia (ZM)' },
+    { code: '+263', name: 'Zimbabwe (ZW)' }
+  ];
+
+  // Function to populate country codes dropdown
+  function populateCountryCodes() {
+    const countryCodeSelect = document.getElementById('countryCode');
+    
+    // Sort countries alphabetically by name
+    countryCodes.sort((a, b) => a.name.localeCompare(b.name));
+    
+    // Add options to select
+    countryCodes.forEach(country => {
+      const option = document.createElement('option');
+      option.value = country.code;
+      option.textContent = `${country.code} - ${country.name}`;
+      countryCodeSelect.appendChild(option);
+    });
+    
+    // Set default to Pakistan
+    const pakistanOption = countryCodes.find(country => country.name.includes('Pakistan'));
+    if (pakistanOption) {
+      countryCodeSelect.value = pakistanOption.code;
+    }
+  }
 
   // ==================== DEBUG & INITIALIZATION ====================
   
@@ -781,6 +1254,15 @@
   function validateUsername(username) {
     const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
     return usernameRegex.test(username);
+  }
+
+  // Mobile number validation function
+  function validateMobileNumber(mobile) {
+    // Remove any non-digit characters
+    const cleanedMobile = mobile.replace(/\D/g, '');
+    
+    // Basic validation - between 8 and 15 digits
+    return cleanedMobile.length >= 8 && cleanedMobile.length <= 15;
   }
 
   // Password strength indicator
@@ -862,7 +1344,7 @@
 
   // ==================== LOGIN FUNCTIONALITY ====================
   
- async function handleLoginSubmit(e) {
+  async function handleLoginSubmit(e) {
     e.preventDefault();
     console.log('🔐 Login form submitted');
     
@@ -919,7 +1401,7 @@
             document.getElementById('loginPasswordError').style.display = 'block';
         }
     }
-}
+  }
 
   // ==================== SIGNUP FUNCTIONALITY ====================
   
@@ -932,13 +1414,16 @@
     
     const name = document.getElementById('signupUsername').value.trim();
     const email = document.getElementById('signupEmail').value.trim();
+    const countryCode = document.getElementById('countryCode').value;
+    const mobile = document.getElementById('signupMobile').value.trim();
     const password = document.getElementById('signupPassword').value;
     
-    console.log('Form data:', { name, email, password });
+    console.log('Form data:', { name, email, countryCode, mobile, password });
     
     // Clear previous errors
     document.getElementById('signupUsernameError').style.display = 'none';
     document.getElementById('signupEmailError').style.display = 'none';
+    document.getElementById('signupMobileError').style.display = 'none';
     document.getElementById('signupPasswordError').style.display = 'none';
     
     let isValid = true;
@@ -966,6 +1451,17 @@
       isValid = false;
     }
     
+    // Mobile validation
+    if (!mobile) {
+      document.getElementById('signupMobileError').textContent = 'Mobile number is required';
+      document.getElementById('signupMobileError').style.display = 'block';
+      isValid = false;
+    } else if (!validateMobileNumber(mobile)) {
+      document.getElementById('signupMobileError').textContent = 'Please enter a valid mobile number (8-15 digits)';
+      document.getElementById('signupMobileError').style.display = 'block';
+      isValid = false;
+    }
+    
     // Password validation
     if (!password) {
       document.getElementById('signupPasswordError').textContent = 'Password is required';
@@ -988,14 +1484,22 @@
       
       console.log('📡 Calling backend signup API...');
       
+      // Format mobile number for backend
+      const formattedMobile = countryCode + mobile.replace(/\D/g, '');
+      
       // Call backend signup endpoint
-      const result = await apiCall('/signup', 'POST', { name, email, password });
+      const result = await apiCall('/signup', 'POST', { 
+        name, 
+        email, 
+        mobile: formattedMobile,
+        password 
+      });
       
       console.log('Backend response:', result);
       
       if (result.success && result.data.success) {
         // Store user data for OTP verification
-        signupData = { name, email, password };
+        signupData = { name, email, mobile: formattedMobile, password };
         
         console.log('✅ OTP sent successfully! Moving to OTP entry page...');
         
@@ -1084,6 +1588,7 @@
     const result = await apiCall('/signup', 'POST', { 
       name: signupData.name, 
       email: signupData.email, 
+      mobile: signupData.mobile,
       password: signupData.password 
     });
     
@@ -1147,28 +1652,60 @@
     document.getElementById('forgotOtpSuccess').style.display = 'none';
     
     if (!otp) {
-      document.getElementById('forgotOtpError').textContent = 'OTP is required';
-      document.getElementById('forgotOtpError').style.display = 'block';
-      return;
+        document.getElementById('forgotOtpError').textContent = 'OTP is required';
+        document.getElementById('forgotOtpError').style.display = 'block';
+        return;
     }
     
     if (otp.length !== 6 || !/^\d+$/.test(otp)) {
-      document.getElementById('forgotOtpError').textContent = 'Please enter a valid 6-digit OTP';
-      document.getElementById('forgotOtpError').style.display = 'block';
-      return;
+        document.getElementById('forgotOtpError').textContent = 'Please enter a valid 6-digit OTP';
+        document.getElementById('forgotOtpError').style.display = 'block';
+        return;
     }
     
-    // Store OTP for password reset
-    forgotPasswordOtp = otp;
-    
-    document.getElementById('forgotOtpSuccess').textContent = 'OTP verified successfully';
-    document.getElementById('forgotOtpSuccess').style.display = 'block';
-    
-    setTimeout(() => {
-      showForgotStep(3);
-    }, 1500);
-  }
-
+    // ========== ADD THIS: Actually verify OTP with backend ==========
+    try {
+        // Show loading state
+        const submitBtn = document.querySelector('#forgotOtpForm button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Verifying...';
+        submitBtn.disabled = true;
+        
+        // Call backend to verify OTP BEFORE moving to next step
+        const result = await apiCall('/verify-reset-otp', 'POST', { 
+            email: forgotPasswordEmail, 
+            otp: otp 
+        });
+        
+        if (result.success && result.data.success) {
+            // Store OTP for password reset
+            forgotPasswordOtp = otp;
+            
+            document.getElementById('forgotOtpSuccess').textContent = 'OTP verified successfully';
+            document.getElementById('forgotOtpSuccess').style.display = 'block';
+            
+            setTimeout(() => {
+                showForgotStep(3);
+            }, 1500);
+        } else {
+            // Show error from backend
+            const errorMsg = result.data?.message || 'Invalid OTP. Please try again.';
+            document.getElementById('forgotOtpError').textContent = errorMsg;
+            document.getElementById('forgotOtpError').style.display = 'block';
+        }
+        
+    } catch (error) {
+        console.error('Error verifying OTP:', error);
+        document.getElementById('forgotOtpError').textContent = 'Network error. Please try again.';
+        document.getElementById('forgotOtpError').style.display = 'block';
+    } finally {
+        // Restore button state
+        const submitBtn = document.querySelector('#forgotOtpForm button[type="submit"]');
+        submitBtn.textContent = 'Verify OTP';
+        submitBtn.disabled = false;
+    }
+    // ========== END OF ADDED CODE ==========
+}
   async function handleResendOtp(e) {
     e.preventDefault();
     console.log('🔄 Resend forgot password OTP');
@@ -1237,6 +1774,270 @@
     }
   }
 
+  // ==================== NEW: VERIFY EMAIL FUNCTIONALITY ====================
+  
+  async function handleVerifyEmailRequestSubmit(e) {
+    e.preventDefault();
+    console.log('📧 Verify email request submitted');
+    
+    const email = document.getElementById('verifyEmail').value.trim();
+    const password = document.getElementById('verifyPassword').value;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    document.getElementById('verifyEmailError').style.display = 'none';
+    document.getElementById('verifyPasswordError').style.display = 'none';
+    
+    let isValid = true;
+    
+    if (!email) {
+      document.getElementById('verifyEmailError').textContent = 'Email is required';
+      document.getElementById('verifyEmailError').style.display = 'block';
+      isValid = false;
+    } else if (!emailRegex.test(email)) {
+      document.getElementById('verifyEmailError').textContent = 'Please enter a valid email address';
+      document.getElementById('verifyEmailError').style.display = 'block';
+      isValid = false;
+    }
+    
+    if (!password) {
+      document.getElementById('verifyPasswordError').textContent = 'Password is required';
+      document.getElementById('verifyPasswordError').style.display = 'block';
+      isValid = false;
+    }
+    
+    if (!isValid) return;
+    
+    try {
+      // Show loading state
+      const submitBtn = document.querySelector('#verifyEmailRequestForm button[type="submit"]');
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = 'Checking...';
+      submitBtn.disabled = true;
+      
+      // Call backend API to check email verification status
+      const result = await apiCall('/check-email-verification', 'POST', { 
+        email, 
+        password 
+      });
+      
+      console.log('Backend response for email verification:', result);
+      
+      if (result.success && result.data.success) {
+        // Store email for OTP verification
+        verifyEmailData = { email };
+        
+        if (result.data.verified) {
+          // Email is already verified
+          console.log('✅ Email already verified');
+          showVerifyEmailResult('Already verified.', 'Your email is already verified. You can login to your account.', false);
+        } else {
+          // Email exists but not verified - send OTP
+          console.log('📨 Email not verified, sending OTP');
+          
+          // Call API to resend OTP
+          const otpResult = await apiCall('/resend-verification-otp', 'POST', { email });
+          
+          if (otpResult.success && otpResult.data.success) {
+            // Move to OTP verification step
+            showVerifyEmailStep(2);
+          } else {
+            const errorMsg = otpResult.data?.message || 'Failed to send OTP. Please try again.';
+            document.getElementById('verifyEmailError').textContent = errorMsg;
+            document.getElementById('verifyEmailError').style.display = 'block';
+          }
+        }
+      } else {
+        // Show error message
+        const errorMsg = result.data?.message || 'Invalid email or password. Please try again.';
+        document.getElementById('verifyEmailError').textContent = errorMsg;
+        document.getElementById('verifyEmailError').style.display = 'block';
+      }
+      
+    } catch (error) {
+      console.error('❌ Network error:', error);
+      document.getElementById('verifyEmailError').textContent = 'Network error. Please try again.';
+      document.getElementById('verifyEmailError').style.display = 'block';
+    } finally {
+      // Restore button state
+      const submitBtn = document.querySelector('#verifyEmailRequestForm button[type="submit"]');
+      submitBtn.textContent = 'Verify Account';
+      submitBtn.disabled = false;
+    }
+  }
+
+  async function handleVerifyEmailOtpSubmit(e) {
+    e.preventDefault();
+    console.log('🔑 Verify email OTP submitted');
+    
+    const otp = document.getElementById('verifyEmailOtp').value.trim();
+    
+    document.getElementById('verifyEmailOtpError').style.display = 'none';
+    document.getElementById('verifyEmailOtpSuccess').style.display = 'none';
+    document.getElementById('verifyEmailOtpInfo').style.display = 'none';
+    
+    if (!otp) {
+      document.getElementById('verifyEmailOtpError').textContent = 'OTP is required';
+      document.getElementById('verifyEmailOtpError').style.display = 'block';
+      return;
+    }
+    
+    if (otp.length !== 6 || !/^\d+$/.test(otp)) {
+      document.getElementById('verifyEmailOtpError').textContent = 'Please enter a valid 6-digit OTP';
+      document.getElementById('verifyEmailOtpError').style.display = 'block';
+      return;
+    }
+    
+    try {
+      // Show loading state
+      const submitBtn = document.querySelector('#verifyEmailOtpForm button[type="submit"]');
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = 'Verifying...';
+      submitBtn.disabled = true;
+      
+      // Call backend API to verify OTP
+      const result = await apiCall('/verify-email-otp', 'POST', { 
+        email: verifyEmailData.email, 
+        otp: otp 
+      });
+      
+      console.log('Backend response for OTP verification:', result);
+      
+      if (result.success && result.data.success) {
+        // OTP verified successfully
+        console.log('✅ Email verified successfully');
+        showVerifyEmailResult('Email Verified Successfully!', 'Your email has been verified successfully. You can now login to your account.', true);
+      } else {
+        // Show error
+        const errorMsg = result.data?.message || 'Invalid OTP. Please try again.';
+        document.getElementById('verifyEmailOtpError').textContent = errorMsg;
+        document.getElementById('verifyEmailOtpError').style.display = 'block';
+      }
+      
+    } catch (error) {
+      console.error('❌ Network error:', error);
+      document.getElementById('verifyEmailOtpError').textContent = 'Network error. Please try again.';
+      document.getElementById('verifyEmailOtpError').style.display = 'block';
+    } finally {
+      // Restore button state
+      const submitBtn = document.querySelector('#verifyEmailOtpForm button[type="submit"]');
+      submitBtn.textContent = 'Verify OTP';
+      submitBtn.disabled = false;
+    }
+  }
+
+  async function handleResendVerifyEmailOtp(e) {
+    e.preventDefault();
+    console.log('🔄 Resend verify email OTP');
+    
+    // Call API to resend OTP
+    const result = await apiCall('/resend-verification-otp', 'POST', { 
+      email: verifyEmailData.email 
+    });
+    
+    if (result.success && result.data.success) {
+      document.getElementById('verifyEmailOtpSuccess').textContent = 'New OTP sent to your email';
+      document.getElementById('verifyEmailOtpSuccess').style.display = 'block';
+      document.getElementById('verifyEmailOtp').value = '';
+    } else {
+      const errorMsg = result.data?.message || 'Failed to resend OTP. Please try again.';
+      document.getElementById('verifyEmailOtpError').textContent = errorMsg;
+      document.getElementById('verifyEmailOtpError').style.display = 'block';
+    }
+  }
+
+  function showVerifyEmailResult(message, description, isSuccess) {
+    console.log('📊 Showing verification result:', message);
+    
+    // Update result screen based on success status
+    const resultIcon = document.getElementById('verifyEmailResultIcon');
+    const resultMessage = document.getElementById('verifyEmailResultMessage');
+    const resultDescription = document.getElementById('verifyEmailResultDescription');
+    
+    if (isSuccess) {
+      resultIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
+      resultIcon.style.color = '#4CAF50';
+      resultMessage.textContent = message;
+    } else {
+      // Already verified case
+      resultIcon.innerHTML = '<i class="fas fa-info-circle"></i>';
+      resultIcon.style.color = '#6bd2ff';
+      resultMessage.textContent = message;
+    }
+    
+    resultDescription.textContent = description;
+    
+    // Show result step
+    showVerifyEmailStep(3);
+    
+    // Start redirect timer
+    startVerifyEmailRedirectTimer();
+  }
+
+  function startVerifyEmailRedirectTimer() {
+    let timeLeft = 7;
+    const timerElement = document.getElementById('verifyEmailRedirectTimer');
+    
+    const timer = setInterval(() => {
+      timerElement.textContent = `Redirecting to login in ${timeLeft} seconds...`;
+      timeLeft--;
+      
+      if (timeLeft < 0) {
+        clearInterval(timer);
+        resetVerifyEmailFlow();
+        document.querySelector('.verify-email-form').style.display = 'none';
+        document.querySelector('.login-form').style.display = 'block';
+      }
+    }, 1000);
+  }
+
+  function resetVerifyEmailFlow() {
+    console.log('🔄 Resetting verify email flow');
+    
+    document.getElementById('verifyEmailRequestForm').reset();
+    document.getElementById('verifyEmailOtpForm').reset();
+    
+    document.querySelectorAll('.verify-email-step').forEach(step => step.style.display = 'none');
+    document.getElementById('verifyEmailRequestForm').style.display = 'block';
+    
+    document.getElementById('verifyEmailStep1').classList.add('active');
+    document.getElementById('verifyEmailStep2').classList.remove('active', 'completed');
+    document.getElementById('verifyEmailStep3').classList.remove('active', 'completed');
+    
+    document.querySelectorAll('.error-message, .success-message, .info-message').forEach(msg => {
+      msg.style.display = 'none';
+    });
+    
+    verifyEmailData = {};
+  }
+
+  function showVerifyEmailStep(stepNumber) {
+    console.log(`🔄 Moving to verify email step: ${stepNumber}`);
+    
+    document.querySelectorAll('.verify-email-step').forEach(step => step.style.display = 'none');
+    
+    if (stepNumber === 1) {
+      document.getElementById('verifyEmailRequestForm').style.display = 'block';
+    } else if (stepNumber === 2) {
+      document.getElementById('verifyEmailOtpForm').style.display = 'block';
+    } else if (stepNumber === 3) {
+      document.getElementById('verifyEmailResultForm').style.display = 'block';
+    }
+    
+    // Update progress steps
+    document.querySelectorAll('#verifyEmailStep1, #verifyEmailStep2, #verifyEmailStep3').forEach((step, index) => {
+      const stepElement = document.getElementById(`verifyEmailStep${index + 1}`);
+      if (index + 1 < stepNumber) {
+        stepElement.classList.remove('active');
+        stepElement.classList.add('completed');
+      } else if (index + 1 === stepNumber) {
+        stepElement.classList.add('active');
+        stepElement.classList.remove('completed');
+      } else {
+        stepElement.classList.remove('active', 'completed');
+      }
+    });
+  }
+
   // ==================== FLOW MANAGEMENT ====================
   
   function initializeEventListeners() {
@@ -1264,6 +2065,7 @@
       document.querySelector('.login-form').style.display = 'none';
       document.querySelector('.signup-form').style.display = 'block';
       document.querySelector('.forgot-password-form').style.display = 'none';
+      document.querySelector('.verify-email-form').style.display = 'none';
       resetSignupFlow();
     });
 
@@ -1274,6 +2076,7 @@
       document.querySelector('.signup-form').style.display = 'none';
       document.querySelector('.login-form').style.display = 'block';
       document.querySelector('.forgot-password-form').style.display = 'none';
+      document.querySelector('.verify-email-form').style.display = 'none';
     });
 
     safeAddListener('showForgotPassword', 'click', function(e) {
@@ -1282,13 +2085,33 @@
       document.querySelector('.login-form').style.display = 'none';
       document.querySelector('.signup-form').style.display = 'none';
       document.querySelector('.forgot-password-form').style.display = 'block';
+      document.querySelector('.verify-email-form').style.display = 'none';
       resetForgotPasswordFlow();
+    });
+
+    // NEW: Switch to Verify Email form
+    safeAddListener('showVerifyEmail', 'click', function(e) {
+      e.preventDefault();
+      console.log('🔄 Switching to verify email form');
+      document.querySelector('.login-form').style.display = 'none';
+      document.querySelector('.signup-form').style.display = 'none';
+      document.querySelector('.forgot-password-form').style.display = 'none';
+      document.querySelector('.verify-email-form').style.display = 'block';
+      resetVerifyEmailFlow();
     });
 
     safeAddListener('backToLoginFromForgot', 'click', function(e) {
       e.preventDefault();
       console.log('🔄 Switching back to login from forgot password');
       document.querySelector('.forgot-password-form').style.display = 'none';
+      document.querySelector('.login-form').style.display = 'block';
+    });
+
+    // NEW: Back to Login from Verify Email
+    safeAddListener('backToLoginFromVerify', 'click', function(e) {
+      e.preventDefault();
+      console.log('🔄 Switching back to login from verify email');
+      document.querySelector('.verify-email-form').style.display = 'none';
       document.querySelector('.login-form').style.display = 'block';
     });
 
@@ -1299,10 +2122,16 @@
     const otpConnected = safeAddListener('signupOtpForm', 'submit', handleSignupOtpSubmit);
     const loginConnected = safeAddListener('loginForm', 'submit', handleLoginSubmit);
     
+    // NEW: Verify Email form submissions
+    const verifyEmailRequestConnected = safeAddListener('verifyEmailRequestForm', 'submit', handleVerifyEmailRequestSubmit);
+    const verifyEmailOtpConnected = safeAddListener('verifyEmailOtpForm', 'submit', handleVerifyEmailOtpSubmit);
+    
     console.log('📊 Form connection summary:');
     console.log('  - Signup form:', signupConnected ? '✅ CONNECTED' : '❌ MISSING');
     console.log('  - OTP form:', otpConnected ? '✅ CONNECTED' : '❌ MISSING'); 
     console.log('  - Login form:', loginConnected ? '✅ CONNECTED' : '❌ MISSING');
+    console.log('  - Verify Email Request form:', verifyEmailRequestConnected ? '✅ CONNECTED' : '❌ MISSING');
+    console.log('  - Verify Email OTP form:', verifyEmailOtpConnected ? '✅ CONNECTED' : '❌ MISSING');
 
     // Optional buttons
     safeAddListener('resendSignupOtp', 'click', handleResendSignupOtp);
@@ -1314,6 +2143,14 @@
     safeAddListener('backToEmailStep', 'click', handleBackToEmailStep);
     safeAddListener('backToOtpStep', 'click', handleBackToOtpStep);
     safeAddListener('forgotNewPasswordForm', 'submit', handleForgotNewPasswordSubmit);
+    
+    // NEW: Verify Email buttons
+    safeAddListener('resendVerifyEmailOtp', 'click', handleResendVerifyEmailOtp);
+    safeAddListener('backToVerifyEmailRequest', 'click', function(e) {
+      e.preventDefault();
+      console.log('🔄 Back to verify email request');
+      showVerifyEmailStep(1);
+    });
 
     console.log('✅ Event listener initialization completed');
   }
@@ -1485,17 +2322,29 @@
   document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 DOM fully loaded');
     
+    // Populate country codes dropdown
+    populateCountryCodes();
+    
     // Test form connections immediately
     const signupForm = document.getElementById('signupDetailsForm');
     const loginForm = document.getElementById('loginForm');
+    const verifyEmailForm = document.getElementById('verifyEmailRequestForm');
     
     console.log('📝 Signup form found:', !!signupForm);
     console.log('📝 Login form found:', !!loginForm);
+    console.log('📝 Verify Email form found:', !!verifyEmailForm);
     
     if (signupForm) {
       signupForm.addEventListener('submit', function(e) {
         e.preventDefault();
         console.log('🎯 SIGNUP FORM SUBMITTED! This should happen when clicking Send OTP');
+      });
+    }
+    
+    if (verifyEmailForm) {
+      verifyEmailForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        console.log('🎯 VERIFY EMAIL FORM SUBMITTED! This should happen when clicking Verify Account');
       });
     }
     

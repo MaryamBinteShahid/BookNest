@@ -13,7 +13,13 @@ const {
     updatePassword,
     deleteAccount,
     sendPasswordChangeOTP,
-    sendAccountDeletionOTP
+    sendAccountDeletionOTP,
+    // New functions for email verification
+    checkEmailVerification,
+    resendVerificationOTP,
+    verifyEmailOTP,
+    // New function for OTP verification only
+    verifyResetOTP  // ADD THIS LINE
 } = require('./authController');
 const { authenticateToken } = require('./auth');
 
@@ -21,7 +27,11 @@ const { authenticateToken } = require('./auth');
 const validateSignup = [
     body('email').isEmail().normalizeEmail(),
     body('password').isLength({ min: 8 }),
-    body('name').trim().notEmpty()
+    body('name').trim().notEmpty(),
+    body('mobile')
+        .isMobilePhone('any')
+        .withMessage('Please provide a valid mobile number')
+        .notEmpty()
 ];
 
 const validateLogin = [
@@ -58,5 +68,19 @@ router.put('/profile/password', authenticateToken, validatePasswordChange, updat
 // Account deletion with OTP verification routes
 router.post('/send-account-deletion-otp', authenticateToken, sendAccountDeletionOTP);
 router.delete('/profile', authenticateToken, validateAccountDeletion, deleteAccount);
+
+// ========== NEW ROUTES FOR EMAIL VERIFICATION FEATURE ==========
+
+// Check email verification status
+router.post('/check-email-verification', checkEmailVerification);
+
+// Resend verification OTP for existing unverified users
+router.post('/resend-verification-otp', resendVerificationOTP);
+
+// Verify email OTP for existing users
+router.post('/verify-email-otp', verifyEmailOTP);
+
+// OTP verification for password reset (without resetting password)
+router.post('/verify-reset-otp', verifyResetOTP);  // ADD THIS ROUTE
 
 module.exports = router;
