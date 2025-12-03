@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About - BookNest</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --brand: #c5864a;
+      --bg: #111;
+      --card: #1a1a1a;
+      --border: #2a2a2a;
+      --text: #f1f1f1;
+      --muted: #888;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .navbar {
+      background: var(--card);
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .navbar-brand {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--brand);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 40px;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      text-decoration: none;
+      transition: all 0.3s;
+      margin-bottom: 40px;
+    }
+
+    .back-btn:hover {
+      background: var(--brand);
+      color: #111;
+      border-color: var(--brand);
+    }
+
+    .hero-section {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .hero-title {
+      font-size: 56px;
+      font-weight: 700;
+      color: var(--brand);
+      margin-bottom: 20px;
+    }
+
+    .hero-subtitle {
+      font-size: 24px;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .content-section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 40px;
+      margin-bottom: 30px;
+    }
+
+    .section-title {
+      font-size: 32px;
+      color: var(--brand);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .section-content {
+      font-size: 18px;
+      line-height: 1.8;
+      color: var(--text);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 30px;
+    }
+
+    .feature-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 30px;
+      text-align: center;
+      transition: all 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--brand);
+    }
+
+    .feature-icon {
+      font-size: 48px;
+      color: var(--brand);
+      margin-bottom: 20px;
+    }
+
+    .feature-title {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 15px;
+    }
+
+    .feature-description {
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    .stats-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-top: 40px;
+    }
+
+    .stat-box {
+      background: var(--bg);
+      border: 2px solid var(--brand);
+      border-radius: 8px;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 42px;
+      font-weight: 700;
+      color: var(--brand);
+      margin-bottom: 10px;
+    }
+
+    .stat-label {
+      font-size: 16px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 768px) {
+      .hero-title {
+        font-size: 36px;
+      }
+
+      .hero-subtitle {
+        font-size: 18px;
+      }
+
+      .section-title {
+        font-size: 24px;
+      }
+
+      .content-section {
+        padding: 25px;
+      }
+
+      .container {
+        padding: 40px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-brand" onclick="goHome()">
+      <i class="fas fa-book"></i>
+      BookNest
+    </div>
+  </nav>
+
+  <div class="container">
+    <a href="home.html" class="back-btn">
+      <i class="fas fa-arrow-left"></i>
+      Back to Home
+    </a>
+
+    <div class="hero-section">
+      <h1 class="hero-title">About BookNest</h1>
+      <p class="hero-subtitle">Your Digital Haven for Book Discovery</p>
+    </div>
+
+    <div class="content-section">
+      <h2 class="section-title">
+        <i class="fas fa-book-open"></i>
+        Our Story
+      </h2>
+      <div class="section-content">
+        <p style="margin-bottom: 15px;">
+          Welcome to BookNest, where passion for literature meets cutting-edge technology. Founded with the vision of making book discovery effortless and enjoyable, we've created a platform that connects readers with their next great read.
+        </p>
+        <p>
+          In a world overflowing with content, we understand the challenge of finding books that truly resonate with you. BookNest bridges that gap by combining an extensive database with intelligent search capabilities, helping you discover books that match your interests, mood, and reading preferences.
+        </p>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2 class="section-title">
+        <i class="fas fa-bullseye"></i>
+        Our Mission
+      </h2>
+      <div class="section-content">
+        <p>
+          Our mission is simple yet profound: to foster a love for reading by making book discovery accessible, personalized, and delightful. We believe that the right book at the right time can change lives, spark imagination, and open new worlds of possibility.
+        </p>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2 class="section-title">
+        <i class="fas fa-star"></i>
+        Key Features
+      </h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-search"></i></div>
+          <h3 class="feature-title">Smart Search</h3>
+          <p class="feature-description">
+            Advanced search algorithms that help you find books by title, author, publisher, or genre with lightning-fast results.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-database"></i></div>
+          <h3 class="feature-title">Extensive Database</h3>
+          <p class="feature-description">
+            Access to millions of books through our integration with Google Books API and our curated local collection.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-book-reader"></i></div>
+          <h3 class="feature-title">Detailed Information</h3>
+          <p class="feature-description">
+            Comprehensive book details including summaries, ratings, reviews, and publication information.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-user-shield"></i></div>
+          <h3 class="feature-title">Personalized Experience</h3>
+          <p class="feature-description">
+            Create your profile, save favorites, and get recommendations tailored to your reading preferences.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-mobile-alt"></i></div>
+          <h3 class="feature-title">Mobile Friendly</h3>
+          <p class="feature-description">
+            Seamless experience across all devices - search and discover books anywhere, anytime.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-heart"></i></div>
+          <h3 class="feature-title">Community Driven</h3>
+          <p class="feature-description">
+            Join a community of book lovers, share reviews, and discover what others are reading.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2 class="section-title">
+        <i class="fas fa-chart-line"></i>
+        BookNest by the Numbers
+      </h2>
+      <div class="stats-section">
+        <div class="stat-box">
+          <div class="stat-number">1M+</div>
+          <div class="stat-label">Books Available</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number">50K+</div>
+          <div class="stat-label">Active Readers</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number">100K+</div>
+          <div class="stat-label">Reviews & Ratings</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number">24/7</div>
+          <div class="stat-label">Access Available</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2 class="section-title">
+        <i class="fas fa-rocket"></i>
+        What's Next?
+      </h2>
+      <div class="section-content">
+        <p style="margin-bottom: 15px;">
+          We're constantly evolving to serve you better. Here's what's coming soon:
+        </p>
+        <ul style="list-style: none; padding: 0;">
+          <li style="padding: 10px 0; border-bottom: 1px solid var(--border);">
+            <i class="fas fa-check" style="color: var(--brand); margin-right: 10px;"></i>
+            <strong>Trending Books</strong> - Discover what's hot in the reading world
+          </li>
+          <li style="padding: 10px 0; border-bottom: 1px solid var(--border);">
+            <i class="fas fa-check" style="color: var(--brand); margin-right: 10px;"></i>
+            <strong>Favourites List</strong> - Save and organize your favorite books
+          </li>
+          <li style="padding: 10px 0; border-bottom: 1px solid var(--border);">
+            <i class="fas fa-check" style="color: var(--brand); margin-right: 10px;"></i>
+            <strong>Reading Lists</strong> - Create and share custom reading lists
+          </li>
+          <li style="padding: 10px 0;">
+            <i class="fas fa-check" style="color: var(--brand); margin-right: 10px;"></i>
+            <strong>Social Features</strong> - Connect with friends and share recommendations
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="content-section" style="text-align: center; background: linear-gradient(135deg, var(--card) 0%, var(--bg) 100%);">
+      <h2 class="section-title" style="justify-content: center;">
+        <i class="fas fa-envelope"></i>
+        Get in Touch
+      </h2>
+      <div class="section-content">
+        <p style="margin-bottom: 20px;">
+          Have questions, suggestions, or just want to say hello? We'd love to hear from you!
+        </p>
+        <p style="color: var(--brand); font-size: 20px; font-weight: 600;">
+          <i class="fas fa-envelope"></i> contact@booknest.com
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function goHome() {
+      window.location.href = 'home.html';
+    }
+  </script>
+</body>
+</html>

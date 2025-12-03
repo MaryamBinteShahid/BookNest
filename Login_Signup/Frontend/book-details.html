@@ -1,0 +1,667 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Details - BookNest</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --brand: #c5864a;
+      --bg: #111;
+      --card: #1a1a1a;
+      --border: #2a2a2a;
+      --text: #f1f1f1;
+      --muted: #888;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .navbar {
+      background: var(--card);
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .hamburger-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 6px;
+      transition: all 0.3s;
+    }
+
+    .hamburger-menu:hover {
+      background: var(--border);
+    }
+
+    .hamburger-line {
+      width: 20px;
+      height: 2px;
+      background: var(--text);
+      transition: all 0.3s;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 20px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 0;
+      min-width: 200px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+
+    .dropdown-menu.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .dropdown-item {
+      padding: 12px 20px;
+      color: var(--text);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .dropdown-item:hover {
+      background: var(--brand);
+      color: #111;
+    }
+
+    .navbar-brand {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--brand);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    /* Back button removed */
+    .loading {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .loading i {
+      font-size: 50px;
+      margin-bottom: 20px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    .error-message {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--muted);
+    }
+
+    .error-message i {
+      font-size: 60px;
+      margin-bottom: 20px;
+      color: #dc3545;
+    }
+
+    .error-message h2 {
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .book-details {
+      display: grid;
+      grid-template-columns: 350px 1fr;
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+
+    .book-image-section {
+      position: sticky;
+      top: 20px;
+      height: fit-content;
+    }
+
+    .book-cover {
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      margin-bottom: 20px;
+    }
+
+    .book-meta {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    .meta-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .meta-item:last-child {
+      border-bottom: none;
+    }
+
+    .meta-label {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .meta-value {
+      color: var(--text);
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .book-info-section h1 {
+      font-size: 36px;
+      margin-bottom: 10px;
+      color: var(--brand);
+    }
+
+    .book-author {
+      font-size: 20px;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .book-rating {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 30px;
+      padding: 15px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .rating-stars {
+      display: flex;
+      gap: 5px;
+      font-size: 24px;
+    }
+
+    .star {
+      color: #ffc107;
+    }
+
+    .star.empty {
+      color: var(--border);
+    }
+
+    .rating-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .rating-count {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 30px;
+    }
+
+    .section-title {
+      font-size: 24px;
+      margin-bottom: 15px;
+      color: var(--brand);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .book-summary {
+      line-height: 1.8;
+      color: var(--text);
+      font-size: 16px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .info-label {
+      color: var(--muted);
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .info-value {
+      color: var(--text);
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .reviews-section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 30px;
+    }
+
+    .review-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 15px;
+    }
+
+    .review-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .reviewer-name {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .review-date {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .review-rating {
+      display: flex;
+      gap: 3px;
+      margin-bottom: 10px;
+    }
+
+    .review-text {
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .no-reviews {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+    }
+
+    .source-badge {
+      display: inline-block;
+      padding: 5px 12px;
+      background: var(--brand);
+      color: #111;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    @media (max-width: 968px) {
+      .book-details {
+        grid-template-columns: 1fr;
+      }
+
+      .book-image-section {
+        position: static;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-left">
+      <div class="hamburger-menu" id="hamburgerMenu">
+        <div class="hamburger-line"></div>
+        <div class="hamburger-line"></div>
+        <div class="hamburger-line"></div>
+      </div>
+      <div class="navbar-brand" onclick="goHome()">
+        <i class="fas fa-book"></i>
+        BookNest
+      </div>
+    </div>
+
+    <div class="dropdown-menu" id="dropdownMenu">
+      <div class="dropdown-item" onclick="goToHome()">
+        <i class="fas fa-home"></i>
+        Home
+      </div>
+      <!-- Add more menu items here in the future -->
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Back button removed from here -->
+    <div id="bookContent">
+      <div class="loading">
+        <div><i class="fas fa-spinner"></i></div>
+        <div>Loading book details...</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE_URL = 'http://localhost:3000/api';
+
+    // Hamburger menu functionality
+    const hamburgerMenu = document.getElementById('hamburgerMenu');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+
+    hamburgerMenu.addEventListener('click', function(e) {
+      e.stopPropagation();
+      dropdownMenu.classList.toggle('show');
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function() {
+      dropdownMenu.classList.remove('show');
+    });
+
+    // Prevent dropdown from closing when clicking inside it
+    dropdownMenu.addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
+
+    // Get book ID and source from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const bookId = urlParams.get('id');
+    const source = urlParams.get('source');
+
+    // Fetch book details on page load
+    if (bookId && source) {
+      fetchBookDetails(bookId, source);
+    } else {
+      showError('Invalid book URL. Missing book ID or source.');
+    }
+
+    async function fetchBookDetails(bookId, source) {
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/book/${bookId}?source=${source}`
+        );
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch book details');
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+          displayBookDetails(data.data);
+        } else {
+          showError(data.error || 'Failed to load book details');
+        }
+
+      } catch (error) {
+        console.error('Error fetching book details:', error);
+        showError('Unable to load book details. Please try again later.');
+      }
+    }
+
+    function displayBookDetails(book) {
+      const bookContent = document.getElementById('bookContent');
+
+      bookContent.innerHTML = `
+        <div class="book-details">
+          <div class="book-image-section">
+            <img 
+              src="${book.image}" 
+              alt="${escapeHtml(book.title)}" 
+              class="book-cover"
+              onerror="this.src='/placeholder-book.png'"
+            >
+            <div class="book-meta">
+              <div class="meta-item">
+                <span class="meta-label">Source</span>
+                <span class="meta-value">
+                  <span class="source-badge">${book.source === 'supabase' ? 'Local DB' : 'Google Books'}</span>
+                </span>
+              </div>
+              ${book.isbn ? `
+                <div class="meta-item">
+                  <span class="meta-label">ISBN</span>
+                  <span class="meta-value">${book.isbn}</span>
+                </div>
+              ` : ''}
+              ${book.pageCount && book.pageCount !== 'Unknown' ? `
+                <div class="meta-item">
+                  <span class="meta-label">Pages</span>
+                  <span class="meta-value">${book.pageCount}</span>
+                </div>
+              ` : ''}
+              ${book.language && book.language !== 'Unknown' ? `
+                <div class="meta-item">
+                  <span class="meta-label">Language</span>
+                  <span class="meta-value">${book.language.toUpperCase()}</span>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+
+          <div class="book-info-section">
+            <h1>${escapeHtml(book.title)}</h1>
+            <div class="book-author">by ${escapeHtml(book.author)}</div>
+
+            ${book.rating > 0 ? `
+              <div class="book-rating">
+                <div class="rating-stars">
+                  ${generateStars(book.rating)}
+                </div>
+                <span class="rating-value">${book.rating.toFixed(1)}</span>
+                ${book.ratingsCount ? `
+                  <span class="rating-count">(${book.ratingsCount.toLocaleString()} ratings)</span>
+                ` : ''}
+              </div>
+            ` : ''}
+
+            <div class="section">
+              <h2 class="section-title">
+                <i class="fas fa-align-left"></i>
+                Summary
+              </h2>
+              <div class="book-summary">${escapeHtml(book.summary)}</div>
+            </div>
+
+            <div class="section">
+              <h2 class="section-title">
+                <i class="fas fa-info-circle"></i>
+                Book Information
+              </h2>
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="info-label">Publisher</span>
+                  <span class="info-value">${escapeHtml(book.publisher)}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Published Date</span>
+                  <span class="info-value">${escapeHtml(book.publishedDate)}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Genre</span>
+                  <span class="info-value">${escapeHtml(book.genre)}</span>
+                </div>
+                ${book.pageCount && book.pageCount !== 'Unknown' ? `
+                  <div class="info-item">
+                    <span class="info-label">Page Count</span>
+                    <span class="info-value">${book.pageCount} pages</span>
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+
+            <div class="reviews-section">
+              <h2 class="section-title">
+                <i class="fas fa-comments"></i>
+                Reviews
+              </h2>
+              ${displayReviews(book.reviews)}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function generateStars(rating) {
+      let stars = '';
+      const fullStars = Math.floor(rating);
+      const hasHalfStar = rating % 1 >= 0.5;
+      const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+      for (let i = 0; i < fullStars; i++) {
+        stars += '<i class="fas fa-star star"></i>';
+      }
+      
+      if (hasHalfStar) {
+        stars += '<i class="fas fa-star-half-alt star"></i>';
+      }
+      
+      for (let i = 0; i < emptyStars; i++) {
+        stars += '<i class="far fa-star star empty"></i>';
+      }
+
+      return stars;
+    }
+
+    function displayReviews(reviews) {
+      if (!reviews || reviews.length === 0) {
+        return `
+          <div class="no-reviews">
+            <i class="fas fa-comment-slash" style="font-size: 40px; margin-bottom: 10px; opacity: 0.5;"></i>
+            <p>No reviews yet</p>
+          </div>
+        `;
+      }
+
+      return reviews.map(review => `
+        <div class="review-card">
+          <div class="review-header">
+            <span class="reviewer-name">${escapeHtml(review.user || 'Anonymous')}</span>
+            <span class="review-date">${formatDate(review.date)}</span>
+          </div>
+          ${review.rating ? `
+            <div class="review-rating">
+              ${generateStars(review.rating)}
+            </div>
+          ` : ''}
+          <div class="review-text">${escapeHtml(review.comment || review.text || '')}</div>
+        </div>
+      `).join('');
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return 'Unknown date';
+      
+      try {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        });
+      } catch (error) {
+        return dateString;
+      }
+    }
+
+    function showError(message) {
+      const bookContent = document.getElementById('bookContent');
+      bookContent.innerHTML = `
+        <div class="error-message">
+          <div><i class="fas fa-exclamation-triangle"></i></div>
+          <h2>Error Loading Book</h2>
+          <p>${escapeHtml(message)}</p>
+        </div>
+      `;
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function goToHome() {
+      window.location.href = 'home.html';
+    }
+
+    function goHome() {
+      window.location.href = 'home.html';
+    }
+  </script>
+</body>
+</html>

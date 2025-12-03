@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Results - BookNest</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --brand: #c5864a;
+      --bg: #111;
+      --card: #1a1a1a;
+      --border: #2a2a2a;
+      --text: #f1f1f1;
+      --muted: #888;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .navbar {
+      background: var(--card);
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .navbar-brand {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--brand);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .search-header {
+      margin-bottom: 30px;
+    }
+
+    .search-header h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+      color: var(--brand);
+    }
+
+    .search-info {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+
+    .book-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 15px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .book-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(197, 134, 74, 0.2);
+      border-color: var(--brand);
+    }
+
+    .book-image {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+
+    .book-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .book-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .book-author {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .book-rating {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 13px;
+      margin-top: auto;
+    }
+
+    .book-rating i {
+      color: #ffc107;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .loading i {
+      font-size: 40px;
+      margin-bottom: 15px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--muted);
+    }
+
+    .no-results i {
+      font-size: 60px;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+
+    .no-results h2 {
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 40px;
+    }
+
+    .pagination-btn {
+      padding: 10px 20px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .pagination-btn:hover:not(:disabled) {
+      background: var(--brand);
+      color: #111;
+      border-color: var(--brand);
+    }
+
+    .pagination-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .pagination-btn.active {
+      background: var(--brand);
+      color: #111;
+      border-color: var(--brand);
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      text-decoration: none;
+      transition: all 0.3s;
+      margin-bottom: 20px;
+    }
+
+    .back-btn:hover {
+      background: var(--brand);
+      color: #111;
+      border-color: var(--brand);
+    }
+
+    @media (max-width: 768px) {
+      .results-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 15px;
+      }
+
+      .book-image {
+        height: 200px;
+      }
+
+      .search-header h1 {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-brand" onclick="goHome()">
+      <i class="fas fa-book"></i>
+      BookNest
+    </div>
+  </nav>
+
+  <div class="container">
+    <a href="home.html" class="back-btn">
+      <i class="fas fa-arrow-left"></i>
+      Back to Home
+    </a>
+
+    <div class="search-header">
+      <h1>Search Results</h1>
+      <div class="search-info" id="searchInfo">Loading...</div>
+    </div>
+
+    <div id="resultsContainer">
+      <div class="loading">
+        <div><i class="fas fa-spinner"></i></div>
+        <div>Searching for books...</div>
+      </div>
+    </div>
+
+    <div class="pagination" id="pagination"></div>
+  </div>
+
+  <script>
+    const API_BASE_URL = 'http://localhost:3000/api';
+    let currentPage = 1;
+    const booksPerPage = 10;
+    let currentQuery = '';
+    let currentType = '';
+
+    // Get query parameters
+    function getQueryParams() {
+      const params = new URLSearchParams(window.location.search);
+      return {
+        query: params.get('query') || '',
+        type: params.get('type') || 'all',
+        page: parseInt(params.get('page')) || 1
+      };
+    }
+
+    // Initialize page
+    async function init() {
+      const params = getQueryParams();
+      currentQuery = params.query;
+      currentType = params.type;
+      currentPage = params.page;
+
+      if (!currentQuery) {
+        window.location.href = 'home.html';
+        return;
+      }
+
+      await searchBooks();
+    }
+
+    // Search books
+    async function searchBooks() {
+      const resultsContainer = document.getElementById('resultsContainer');
+      const searchInfo = document.getElementById('searchInfo');
+
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/search?query=${encodeURIComponent(currentQuery)}&type=${currentType}&page=${currentPage}&limit=${booksPerPage}`
+        );
+
+        if (!response.ok) {
+          throw new Error('Search failed');
+        }
+
+        const data = await response.json();
+
+        // Update search info
+        const typeLabel = currentType === 'all' ? 'all fields' : currentType;
+        searchInfo.textContent = `Found ${data.total} results for "${currentQuery}" in ${typeLabel}`;
+
+        // Display results
+        displayResults(data.data);
+        displayPagination(data.total);
+
+      } catch (error) {
+        console.error('Search error:', error);
+        resultsContainer.innerHTML = `
+          <div class="no-results">
+            <div><i class="fas fa-exclamation-circle"></i></div>
+            <h2>Error loading results</h2>
+            <p>Please try again later</p>
+          </div>
+        `;
+      }
+    }
+
+    // Display search results
+    function displayResults(books) {
+      const resultsContainer = document.getElementById('resultsContainer');
+
+      if (!books || books.length === 0) {
+        resultsContainer.innerHTML = `
+          <div class="no-results">
+            <div><i class="fas fa-search"></i></div>
+            <h2>No books found</h2>
+            <p>Try adjusting your search terms</p>
+          </div>
+        `;
+        return;
+      }
+
+      resultsContainer.innerHTML = `
+        <div class="results-grid">
+          ${books.map(book => `
+            <div class="book-card" onclick="goToBookDetails('${book.id}', '${book.source}')">
+              <img 
+                src="${book.thumbnail}" 
+                alt="${escapeHtml(book.title)}" 
+                class="book-image"
+                onerror="this.src='/placeholder-book.png'"
+              >
+              <div class="book-info">
+                <div class="book-title">${escapeHtml(book.title)}</div>
+                <div class="book-author">${escapeHtml(book.author)}</div>
+                ${book.rating > 0 ? `
+                  <div class="book-rating">
+                    <i class="fas fa-star"></i>
+                    <span>${book.rating.toFixed(1)}</span>
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    // Display pagination
+    function displayPagination(totalResults) {
+      const paginationContainer = document.getElementById('pagination');
+      const totalPages = Math.ceil(totalResults / booksPerPage);
+
+      if (totalPages <= 1) {
+        paginationContainer.innerHTML = '';
+        return;
+      }
+
+      let paginationHTML = '';
+
+      // Previous button
+      paginationHTML += `
+        <button 
+          class="pagination-btn" 
+          ${currentPage === 1 ? 'disabled' : ''}
+          onclick="changePage(${currentPage - 1})"
+        >
+          <i class="fas fa-chevron-left"></i> Previous
+        </button>
+      `;
+
+      // Page numbers (show max 5 pages)
+      const startPage = Math.max(1, currentPage - 2);
+      const endPage = Math.min(totalPages, startPage + 4);
+
+      for (let i = startPage; i <= endPage; i++) {
+        paginationHTML += `
+          <button 
+            class="pagination-btn ${i === currentPage ? 'active' : ''}"
+            onclick="changePage(${i})"
+          >
+            ${i}
+          </button>
+        `;
+      }
+
+      // Next button
+      paginationHTML += `
+        <button 
+          class="pagination-btn"
+          ${currentPage === totalPages ? 'disabled' : ''}
+          onclick="changePage(${currentPage + 1})"
+        >
+          Next <i class="fas fa-chevron-right"></i>
+        </button>
+      `;
+
+      paginationContainer.innerHTML = paginationHTML;
+    }
+
+    // Change page
+    function changePage(page) {
+      currentPage = page;
+      window.history.pushState(
+        {}, 
+        '', 
+        `?query=${encodeURIComponent(currentQuery)}&type=${currentType}&page=${page}`
+      );
+      searchBooks();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Navigate to book details
+    function goToBookDetails(bookId, source) {
+      window.location.href = `book-details.html?id=${bookId}&source=${source}`;
+    }
+
+    // Navigate to home
+    function goHome() {
+      window.location.href = 'home.html';
+    }
+
+    // Escape HTML
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Initialize on page load
+    init();
+  </script>
+</body>
+</html>
