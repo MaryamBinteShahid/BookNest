@@ -170,48 +170,48 @@ async function deleteBook(req, res) {
     res.status(500).json({ error: 'Failed to delete book' });
   }
 }
-// Controller to search books and return full details (without author info)
-async function searchBooks(req, res) {
-    const query = req.query.q;
-    if (!query) {
-        return res.status(400).json({ error: 'Query parameter "q" is required' });
-    }
+// // Controller to search books and return full details (without author info)
+// async function searchBooks(req, res) {
+//     const query = req.query.q;
+//     if (!query) {
+//         return res.status(400).json({ error: 'Query parameter "q" is required' });
+//     }
 
-    try {
-        // Search endpoint
-        const searchResp = await axios.get(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=5`);
-        const books = [];
+//     try {
+//         // Search endpoint
+//         const searchResp = await axios.get(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=5`);
+//         const books = [];
 
-        for (const doc of searchResp.data.docs) {
-            const workId = doc.key; // e.g., /works/OLxxxxW
-            const workResp = await axios.get(`https://openlibrary.org${workId}.json`);
+//         for (const doc of searchResp.data.docs) {
+//             const workId = doc.key; // e.g., /works/OLxxxxW
+//             const workResp = await axios.get(`https://openlibrary.org${workId}.json`);
 
-            books.push({
-                title: workResp.data.title,
-                author: workResp.data.title,
-                description: workResp.data.description
-                    ? (typeof workResp.data.description === 'string' 
-                        ? workResp.data.description 
-                        : workResp.data.description.value)
-                    : 'No description',
-                subjects: workResp.data.subjects || [],
-                covers: workResp.data.covers && workResp.data.covers.length > 0
-    ? [`https://covers.openlibrary.org/b/id/${workResp.data.covers[0]}-L.jpg`]
-    : [],
+//             books.push({
+//                 title: workResp.data.title,
+//                 author: workResp.data.title,
+//                 description: workResp.data.description
+//                     ? (typeof workResp.data.description === 'string' 
+//                         ? workResp.data.description 
+//                         : workResp.data.description.value)
+//                     : 'No description',
+//                 subjects: workResp.data.subjects || [],
+//                 covers: workResp.data.covers && workResp.data.covers.length > 0
+//     ? [`https://covers.openlibrary.org/b/id/${workResp.data.covers[0]}-L.jpg`]
+//     : [],
 
-                first_publish_year: doc.first_publish_year || null,
-                isbn: doc.isbn ? doc.isbn[0] : null,
-                edition_keys: doc.edition_key || []
-            });
-        }
+//                 first_publish_year: doc.first_publish_year || null,
+//                 isbn: doc.isbn ? doc.isbn[0] : null,
+//                 edition_keys: doc.edition_key || []
+//             });
+//         }
 
-        res.json({ books });
-    } catch (err) {
-        console.error('Error fetching books:', err.message);
-        res.status(500).json({ error: 'Failed to fetch books from Open Library' });
-    }
-}
+//         res.json({ books });
+//     } catch (err) {
+//         console.error('Error fetching books:', err.message);
+//         res.status(500).json({ error: 'Failed to fetch books from Open Library' });
+//     }
+// }
 
 module.exports = {
-    searchBooks,addBook, editBook, deleteBook ,viewBooks, searchBooksByName
+    addBook, editBook, deleteBook ,viewBooks, searchBooksByName
 };

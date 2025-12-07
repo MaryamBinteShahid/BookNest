@@ -387,7 +387,7 @@ app.get('/', (req, res) => {
 
 // Catch-all route for frontend SPA (if you have one)
 app.get(/^\/(?!api).*/, (req, res) => {
-  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'index.html'));
+  res.sendFile(path.join(__dirname, '..', '..','Login_Signup', 'frontend', 'index.html'));
 });
 
 // Error handling middleware

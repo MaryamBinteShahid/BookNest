@@ -29,6 +29,7 @@
       min-height: 100vh;
     }
 
+  
     .navbar {
       background: var(--card);
       padding: 20px 40px;
@@ -382,6 +383,8 @@
   </style>
 </head>
 <body>
+
+
   <nav class="navbar">
     <div class="navbar-left">
       <div class="hamburger-menu" id="hamburgerMenu">
@@ -533,7 +536,7 @@
                 <i class="fas fa-align-left"></i>
                 Summary
               </h2>
-              <div class="book-summary">${escapeHtml(book.summary)}</div>
+              <div class="book-summary">${book.summary}</div>
             </div>
 
             <div class="section">

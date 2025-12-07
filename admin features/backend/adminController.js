@@ -1,8 +1,7 @@
 // adminController.js (Supabase version)
 
-const { supabase } = require('./database');
+const { supabase } = require('../../Login_Signup/Backend/database');
 const { v4: uuidv4 } = require('uuid');
-
 /**
  * View all users
  */

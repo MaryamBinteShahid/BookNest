@@ -29,6 +29,20 @@
       min-height: 100vh;
     }
 
+    /* Full-screen background */
+    .background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('background.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: 0;
+    }
+
     .navbar {
       background: var(--card);
       padding: 20px 40px;
@@ -514,6 +528,8 @@
   </style>
 </head>
 <body>
+  <div class="background"></div>
+
   <nav class="navbar">
     <button class="menu-btn" onclick="toggleMenu()">
       <i class="fas fa-bars"></i>
@@ -598,7 +614,7 @@
     <div class="carousel-box">
       <!-- Slide 1 -->
       <div class="carousel-slide active" data-book-id="zyTCAlFPjgYC" data-source="google">
-        <img src="https://covers.openlibrary.org/b/isbn/9780743273565-L.jpg" alt="The Great Gatsby" class="carousel-image">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/The_Great_Gatsby_Cover_1925_Retouched.jpg/960px-The_Great_Gatsby_Cover_1925_Retouched.jpg?20201214221805" alt="The Great Gatsby" class="carousel-image">
         <div class="carousel-content">
           <h2 class="carousel-title">The Great Gatsby</h2>
           <p class="carousel-author">by F. Scott Fitzgerald</p>
@@ -614,7 +630,7 @@
 
       <!-- Slide 2 -->
       <div class="carousel-slide" data-book-id="PGR2AwAAQBAJ" data-source="google">
-        <img src="https://covers.openlibrary.org/b/isbn/9780061120084-L.jpg" alt="To Kill a Mockingbird" class="carousel-image">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/To_Kill_a_Mockingbird_%28first_edition_cover%29.jpg/960px-To_Kill_a_Mockingbird_%28first_edition_cover%29.jpg?20190729060537" alt="To Kill a Mockingbird" class="carousel-image">
         <div class="carousel-content">
           <h2 class="carousel-title">To Kill a Mockingbird</h2>
           <p class="carousel-author">by Harper Lee</p>
@@ -630,7 +646,7 @@
 
       <!-- Slide 3 -->
       <div class="carousel-slide" data-book-id="kotPYEqx7kMC" data-source="google">
-        <img src="https://covers.openlibrary.org/b/isbn/9780451524935-L.jpg" alt="1984" class="carousel-image">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/The_Great_Gatsby_Cover_1925_Retouched.jpg/960px-The_Great_Gatsby_Cover_1925_Retouched.jpg?20201214221805" alt="1984" class="carousel-image">
         <div class="carousel-content">
           <h2 class="carousel-title">1984</h2>
           <p class="carousel-author">by George Orwell</p>
@@ -646,7 +662,7 @@
 
       <!-- Slide 4 -->
       <div class="carousel-slide" data-book-id="wrOQLV6xB-wC" data-source="google">
-        <img src="https://covers.openlibrary.org/b/isbn/9780316769174-L.jpg" alt="The Catcher in the Rye" class="carousel-image">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/The_Catcher_in_the_Rye_%281951%2C_first_edition_cover%29.jpg/500px-The_Catcher_in_the_Rye_%281951%2C_first_edition_cover%29.jpg" alt="The Catcher in the Rye" class="carousel-image">
         <div class="carousel-content">
           <h2 class="carousel-title">The Catcher in the Rye</h2>
           <p class="carousel-author">by J.D. Salinger</p>
@@ -662,7 +678,7 @@
 
       <!-- Slide 5 -->
       <div class="carousel-slide" data-book-id="yxv_vQAACAAJ" data-source="google">
-        <img src="https://covers.openlibrary.org/b/isbn/9780140177398-L.jpg" alt="Pride and Prejudice" class="carousel-image">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/PrideAndPrejudiceTitlePage.jpg/500px-PrideAndPrejudiceTitlePage.jpg" alt="Pride and Prejudice" class="carousel-image">
         <div class="carousel-content">
           <h2 class="carousel-title">Pride and Prejudice</h2>
           <p class="carousel-author">by Jane Austen</p>

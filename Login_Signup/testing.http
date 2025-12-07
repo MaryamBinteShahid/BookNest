@@ -1,0 +1,87 @@
+###ADMIN FEATURES
+
+### Suspend User
+POST http://localhost:3000/admin/suspend/a0ef02c5-09b6-4497-a0f3-89ff0157a39e
+Content-Type: application/json
+
+### Unsuspend User
+POST http://localhost:3000/admin/unsuspend/a0ef02c5-09b6-4497-a0f3-89ff0157a39e
+Content-Type: application/json
+
+### Delete User
+DELETE http://localhost:3000/admin/delete/a0ef02c5-09b6-4497-a0f3-89ff0157a39e
+Content-Type: application/json
+
+###View Users
+GET http://localhost:3000/admin/users
+Content-Type: application/json
+
+
+###search for books from openLibrary
+GET http://localhost:3000/books/search?q=harry+potter
+Content-Type: application/json
+
+### Add Book
+POST http://localhost:3000/books
+Content-Type: application/json
+
+{
+  "title": "its no tme",
+  "description": "This i a test book",
+  "author": "Tester",
+  "subjects": "Fiction, Adventure",
+  "cover_url": "https://covers.openlibrary.org/b/id/12345-L.jpg",
+  "first_publish_year": 2023,
+  "isbn": "9781234567890"
+}
+
+### Edit Book"
+PUT http://localhost:3000/books/0398dba0-bcd1-4f24-a61f-c6018a22ab18
+Content-Type: application/json
+
+{
+  "title": "Updated its not me Book",
+  "description": "Updated description",
+  "author": "Tester",
+  "subjects": "Fiction, Mystery",
+  "cover_url": "https://covers.openlibrary.org/b/id/67890-L.jpg",
+  "first_publish_year": 2024,
+  "isbn": "9780987654321"
+}
+
+### Delete Book
+DELETE http://localhost:3000/books/69dff3f2-8b1b-4d42-9b50-25ec6e82269d
+Content-Type: application/json
+
+###view books
+GET http://localhost:3000/books
+
+
+### Search Books by Name in local database
+GET http://localhost:3000/books/search_local?q=The+Silent+Forest
+Content-Type: application/json
+
+###veiw reviews
+GET http://localhost:3000/admin/reviews
+Content-Type: application/json
+
+###delete a reveiv
+DELETE http://localhost:3000/admin/reviews/b35c97b7-0c7e-4118-ad2e-5c1dd271c25f
+Content-Type: application/json
+
+###View book_upload_requests
+GET http://localhost:3000/admin/upload-requests
+Content-Type: application/json
+
+###Approve book_upload_request
+POST http://localhost:3000/admin/upload-requests/approve/87cee7b0-d004-4cfa-8dcb-0af7319433b1
+Content-Type: application/json
+
+
+###Reject book_upload_request
+POST http://localhost:3000/admin/upload-requests/reject/52fad115-100e-46f7-9b9f-90125c59c43c
+Content-Type: application/json
+
+{
+  "message": "Incorrect metadata"
+}

@@ -28,6 +28,33 @@
       min-height: 100vh;
     }
 
+    /* Full-screen background
+    .background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('background.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: 0;
+    } */
+     .background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -1; /* <- change this */
+}
+
+
     .navbar {
       background: var(--card);
       padding: 20px 40px;
@@ -243,6 +270,8 @@
   </style>
 </head>
 <body>
+  <div class="background"></div>
+
   <nav class="navbar">
     <div class="navbar-brand" onclick="goHome()">
       <i class="fas fa-book"></i>
