@@ -36,3 +36,6 @@ ________________________________________
 
 •	Tools: Git for version control, tested in modern browsers
 ________________________________________
+**Team & Collaboration**
+
+This project was completed collaboratively by Maryam Binte Shahid, Izza Sohail, Shiza Deewan, Haniya Aleem.
